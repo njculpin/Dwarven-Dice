@@ -43,7 +43,7 @@ function App({ Component, pageProps }) {
 
   return (
     <div className="h-screen">
-      <nav className="bg-white p-6">
+      <nav className="bg-white p-2">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8 flex justify-between items-center">
           <Link href="/">
             <a className="mr-4 text-black text-2xl font-bold">
