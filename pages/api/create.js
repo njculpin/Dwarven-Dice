@@ -20,6 +20,7 @@ export default async function handler(req, res){
     */
 
     const { data, error } = await supabase.from('games').insert({
+        "version": 1,
         "gameuid": uuid,
         "p1":'',
         "p2":'',
