@@ -37,10 +37,10 @@ export default function Home() {
   const joinGame = () => {
     if (code && profile){
       axios.post('/api/join', { code:code, userid: profile.id }).then(res => {
-        const gameid = res.data.message[0].gameuid
+        const game_uid = res.data.message[0].game_uid
         router.push({
           pathname: '/game/[id]',
-          query: { id: gameid }
+          query: { id: game_uid }
       })
       }).catch(error => console.log(`failed join ${JSON.stringify(error)}`))
     } else {

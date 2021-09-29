@@ -29,36 +29,11 @@ export default function Game() {
   */
 
   function rollAllDie(){
-    axios.post('/api/game/roll', {gameuid: router.query.id})
-    /*
-    if (dieOne.spent !== true || dieOne.commit !== true){
-      setDieOne({...dieOne, face: randomFace()})
-    }
-    if (dieTwo.spent !== true || dieTwo.commit !== true){
-      setDieTwo({...dieTwo, face: randomFace()})
-    }
-    if (dieThree.spent !== true || dieThree.commit !== true){
-      setDieThree({...dieThree, face: randomFace()})
-    }
-    if (dieFour.spent !== true || dieFour.commit !== true){
-      setDieFour({...dieFour, face: randomFace()})
-    }
-    if (dieFive.spent !== true || dieFive.commit !== true){
-      setDieFive({...dieFive, face: randomFace()})
-    }
-    if (dieSix.spent !== true || dieSix.commit !== true){
-      setDieSix({...dieSix, face: randomFace()})
-    }
-    if (dieSeven.spent !== true || dieSeven.commit !== true){
-      setDieSeven({...dieSeven, face: randomFace()})
-    }
-    if (dieEight.spent !== true || dieEight.commit !== true){
-      setDieEight({...dieEight, face: randomFace()})
-    }
-    */
+    axios.post('/api/game/roll', {game_uid: router.query.id})
   }
 
   useEffect(() => {
+    console.log(router.query)
     fetchProfile()
   },[])
 
@@ -72,25 +47,13 @@ export default function Game() {
   }
 
   useEffect(async ()=>{
-    const {data, error} = await supabase.from('games').select().match({gameuid: router.query.id})
+    const {data, error} = await supabase.from('games').select().match({game_uid: router.query.id})
     if (error){
       console.log(`error -> ${JSON.stringify(error)}`)
     } else {
       setGame(data[0])
     }
   },[game])
-
-  useEffect(()=>{
-    // supabase
-    // .from(`games:gameuid=${router.query.id}`)
-    // .on('UPDATE', payload => {
-    //   console.log('Update change received!', payload)
-    // })
-    // .on('DELETE', payload => {
-    //   console.log('Deleted', payload)
-    // })
-    // .subscribe()
-  },[])
 
   const getFaceValue = (value) => {
     switch (value) {
@@ -111,10 +74,21 @@ export default function Game() {
 
   const useDie = (action, number) => {
     if (action === 'spend'){
-      axios.post('/api/game/spend', {die: number})
+      axios.post('/api/game/spend', {die: number, game_uid: router.query.id})
     }
     if (action === 'commit'){
-      axios.post('/api/game/commit', {die: number})
+      axios.post('/api/game/commit', {die: number, game_uid: router.query.id})
+    }
+  }
+
+  const diceStyle = (state) => {
+    switch(state){
+      case 1:
+        return "grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2 disabled opacity-10"
+      case 2:
+        return "grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2 disabled opacity-10"
+      default:
+          return "grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2"
     }
   }
 
@@ -127,126 +101,126 @@ export default function Game() {
           <div className="border w-full bg-black">
             <h1 className="text-white font-bold text-lg">Mine</h1>
             <div className="grid grid-flow-col grid-cols-5">
-              <div className="span-1 bg-green-500 p-2">03</div>
-              <div className="span-1 bg-purple-500 p-2">04</div>
-              <div className="span-1 bg-red-500 p-2">06</div>
-              <div className="span-1 bg-blue-500 p-2">12</div>
-              <div className="span-1 bg-gray-500 p-2">60</div>
+              <div className="span-1 bg-green-500 p-2">{game.green_mine}</div>
+              <div className="span-1 bg-purple-500 p-2">{game.purple_mine}</div>
+              <div className="span-1 bg-red-500 p-2">{game.red_mine}</div>
+              <div className="span-1 bg-blue-500 p-2">{game.blue_mine}</div>
+              <div className="span-1 bg-gray-500 p-2">{game.black_mine}</div>
             </div>
           </div>
           <div className="border w-full bg-black">
             <h1 className="text-white font-bold text-lg">Table</h1>
             <div className="grid grid-flow-col grid-cols-5">
-              <div className="span-1 bg-green-500 p-2">00</div>
-              <div className="span-1 bg-purple-500 p-2">00</div>
-              <div className="span-1 bg-red-500 p-2">00</div>
-              <div className="span-1 bg-blue-500 p-2">00</div>
-              <div className="span-1 bg-gray-500 p-2">00</div>
+              <div className="span-1 bg-green-500 p-2">{game.green_table}</div>
+              <div className="span-1 bg-purple-500 p-2">{game.purple_table}</div>
+              <div className="span-1 bg-red-500 p-2">{game.red_table}</div>
+              <div className="span-1 bg-blue-500 p-2">{game.blue_table}</div>
+              <div className="span-1 bg-gray-500 p-2">{game.black_table}</div>
             </div>
           </div>
         </div>
   
-        <div className="grid grid-flow-col grid-cols-2 grid-rows-3 md:grid-cols-4 md:grid-rows-1 gap-4 text-center">
+        <div className="grid grid-flow-col grid-cols-2 grid-rows-3 md:grid-cols-5 md:grid-rows-1 gap-4 text-center">
           <div className="border w-full">
-            <h1 className="truncate">{game.p1? game.p1 : 'empty'}</h1>
+            <h1 className="truncate p-2">{game.p1_address? game.p1_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
-              <div className="span-1 bg-green-500 p-2">00</div>
-              <div className="span-1 bg-purple-500 p-2">00</div>
-              <div className="span-1 bg-red-500 p-2">00</div>
-              <div className="span-1 bg-blue-500 p-2">00</div>
-              <div className="span-1 bg-gray-500 p-2">00</div>
+              <div className="span-1 bg-green-500 p-2">{game.green_p1}</div>
+              <div className="span-1 bg-purple-500 p-2">{game.purple_p1}</div>
+              <div className="span-1 bg-red-500 p-2">{game.red_p1}</div>
+              <div className="span-1 bg-blue-500 p-2">{game.blue_p1}</div>
+              <div className="span-1 bg-gray-500 p-2">{game.black_p1}</div>
             </div>
           </div>
           <div className="border w-full">
-            <h1 className="truncate">{game.p2? game.p2 : 'empty'}</h1>
+            <h1 className="truncate p-2">{game.p2_address? game.p2_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
-            <div className="span-1 bg-green-500 p-2">00</div>
-              <div className="span-1 bg-purple-500 p-2">00</div>
-              <div className="span-1 bg-red-500 p-2">00</div>
-              <div className="span-1 bg-blue-500 p-2">00</div>
-              <div className="span-1 bg-gray-500 p-2">00</div>
+              <div className="span-1 bg-green-500 p-2">{game.green_p2}</div>
+              <div className="span-1 bg-purple-500 p-2">{game.purple_p2}</div>
+              <div className="span-1 bg-red-500 p-2">{game.red_p2}</div>
+              <div className="span-1 bg-blue-500 p-2">{game.blue_p2}</div>
+              <div className="span-1 bg-gray-500 p-2">{game.black_p2}</div>
             </div>
           </div>
           <div className="border w-full">
-            <h1 className="truncate">{game.p3? game.p3 : 'empty'}</h1>
+            <h1 className="truncate p-2">{game.p3_address? game.p3_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
-              <div className="span-1 bg-green-500 p-2">00</div>
-              <div className="span-1 bg-purple-500 p-2">00</div>
-              <div className="span-1 bg-red-500 p-2">00</div>
-              <div className="span-1 bg-blue-500 p-2">00</div>
-              <div className="span-1 bg-gray-500 p-2">00</div>
+              <div className="span-1 bg-green-500 p-3">{game.green_p3}</div>
+              <div className="span-1 bg-purple-500 p-3">{game.purple_p3}</div>
+              <div className="span-1 bg-red-500 p-3">{game.red_p3}</div>
+              <div className="span-1 bg-blue-500 p-3">{game.blue_p3}</div>
+              <div className="span-1 bg-gray-500 p-3">{game.black_p3}</div>
             </div>
           </div>
           <div className="border w-full">
-            <h1 className="truncate">{game.p4? game.p4 : 'empty'}</h1>
+            <h1 className="truncate p-2">{game.p4_address? game.p4_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
-              <div className="span-1 bg-green-500 p-2">00</div>
-              <div className="span-1 bg-purple-500 p-2">00</div>
-              <div className="span-1 bg-red-500 p-2">00</div>
-              <div className="span-1 bg-blue-500 p-2">00</div>
-              <div className="span-1 bg-gray-500 p-2">00</div>
+              <div className="span-1 bg-green-500 p-2">{game.green_p4}</div>
+              <div className="span-1 bg-purple-500 p-2">{game.purple_p4}</div>
+              <div className="span-1 bg-red-500 p-2">{game.red_p4}</div>
+              <div className="span-1 bg-blue-500 p-2">{game.blue_p4}</div>
+              <div className="span-1 bg-gray-500 p-2">{game.black_p4}</div>
             </div>
           </div>
           <div className="border w-full">
-            <h1 className="truncate">{game.p5? game.p5 : 'empty'}</h1>
+            <h1 className="truncate p-2">{game.p5_address? game.p5_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
-              <div className="span-1 bg-green-500 p-2">00</div>
-              <div className="span-1 bg-purple-500 p-2">00</div>
-              <div className="span-1 bg-red-500 p-2">00</div>
-              <div className="span-1 bg-blue-500 p-2">00</div>
-              <div className="span-1 bg-gray-500 p-2">00</div>
+              <div className="span-1 bg-green-500 p-2">{game.green_p5}</div>
+              <div className="span-1 bg-purple-500 p-2">{game.purple_p5}</div>
+              <div className="span-1 bg-red-500 p-2">{game.red_p5}</div>
+              <div className="span-1 bg-blue-500 p-2">{game.blue_p5}</div>
+              <div className="span-1 bg-gray-500 p-2">{game.black_p5}</div>
             </div>
           </div>
         </div>
   
         <div className="grid grid-flow-col grid-cols-4 grid-rows-2 md:grid-cols-8 md:grid-rows-1 gap-4">
-  
-          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+
+          <div className={diceStyle(game.die1_state)}>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',1)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die1)}</div>
+            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die1_face)}</div>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',1)}><h1>Keep</h1></button>
           </div>
   
-          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+          <div className={diceStyle(game.die2_state)}>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',2)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die2)}</div>
+            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die2_face)}</div>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',2)}><h1>Keep</h1></button>
           </div>
   
-          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+          <div className={diceStyle(game.die3_state)}>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',3)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die3)}</div>
+            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die3_face)}</div>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',3)}><h1>Keep</h1></button>
           </div>
   
-          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+          <div className={diceStyle(game.die4_state)}>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',4)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die4)}</div>
+            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die4_face)}</div>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',4)}><h1>Keep</h1></button>
           </div>
   
-          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+          <div className={diceStyle(game.die5_state)}>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',5)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die5)}</div>
+            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die5_face)}</div>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',5)}><h1>Keep</h1></button>
           </div>
   
-          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',5)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die6)}</div>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',5)}><h1>Keep</h1></button>
-          </div>
-  
-          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+          <div className={diceStyle(game.die6_state)}>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',6)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die7)}</div>
+            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die6_face)}</div>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',6)}><h1>Keep</h1></button>
           </div>
   
-          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+          <div className={diceStyle(game.die7_state)}>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',7)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die8)}</div>
+            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die7_face)}</div>
             <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',7)}><h1>Keep</h1></button>
+          </div>
+  
+          <div className={diceStyle(game.die8_state)}>
+            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',8)}><h1>Spend</h1></button>
+            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die8_face)}</div>
+            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',8)}><h1>Keep</h1></button>
           </div>
   
         </div>

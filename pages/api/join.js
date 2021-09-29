@@ -6,7 +6,7 @@ export default async function handler(req, res){
     const code = req.body.code
     const user = req.body.userid
 
-    const { data, error } = await supabase.from('games').select().match({gameuid: code})
+    const { data, error } = await supabase.from('games').select().match({game_uid: code})
     const first = data[0]
 
     if (error){
@@ -14,10 +14,10 @@ export default async function handler(req, res){
     }
     
     // if the first seat is taken
-    if (first.p1){
+    if (first.p1_address){
 
         // if the first seat is the user
-        if (first.p1 === user) {
+        if (first.p1_address === user) {
             const take = await takeSeat(1, first.id, user)
             if (take.status === 'error'){
                 res.status(400).json({message: `error taking seat 1`})
@@ -25,10 +25,10 @@ export default async function handler(req, res){
             if (take.status === 'success'){
                 res.status(200).json({message: data})
             }
-        } else if (first.p2) {
+        } else if (first.p2_address) {
 
             // if the second seat is the user
-            if (first.p2 === user) {
+            if (first.p2_address === user) {
                 const take = await takeSeat(2, first.id, user)
                 if (take.status === 'error'){
                     res.status(400).json({message: `error taking seat 2`})
@@ -36,10 +36,10 @@ export default async function handler(req, res){
                 if (take.status === 'success'){
                     res.status(200).json({message: data})
                 }
-            } else if (first.p3){
+            } else if (first.p3_address){
 
                 // if the 3rd seat is the user
-                if (first.p3 === user) {
+                if (first.p3_address === user) {
                     const take = await takeSeat(3, first.id, user)
                     if (take.status === 'error'){
                         res.status(400).json({message: `error taking seat 3`})
@@ -47,10 +47,10 @@ export default async function handler(req, res){
                     if (take.status === 'success'){
                         res.status(200).json({message: data})
                     }
-                } else if (first.p4) {
+                } else if (first.p4_address) {
 
                     // if the 4th seat is the user
-                    if (first.p4 === user) {
+                    if (first.p4_address === user) {
                         const take = await takeSeat(4, first.id, user)
                         if (take.status === 'error'){
                             res.status(400).json({message: `error taking seat 4`})
@@ -61,10 +61,10 @@ export default async function handler(req, res){
                     }
 
                     // if the 4th seat is not the user
-                    if (first.p5){
+                    if (first.p5_address){
 
                         // if the 5th seat is the user
-                        if (first.p5 === user) {
+                        if (first.p5_address === user) {
                             const take = await takeSeat(5, first.id, user)
                             if (take.status === 'error'){
                                 res.status(400).json({message: `error taking seat 5`})
@@ -134,7 +134,7 @@ async function takeSeat(seat, game, user){
     if (seat === 1){
         const { data, error } = await supabase
         .from('games')
-        .update({p1: user})
+        .update({p1_address: user})
         .match({ id: game })
         if (error){
             return {status: 'error', message: error}
@@ -145,7 +145,7 @@ async function takeSeat(seat, game, user){
     if (seat === 2){
         const { data, error } = await supabase
         .from('games')
-        .update({p12: user})
+        .update({p2_address: user})
         .match({ id: game })
         if (error){
             return {status: 'error', message: error}
@@ -156,7 +156,7 @@ async function takeSeat(seat, game, user){
     if (seat === 3){
         const { data, error } = await supabase
         .from('games')
-        .update({p3: user})
+        .update({p3_address: user})
         .match({ id: game })
         if (error){
             return {status: 'error', message: error}
@@ -167,7 +167,7 @@ async function takeSeat(seat, game, user){
     if (seat === 4){
         const { data, error } = await supabase
         .from('games')
-        .update({p4: user})
+        .update({p4_address: user})
         .match({ id: game })
         if (error){
             return {status: 'error', message: error}
@@ -178,7 +178,7 @@ async function takeSeat(seat, game, user){
     if (seat === 5){
         const { data, error } = await supabase
         .from('games')
-        .update({p5: user})
+        .update({p5_address: user})
         .match({ id: game })
         if (error){
             return {status: 'error', message: error}
