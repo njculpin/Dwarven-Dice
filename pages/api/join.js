@@ -6,7 +6,7 @@ export default async function handler(req, res){
     const code = req.body.code
     const user = req.body.userid
 
-    const { data, error } = await supabase.from('games').select().match({game_uid: code})
+    const { data, error } = await supabase.from('gamestates').select().match({game_uid: code})
     const first = data[0]
 
     if (error){
@@ -18,7 +18,7 @@ export default async function handler(req, res){
 
         // if the first seat is the user
         if (first.p1_address === user) {
-            const take = await takeSeat(1, first.id, user)
+            const take = await takeSeat(1, first.game_uid, user)
             if (take.status === 'error'){
                 res.status(400).json({message: `error taking seat 1`})
             }
@@ -29,7 +29,7 @@ export default async function handler(req, res){
 
             // if the second seat is the user
             if (first.p2_address === user) {
-                const take = await takeSeat(2, first.id, user)
+                const take = await takeSeat(2, first.game_uid, user)
                 if (take.status === 'error'){
                     res.status(400).json({message: `error taking seat 2`})
                 }
@@ -40,7 +40,7 @@ export default async function handler(req, res){
 
                 // if the 3rd seat is the user
                 if (first.p3_address === user) {
-                    const take = await takeSeat(3, first.id, user)
+                    const take = await takeSeat(3, first.game_uid, user)
                     if (take.status === 'error'){
                         res.status(400).json({message: `error taking seat 3`})
                     }
@@ -51,7 +51,7 @@ export default async function handler(req, res){
 
                     // if the 4th seat is the user
                     if (first.p4_address === user) {
-                        const take = await takeSeat(4, first.id, user)
+                        const take = await takeSeat(4, first.game_uid, user)
                         if (take.status === 'error'){
                             res.status(400).json({message: `error taking seat 4`})
                         }
@@ -65,7 +65,7 @@ export default async function handler(req, res){
 
                         // if the 5th seat is the user
                         if (first.p5_address === user) {
-                            const take = await takeSeat(5, first.id, user)
+                            const take = await takeSeat(5, first.game_uid, user)
                             if (take.status === 'error'){
                                 res.status(400).json({message: `error taking seat 5`})
                             }
@@ -79,7 +79,7 @@ export default async function handler(req, res){
 
                     } else {
                         // if the 5th seat is not the user and available
-                        const take = await takeSeat(5, first.id, user)
+                        const take = await takeSeat(5, first.game_uid, user)
                         if (take.status === 'error'){
                             res.status(400).json({message: `error taking seat 5`})
                         }
@@ -89,7 +89,7 @@ export default async function handler(req, res){
                     }
                 } else {
                     // if the 4th seat is not taken and this is not the user
-                    const take = await takeSeat(4, first.id, user)
+                    const take = await takeSeat(4, first.game_uid, user)
                     if (take.status === 'error'){
                         res.status(400).json({message: `error taking seat 4`})
                     }
@@ -99,7 +99,7 @@ export default async function handler(req, res){
                 }
             } else {
                 // if the 3rd seat is not taken and this is not the user
-                const take = await takeSeat(3, first.id, user)
+                const take = await takeSeat(3, first.game_uid, user)
                 if (take.status === 'error'){
                     res.status(400).json({message: `error taking seat 3`})
                 }
@@ -109,7 +109,7 @@ export default async function handler(req, res){
             }
         } else {
             // if the 2nd seat is not taken and this is not the user
-            const take = await takeSeat(2, first.id, user)
+            const take = await takeSeat(2, first.game_uid, user)
             if (take.status === 'error'){
                 res.status(400).json({message: `error taking seat 2`})
             }
@@ -119,7 +119,7 @@ export default async function handler(req, res){
         }
     } else {
         // if the 1st seat is not taken and this is not the user
-        const take = await takeSeat(1, first.id, user)
+        const take = await takeSeat(1, first.game_uid, user)
         if (take.status === 'error'){
             res.status(400).json({message: `error taking seat 1`})
         }
@@ -133,57 +133,74 @@ export default async function handler(req, res){
 async function takeSeat(seat, game, user){
     if (seat === 1){
         const { data, error } = await supabase
-        .from('games')
+        .from('gamestates')
         .update({p1_address: user})
-        .match({ id: game })
+        .match({ game_uid: game })
         if (error){
             return {status: 'error', message: error}
         } else {
+            assignGameToPlayer(game, user)
             return {status: 'success', data: data}
         }
     }
     if (seat === 2){
         const { data, error } = await supabase
-        .from('games')
+        .from('gamestates')
         .update({p2_address: user})
-        .match({ id: game })
+        .match({ game_uid: game })
         if (error){
             return {status: 'error', message: error}
         } else {
+            assignGameToPlayer(game, user)
             return {status: 'success', data: data}
         }
     }
     if (seat === 3){
         const { data, error } = await supabase
-        .from('games')
+        .from('gamestates')
         .update({p3_address: user})
-        .match({ id: game })
+        .match({ game_uid: game })
         if (error){
             return {status: 'error', message: error}
         } else {
+            assignGameToPlayer(game, user)
             return {status: 'success', data: data}
         }
     }
     if (seat === 4){
         const { data, error } = await supabase
-        .from('games')
+        .from('gamestates')
         .update({p4_address: user})
-        .match({ id: game })
+        .match({ game_uid: game })
         if (error){
             return {status: 'error', message: error}
         } else {
+            assignGameToPlayer(game, user)
             return {status: 'success', data: data}
         }
     }
     if (seat === 5){
         const { data, error } = await supabase
-        .from('games')
+        .from('gamestates')
         .update({p5_address: user})
-        .match({ id: game })
+        .match({ game_uid: game })
         if (error){
             return {status: 'error', message: error}
         } else {
+            assignGameToPlayer(game, user)
             return {status: 'success', data: data}
         }
+    }
+}
+
+async function assignGameToPlayer(game, user){
+    const { data, error } = await supabase
+    .from('players')
+    .update({game_uid: game, ingame:true})
+    .match({ address: user })
+    if (error){
+        return {status: 'error', message: error}
+    } else {
+        return {status: 'success', data: data}
     }
 }

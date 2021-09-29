@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { supabase } from '../utils/supabaseClient'
+import axios from 'axios'
 
 function App({ Component, pageProps }) {
   const [authenticatedState, setAuthenticatedState] = useState('not-authed')
@@ -30,6 +31,14 @@ function App({ Component, pageProps }) {
     const user = await supabase.auth.user()
     if (user) {
       setAuthenticatedState('authenticated')
+      const player_data = {
+        "handle": user.email,
+        "address": user.id, 
+        "game_uid": '',
+        "online": true,
+        "ingame": false
+      }
+      axios.post('/api/register', { player_data: player_data })
     }
   }
   async function handleAuthChange(event, session) {
