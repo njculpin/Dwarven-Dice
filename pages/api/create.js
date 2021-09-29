@@ -3,16 +3,12 @@ import { v4 as uuidv4 } from 'uuid'
 
 export default async function handler(req, res){
     const uuid = uuidv4()
-
-    /**
-    
-    */
-
+    const host = req.body.userid
     const { data, error } = await supabase.from('games').insert({
         "game_version": 1,
         "game_uid": uuid,
         "active_player": 1, 
-        "p1_address": '',
+        "p1_address": host,
         "p2_address": '',
         "p3_address": '',
         "p4_address": '',

@@ -29,7 +29,9 @@ export default function Game() {
   */
 
   function rollAllDie(){
-    axios.post('/api/game/roll', {game_uid: router.query.id})
+    if (game.active_player === profile.id){
+      axios.post('/api/game/roll', {game_uid: router.query.id})
+    }
   }
 
   useEffect(() => {
@@ -81,14 +83,21 @@ export default function Game() {
     }
   }
 
-  const diceStyle = (state) => {
+  const dieSpendButtonStyle = (state) => {
     switch(state){
       case 1:
-        return "grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2 disabled opacity-10"
-      case 2:
-        return "grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2 disabled opacity-10"
+        return "border px-4 py-2 text-center bg-black"
       default:
-          return "grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2"
+          return "border px-4 py-2 text-center shadow-lg"
+    }
+  }
+
+  const dieCommitButtonStyle = (state) => {
+    switch(state){
+      case 2:
+        return "border px-4 py-2 text-center bg-black"
+      default:
+          return "border px-4 py-2 text-center shadow-lg"
     }
   }
 
@@ -121,7 +130,8 @@ export default function Game() {
         </div>
   
         <div className="grid grid-flow-col grid-cols-2 grid-rows-3 md:grid-cols-5 md:grid-rows-1 gap-4 text-center">
-          <div className="border w-full">
+          <div className="border w-full p-2">
+            <h1>{game.p1_rolls} rolls remaining</h1>
             <h1 className="truncate p-2">{game.p1_address? game.p1_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-2">{game.green_p1}</div>
@@ -131,7 +141,8 @@ export default function Game() {
               <div className="span-1 bg-gray-500 p-2">{game.black_p1}</div>
             </div>
           </div>
-          <div className="border w-full">
+          <div className="border w-full p-2">
+            <h1>{game.p2_rolls} rolls remaining</h1>
             <h1 className="truncate p-2">{game.p2_address? game.p2_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-2">{game.green_p2}</div>
@@ -141,7 +152,8 @@ export default function Game() {
               <div className="span-1 bg-gray-500 p-2">{game.black_p2}</div>
             </div>
           </div>
-          <div className="border w-full">
+          <div className="border w-full p-2">
+            <h1>{game.p3_rolls} rolls remaining</h1>
             <h1 className="truncate p-2">{game.p3_address? game.p3_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-3">{game.green_p3}</div>
@@ -151,7 +163,8 @@ export default function Game() {
               <div className="span-1 bg-gray-500 p-3">{game.black_p3}</div>
             </div>
           </div>
-          <div className="border w-full">
+          <div className="border w-full p-2">
+            <h1>{game.p4_rolls} rolls remaining</h1>
             <h1 className="truncate p-2">{game.p4_address? game.p4_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-2">{game.green_p4}</div>
@@ -161,7 +174,8 @@ export default function Game() {
               <div className="span-1 bg-gray-500 p-2">{game.black_p4}</div>
             </div>
           </div>
-          <div className="border w-full">
+          <div className="border w-full p-2">
+            <h1>{game.p5_rolls} rolls remaining</h1>
             <h1 className="truncate p-2">{game.p5_address? game.p5_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-2">{game.green_p5}</div>
@@ -175,52 +189,52 @@ export default function Game() {
   
         <div className="grid grid-flow-col grid-cols-4 grid-rows-2 md:grid-cols-8 md:grid-rows-1 gap-4">
 
-          <div className={diceStyle(game.die1_state)}>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',1)}><h1>Spend</h1></button>
+          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+            <button className={dieSpendButtonStyle(game.die1_state)} onClick={()=>useDie('spend',1)}><h1>Spend</h1></button>
             <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die1_face)}</div>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',1)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die1_state)} onClick={()=>useDie('commit',1)}><h1>Keep</h1></button>
           </div>
   
-          <div className={diceStyle(game.die2_state)}>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',2)}><h1>Spend</h1></button>
+          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+            <button className={dieSpendButtonStyle(game.die2_state)} onClick={()=>useDie('spend',2)}><h1>Spend</h1></button>
             <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die2_face)}</div>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',2)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die2_state)} onClick={()=>useDie('commit',2)}><h1>Keep</h1></button>
           </div>
   
-          <div className={diceStyle(game.die3_state)}>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',3)}><h1>Spend</h1></button>
+          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+            <button className={dieSpendButtonStyle(game.die3_state)} onClick={()=>useDie('spend',3)}><h1>Spend</h1></button>
             <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die3_face)}</div>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',3)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die3_state)} onClick={()=>useDie('commit',3)}><h1>Keep</h1></button>
           </div>
   
-          <div className={diceStyle(game.die4_state)}>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',4)}><h1>Spend</h1></button>
+          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+            <button className={dieSpendButtonStyle(game.die4_state)} onClick={()=>useDie('spend',4)}><h1>Spend</h1></button>
             <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die4_face)}</div>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',4)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die4_state)} onClick={()=>useDie('commit',4)}><h1>Keep</h1></button>
           </div>
   
-          <div className={diceStyle(game.die5_state)}>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',5)}><h1>Spend</h1></button>
+          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+            <button className={dieSpendButtonStyle(game.die5_state)} onClick={()=>useDie('spend',5)}><h1>Spend</h1></button>
             <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die5_face)}</div>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',5)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die5_state)} onClick={()=>useDie('commit',5)}><h1>Keep</h1></button>
           </div>
   
-          <div className={diceStyle(game.die6_state)}>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',6)}><h1>Spend</h1></button>
+          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+            <button className={dieSpendButtonStyle(game.die6_state)}  onClick={()=>useDie('spend',6)}><h1>Spend</h1></button>
             <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die6_face)}</div>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',6)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die6_state)} onClick={()=>useDie('commit',6)}><h1>Keep</h1></button>
           </div>
   
-          <div className={diceStyle(game.die7_state)}>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',7)}><h1>Spend</h1></button>
+          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+            <button className={dieSpendButtonStyle(game.die7_state)} onClick={()=>useDie('spend',7)}><h1>Spend</h1></button>
             <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die7_face)}</div>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',7)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die7_state)} onClick={()=>useDie('commit',7)}><h1>Keep</h1></button>
           </div>
   
-          <div className={diceStyle(game.die8_state)}>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('spend',8)}><h1>Spend</h1></button>
+          <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
+            <button className={dieSpendButtonStyle(game.die8_state)} onClick={()=>useDie('spend',8)}><h1>Spend</h1></button>
             <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die8_face)}</div>
-            <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>useDie('commit',8)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die8_state)} onClick={()=>useDie('commit',8)}><h1>Keep</h1></button>
           </div>
   
         </div>

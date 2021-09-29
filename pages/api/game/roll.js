@@ -11,6 +11,9 @@ export default async function handler(req, res){
         res.status(400).json({message: error})
     }
 
+    const acive_player = game.active_player
+    reduce_player_roll(acive_player, game)
+
     if (game.die1_state === 0){
         const newFace = randomFace()
         updateDie(1, newFace, code)
@@ -45,7 +48,77 @@ export default async function handler(req, res){
     }
 
     return res.status(200).json({status:'success', message:game})
+}
 
+const reduce_player_roll = async (active_player, game) => {
+    console.log(game)
+    if (active_player === 1){
+        const p1_rolls = game.p1_rolls
+        if (p1_rolls >= 1){
+            const game_uid = game.game_uid
+            const { data, error } = await supabase
+            .from('games')
+            .update({p1_rolls: p1_rolls-1})
+            .match({ game_uid: game_uid })
+            if (error){
+                console.log(error)
+            }  
+        }
+    }
+    if (active_player === 2){
+        const p2_rolls = game.p2_rolls
+        if (p2_rolls >= 1){
+            const game_uid = game.game_uid
+            const { data, error } = await supabase
+            .from('games')
+            .update({p2_rolls: p2_rolls-1})
+            .match({ game_uid: game_uid })
+            if (error){
+                console.log(error)
+            }  
+        }
+
+    }
+    if (active_player === 3){
+        const p3_rolls = game.p3_rolls
+        if (p3_rolls >= 1){
+            const game_uid = game.game_uid
+            const { data, error } = await supabase
+            .from('games')
+            .update({p3_rolls: p3_rolls-1})
+            .match({ game_uid: game_uid })
+            if (error){
+                console.log(error)
+            }  
+        }
+
+    }
+    if (active_player === 4){
+        const p4_rolls = game.p4_rolls
+        if (p4_rolls >= 1){
+            const game_uid = game.game_uid
+            const { data, error } = await supabase
+            .from('games')
+            .update({p4_rolls: p4_rolls-1})
+            .match({ game_uid: game_uid })
+            if (error){
+                console.log(error)
+            }  
+        }
+    }
+    if (active_player === 5){
+        const p5_rolls = game.p5_rolls
+        if (p5_rolls >= 1){
+            const game_uid = game.game_uid
+            const { data, error } = await supabase
+            .from('games')
+            .update({p5_rolls: p5_rolls-1})
+            .match({ game_uid: game_uid })
+            if (error){
+                console.log(error)
+            } 
+        }
+    }
 }
 
 const randomFace = () => {

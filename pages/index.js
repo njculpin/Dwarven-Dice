@@ -28,7 +28,7 @@ export default function Home() {
   }
 
   const createGame = () => {
-    axios.post('/api/create').then(res => {
+    axios.post('/api/create', { userid: profile.id }).then(res => {
       let uuid = res.data.uuid
       setCode(uuid)
     })
