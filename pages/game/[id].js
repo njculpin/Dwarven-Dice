@@ -295,6 +295,23 @@ export default function Game() {
     }
   }
 
+  const getDiceStyle = (value) => {
+    switch (value) {
+      case 0:
+        return "bg-green-500 rounded-full h-14 text-white flex justify-center items-center"
+      case 1:
+        return "bg-purple-500 rounded-full h-14 text-white flex justify-center items-center"
+      case 2:
+        return "bg-red-500 rounded-full h-14 text-white flex justify-center items-center"
+      case 3:
+        return "bg-blue-500 rounded-full h-14 text-white flex justify-center items-center"
+      case 4:
+        return "bg-black rounded-full h-14 text-white flex justify-center items-center"
+      case 5:
+        return "bg-black rounded-full h-14 text-white flex justify-center items-center"
+    }
+  }
+
   if (!game){ return null }
   if (game) {
     return (
@@ -387,49 +404,49 @@ export default function Game() {
 
           <div className={activeDieStyle(game.die1_location)}>
             <button className={dieSpendButtonStyle(game.die1_state)} onClick={()=>useDie('spend',game.die1_face,1)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die1_face)}</div>
+            <div className={getDiceStyle(game.die1_face)}>{getFaceValue(game.die1_face)}</div>
             <button className={dieCommitButtonStyle(game.die1_state)} onClick={()=>useDie('commit',game.die1_face,1)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die2_location)}>
             <button className={dieSpendButtonStyle(game.die2_state)} onClick={()=>useDie('spend',game.die2_face,2)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die2_face)}</div>
+            <div className={getDiceStyle(game.die2_face)}>{getFaceValue(game.die2_face)}</div>
             <button className={dieCommitButtonStyle(game.die2_state)} onClick={()=>useDie('commit',game.die2_face,2)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die3_location)}>
             <button className={dieSpendButtonStyle(game.die3_state)} onClick={()=>useDie('spend',game.die3_face,3)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die3_face)}</div>
+            <div className={getDiceStyle(game.die3_face)}>{getFaceValue(game.die3_face)}</div>
             <button className={dieCommitButtonStyle(game.die3_state)} onClick={()=>useDie('commit',game.die3_face,3)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die4_location)}>
             <button className={dieSpendButtonStyle(game.die4_state)} onClick={()=>useDie('spend',game.die4_face,4)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die4_face)}</div>
+            <div className={getDiceStyle(game.die4_face)}>{getFaceValue(game.die4_face)}</div>
             <button className={dieCommitButtonStyle(game.die4_state)} onClick={()=>useDie('commit',game.die4_face, 4)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die5_location)}>
             <button className={dieSpendButtonStyle(game.die5_state)} onClick={()=>useDie('spend',game.die5_face,5)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die5_face)}</div>
+            <div className={getDiceStyle(game.die5_face)}>{getFaceValue(game.die5_face)}</div>
             <button className={dieCommitButtonStyle(game.die5_state)} onClick={()=>useDie('commit',game.die5_face, 5)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die6_location)}>
             <button className={dieSpendButtonStyle(game.die6_state)}  onClick={()=>useDie('spend',game.die6_face,6)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die6_face)}</div>
+            <div className={getDiceStyle(game.die6_face)}>{getFaceValue(game.die6_face)}</div>
             <button className={dieCommitButtonStyle(game.die6_state)} onClick={()=>useDie('commit',game.die6_face, 6)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die7_location)}>
             <button className={dieSpendButtonStyle(game.die7_state)} onClick={()=>useDie('spend',game.die7_face,7)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die7_face)}</div>
+            <div className={getDiceStyle(game.die7_face)}>{getFaceValue(game.die7_face)}</div>
             <button className={dieCommitButtonStyle(game.die7_state)} onClick={()=>useDie('commit',game.die7_face,7)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die8_location)}>
             <button className={dieSpendButtonStyle(game.die8_state)} onClick={()=>useDie('spend',game.die8_face,8)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die8_face)}</div>
+            <div className={getDiceStyle(game.die8_face)}>{getFaceValue(game.die8_face)}</div>
             <button className={dieCommitButtonStyle(game.die8_state)} onClick={()=>useDie('commit',game.die8_face,8)}><h1>Keep</h1></button>
           </div>
   

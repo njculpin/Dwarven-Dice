@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
-import { ClipboardIcon } from '@heroicons/react/outline'
 import { useRouter } from 'next/router'
 import { supabase } from '../utils/supabaseClient'
 
@@ -11,15 +10,15 @@ export default function Home() {
   const [profile, setProfile] = useState(null)
   const [games, setGames] = useState([])
   const [status, setStatus] = useState('')
+  const [gameUid, setGameUID] = useState('')
 
   useEffect(() => {
     fetchProfile()
-    
   })
 
   useEffect(()=>{
     fetchGames()
-  },[])
+  }, [games])
 
   async function fetchProfile() {
     const profileData = await supabase.auth.user()
@@ -77,7 +76,17 @@ export default function Home() {
   }
 
   const closeGame = (game_uid) => {
-    console.log(`closing game -> ${game_uid}`)
+    axios.post('api/close', { game_uid: game_uid}).then(res => {
+      console.log(res)
+    })
+  }
+
+  const hostedGameStyle = (host) => {
+    if (host === profile.id){
+      return "py-4 flex w-full justify-between items-center space-x-4 p-2 bg-green-200"
+    } else {
+      return "py-4 flex w-full justify-between items-center space-x-4 p-2"
+    }
   }
 
   if (!profile) return null
@@ -85,25 +94,35 @@ export default function Home() {
   return (
     <div className="p-2 flex flex-col justify-center items-center space-y-4">
 
-      <div className="grid grid-cols-1 grid-rows-2 gap-8 my-4">
-        <div className="flex flex-row w-full space-x-2">
-
-          <button onClick={()=>createGame()} className="border px-4 py-2 rounded-full w-32">
+      <div className="flex flex-col gap-8 my-4">
+          <div className="flex flex-row justify-between items-center">
+          <button onClick={()=>createGame()} className="h-12 border px-4 py-2 rounded-full w-32">
             <h1 className="text-center">New Game</h1>
           </button>
-
+          <input
+          type="text" 
+          name="code"
+          onChange={(e)=>setGameUID(e.target.value)}
+          className="w-64 border px-4 py-2 rounded-full flex flex-row justify-between items-center"
+          placeholder="paste Game UID to join"
+          ></input>
+          <button onClick={()=>joinGame(gameUid)} className="h-12 border px-4 py-2 rounded-full w-32">
+            <h1 className="text-center">Join Game</h1>
+          </button>
         </div>
-        {games? <ul role="list" className="divide-y divide-gray-200 shadow-lg p-4">
+
+        <div className="w-full text-lg font-bold"><h1>Games</h1></div>
+        {games? <ul role="list" className="divide-y divide-gray-200 p-4">
             {games.map(function(game, index){
-              return <li className="py-4 flex w-full justify-between items-center space-x-4" key={index}>
+              return <li className={hostedGameStyle(game.host)} key={index}>
                 <div className="flex flex-col border-r px-4">
-                <p>host : {game.host}</p>
-                <p>game uuid : {game.game_uid}</p>
-                <p>players: {game.players}</p>
+                <p>Host UID : {game.host}</p>
+                <p>Game UID : {game.game_uid}</p>
+                <p>Players : {game.players}</p>
                 </div>
-                <div className="flex flex-col justify-between items-center">
-                  <button className="border px-4 py-2 rounded-full w-32" onClick={()=>joinGame(game.game_uid)}>Join</button>
-                  <button className="border px-4 py-2 rounded-full w-32" onClick={()=>closeGame(game.game_uid)}>Close</button>
+                <div className="flex flex-col justify-between items-center space-y-4">
+                  <button className="px-4 py-2 rounded-full w-32 bg-green-800 text-white" onClick={()=>joinGame(game.game_uid)}>Join</button>
+                  <button className="px-4 py-2 rounded-full w-32 bg-green-800 text-white" onClick={()=>closeGame(game.game_uid)}>Close</button>
                 </div>
                 </li>
             })}
