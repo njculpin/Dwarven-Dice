@@ -185,7 +185,9 @@ export default function Game() {
   }
 
   const collectOnCommits = () => {
-
+    axios.post(`/api/game/collect/collect`, {
+      game_uid: router.query.id
+    })
   }
 
   const useDie = (action, face, number) => {

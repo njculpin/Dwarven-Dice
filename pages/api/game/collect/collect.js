@@ -1,7 +1,9 @@
-import { supabase } from '../../../utils/supabaseClient'
+import { supabase } from '../../../../utils/supabaseClient'
 import collected from './collected'
 
 export default async function handler(req, res){
+
+    const game_uid = req.body.game_uid
 
     const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
     if (error){
@@ -51,36 +53,35 @@ export default async function handler(req, res){
     const beers = allFaces.filter(die => die.face === 5).filter(x => x.state === 2)
 
     if (heads.length === 3){
-        console.log('heads are 3')
-        const { data, error } = await supabase.from('gamestates').update({green_table:0, green_p1:green_p1+green_table}).match({game_uid: game.game_uid})
+        const { data, error } = await supabase.from('gamestates').update({green_table:0, green_p1:game.green_p1+green_table}).match({game_uid: game.game_uid})
         if (error){
             res.status(200).json({message:error})
         }
         heads.forEach(head => collected(head.die))
         res.status(200).json({message:data})
     } else if (lanterns.length === 3){
-        const { data, error } = await supabase.from('gamestates').update({purple_table:0, purple_p1:purple_p1+purple_table}).match({game_uid: game.game_uid})
+        const { data, error } = await supabase.from('gamestates').update({purple_table:0, purple_p1:game.purple_p1+purple_table}).match({game_uid: game.game_uid})
         if (error){
             res.status(200).json({message:error})
         }
         lanterns.forEach(lantern => collected(lantern.die))
         res.status(200).json({message:data})
     } else if (bombs.length === 3){
-        const { data, error } = await supabase.from('gamestates').update({red_table:0, red_p1:red_p1+red_table}).match({game_uid: game.game_uid})
+        const { data, error } = await supabase.from('gamestates').update({red_table:0, red_p1:game.red_p1+red_table}).match({game_uid: game.game_uid})
         if (error){
             res.status(200).json({message:error})
         }
         bombs.forEach(bomb => collected(bomb.die))
         res.status(200).json({message:data})
     } else if (axes.length === 3){
-        const { data, error } = await supabase.from('gamestates').update({blue_table:0, blue_p1:blue_p1+blue_table}).match({game_uid: game.game_uid})
+        const { data, error } = await supabase.from('gamestates').update({blue_table:0, blue_p1:game.blue_p1+blue_table}).match({game_uid: game.game_uid})
         if (error){
             res.status(200).json({message:error})
         }
         axes.forEach(axe => collected(axe.die))
         res.status(200).json({message:data})
     } else if (horns.length === 1 && beers.length === 2){
-        const { data, error } = await supabase.from('gamestates').update({black_table:0, black_p1:black_p1+black_table}).match({game_uid: game.game_uid})
+        const { data, error } = await supabase.from('gamestates').update({black_table:0, black_p1:game.black_p1+black_table}).match({game_uid: game.game_uid})
         if (error){
             res.status(200).json({message:error})
         }
@@ -88,7 +89,7 @@ export default async function handler(req, res){
         beers.forEach(beer => collected(beer.die))
         res.status(200).json({message:data})
     } else if (beers.length === 3){
-        const { data, error } = await supabase.from('gamestates').update({black_table:black_table-quantity, black_p1:black_p1+black_table}).match({game_uid: game.game_uid})
+        const { data, error } = await supabase.from('gamestates').update({black_table:black_table-quantity, black_p1:game.black_p1+black_table}).match({game_uid: game.game_uid})
         if (error){
             res.status(200).json({message:error})
         }
