@@ -2,6 +2,7 @@ import { supabase } from '../../../../utils/supabaseClient'
 
 export default async function handler(req, res){
     const game_uid = req.body.game_uid
+    const die = req.body.die
     const color = req.body.color
 
     if (color === 'green'){
@@ -10,14 +11,17 @@ export default async function handler(req, res){
         if (error){
             res.status(400).json({message:error})
         }
+        spender(die, game_uid)
         res.status(200).json({message:data})
     }
+
     if (color === 'purple'){
         console.log('pulled purple')
         const { data, error } = await supabase.from('gamestates').update({purple_mine:purple_mine-1, purple_table:purple_table+1}).match({game_uid: game_uid})
         if (error){
             res.status(400).json({message:error})
         }
+        spender(die, game_uid)
         res.status(200).json({message:data})
     }
     if (color === 'red'){
@@ -26,6 +30,7 @@ export default async function handler(req, res){
         if (error){
             res.status(400).json({message:error})
         }
+        spender(die, game_uid)
         res.status(200).json({message:data})
     }
     if (color === 'blue'){
@@ -34,6 +39,7 @@ export default async function handler(req, res){
         if (error){
             res.status(400).json({message:error})
         }
+        spender(die, game_uid)
         res.status(200).json({message:data})
     }
     if (color === 'black'){
@@ -42,6 +48,7 @@ export default async function handler(req, res){
         if (error){
             res.status(400).json({message:error})
         }
+        spender(die, game_uid)
         res.status(200).json({message:data})
     }
 }

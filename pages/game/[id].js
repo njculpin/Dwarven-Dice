@@ -36,6 +36,10 @@ export default function Game() {
     axios.post('/api/game/roll', {game_uid: router.query.id, pid: profile.id})
   }
 
+  function passTurn(){
+    axios.post('/api/game/pass', {game_uid: router.query.id, active_player: game.active_player, pid: profile.id})
+  }
+
   const getFaceValue = (value) => {
     switch (value) {
       case 0:
@@ -57,16 +61,28 @@ export default function Game() {
     console.log(`face -> ${face}`)
     if (action === 'spend'){
       if (face === 0){
+        // throw player selector
+        const secondary_player = ''
         axios.post(`/api/game/spend/heads`, {
-          die: number, 
           game_uid: router.query.id, 
-          pid:profile.id})
+          secondary_player:secondary_player})
       }
       if (face === 1){
-        axios.post(`/api/game/spend/lanterns`, {
-          die: number, 
-          game_uid: router.query.id, 
-          pid:profile.id})
+        if (
+          game.green_mine + 
+          game.purple_mine + 
+          game.red_mine + 
+          game.blue_mine + 
+          game.black_mine >= 3){
+          // throw color selector
+          const color = 'red'
+          axios.post(`/api/game/spend/lanterns`, {
+            die: number, 
+            game_uid: router.query.id, 
+            color: 'red'})
+        } else {
+          // throw not enough gems in mine error
+        }
       }
       if (face === 2 || face === 3){
         axios.post(`/api/game/spend/axebombs`, {
@@ -87,6 +103,8 @@ export default function Game() {
     switch(state){
       case 1:
         return "border px-4 py-2 text-center bg-black"
+      case 2:
+        return "border px-4 py-2 text-center opacity-50"
       default:
           return "border px-4 py-2 text-center shadow-lg"
     }
@@ -94,8 +112,10 @@ export default function Game() {
 
   const dieCommitButtonStyle = (state) => {
     switch(state){
+      case 1:
+        return "border px-4 py-2 text-center"
       case 2:
-        return "border px-4 py-2 text-center bg-black"
+        return "border px-4 py-2 text-center bg-black opacity-50"
       default:
           return "border px-4 py-2 text-center shadow-lg"
     }
@@ -105,11 +125,22 @@ export default function Game() {
     if (player){
       if (game.active_player === player){
         return game.active_player_rolls
-      } else if (game.secondary_player === player){
+      }
+      
+      if (game.secondary_player === player){
         return game.secondary_player_rolls
-      } else {
-        return '0'
-      }   
+      }
+
+    }
+  }
+
+  const activePlayerStyle = (address) => {
+    if (game.active_player === address){
+      return "border w-full p-2 bg-green-200"
+    } else if (game.secondary_player === address){
+      return "border w-full p-2 blue-200"
+    } else {
+      return "border w-full p-2"
     }
   }
 
@@ -142,7 +173,7 @@ export default function Game() {
         </div>
   
         <div className="grid grid-flow-col grid-cols-2 grid-rows-3 md:grid-cols-5 md:grid-rows-1 gap-4 text-center">
-          <div className="border w-full p-2">
+          <div className={activePlayerStyle(game.p1_address)}>
             <h1>{rollsAvailable(game.p1_address)} rolls remaining</h1>
             <h1 className="truncate p-2">{game.p1_address? game.p1_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
@@ -153,7 +184,7 @@ export default function Game() {
               <div className="span-1 bg-gray-500 p-2">{game.black_p1}</div>
             </div>
           </div>
-          <div className="border w-full p-2">
+          <div className={activePlayerStyle(game.p2_address)}>
             <h1>{rollsAvailable(game.p2_address)} rolls remaining</h1>
             <h1 className="truncate p-2">{game.p2_address? game.p2_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
@@ -164,7 +195,7 @@ export default function Game() {
               <div className="span-1 bg-gray-500 p-2">{game.black_p2}</div>
             </div>
           </div>
-          <div className="border w-full p-2">
+          <div className={activePlayerStyle(game.p3_address)}>
             <h1>{rollsAvailable(game.p3_address)} rolls remaining</h1>
             <h1 className="truncate p-2">{game.p3_address? game.p3_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
@@ -175,7 +206,7 @@ export default function Game() {
               <div className="span-1 bg-gray-500 p-3">{game.black_p3}</div>
             </div>
           </div>
-          <div className="border w-full p-2">
+          <div className={activePlayerStyle(game.p4_address)}>
             <h1>{rollsAvailable(game.p4_address)} rolls remaining</h1>
             <h1 className="truncate p-2">{game.p4_address? game.p4_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
@@ -186,7 +217,7 @@ export default function Game() {
               <div className="span-1 bg-gray-500 p-2">{game.black_p4}</div>
             </div>
           </div>
-          <div className="border w-full p-2">
+          <div className={activePlayerStyle(game.p5_address)}>
             <h1>{rollsAvailable(game.p5_address)} rolls remaining</h1>
             <h1 className="truncate p-2">{game.p5_address? game.p5_address : 'empty'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
@@ -209,7 +240,7 @@ export default function Game() {
   
           <div className="grid grid-flow-col grid-cols-1 grid-rows-3 justify-center items-center gap-4 border p-2">
             <button className={dieSpendButtonStyle(game.die2_state)} onClick={()=>useDie('spend',game.die2_face,2)}><h1>Spend</h1></button>
-            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die2_face)}{game.die2_face}</div>
+            <div className="bg-black rounded-full h-14 text-white flex justify-center items-center">{getFaceValue(game.die2_face)}</div>
             <button className={dieCommitButtonStyle(game.die2_state)} onClick={()=>useDie('commit',2)}><h1>Keep</h1></button>
           </div>
   
@@ -251,7 +282,8 @@ export default function Game() {
   
         </div>
   
-        <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>rollAllDie()}><h1>Roll</h1></button>        
+        <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>rollAllDie()}><h1>Roll</h1></button>
+        <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>passTurn()}><h1>Pass</h1></button>          
       </div>
     )
   }
