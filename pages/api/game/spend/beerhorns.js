@@ -3,7 +3,6 @@ import spender from './spender'
 
 export default async function handler(req, res){
 
-    console.log(req.body.game_uid)
     const game_uid = req.body.game_uid
     const die = req.body.die
     const pid = req.body.pid

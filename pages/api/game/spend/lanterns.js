@@ -7,9 +7,6 @@ export default async function handler(req, res){
     const die = req.body.die
     const color = req.body.color
 
-    console.log(die)
-    console.log(game_uid)
-
     const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
     if (error){
         res.status(400).json({message:'something went wrong'})
