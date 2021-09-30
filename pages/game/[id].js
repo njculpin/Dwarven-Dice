@@ -184,6 +184,10 @@ export default function Game() {
     }
   }
 
+  const collectOnCommits = () => {
+
+  }
+
   const useDie = (action, face, number) => {
 
     if (action === 'spend'){
@@ -215,11 +219,10 @@ export default function Game() {
     }
 
     if (action === 'commit'){
-      axios.post(`/api/game/commit`, {
+      axios.post(`/api/game/commit/commit`, {
         die: number,
-        face: face,
-        game_uid: router.query.id, 
-        pid:profile.id})
+        game_uid: router.query.id
+      })
       }
     }
 
@@ -432,6 +435,7 @@ export default function Game() {
   
         <div className="w-1/4 flex justify-between items-center p-4">
           <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>rollAllDie()}><h1>Roll</h1></button>
+          <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>collectOnCommits()}><h1>Collect</h1></button>
           <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>passTurn()}><h1>Pass</h1></button>
         </div>
 

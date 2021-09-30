@@ -94,7 +94,6 @@ const reduce_player_roll = async (game, pid) => {
             if (error){
                 console.log(error)
             }
-            console.log(data) 
         }
     }
 
@@ -112,7 +111,6 @@ const reduce_player_roll = async (game, pid) => {
             if (error){
                 console.log(error)
             }
-            console.log(data) 
         }
     }
 
