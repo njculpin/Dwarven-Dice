@@ -1,4 +1,5 @@
 import { supabase } from '../../../../utils/supabaseClient'
+import spender from './spender'
 
 export default async function handler(req, res){
 
@@ -24,7 +25,10 @@ export default async function handler(req, res){
                     removeRandomFromMine(game)
                   }
             }
+            spender(die, game_uid)
             res.status(200).json({message:"success"})
+        } else {
+            res.status(200).json({message:"sorry, this die is spent"})
         }
     }
 
@@ -40,7 +44,10 @@ export default async function handler(req, res){
                     removeRandomFromMine(game)
                   }
             }
+            spender(die, game_uid)
             res.status(200).json({message:"success"})
+        } else {
+            res.status(200).json({message:"sorry, this die is spent"})
         }
     }
 
@@ -56,7 +63,10 @@ export default async function handler(req, res){
                     removeRandomFromMine(game)
                   }
             }
+            spender(die, game_uid)
             res.status(200).json({message:"success"})
+        } else {
+            res.status(200).json({message:"sorry, this die is spent"})
         }
     }
 
@@ -72,7 +82,10 @@ export default async function handler(req, res){
                     removeRandomFromMine(game)
                   }
             }
+            spender(die, game_uid)
             res.status(200).json({message:"success"})
+        } else {
+            res.status(200).json({message:"sorry, this die is spent"})
         }
     }
 
@@ -88,7 +101,10 @@ export default async function handler(req, res){
                     removeRandomFromMine(game)
                   }
             }
+            spender(die, game_uid)
             res.status(200).json({message:"success"})
+        } else {
+            res.status(200).json({message:"sorry, this die is spent"})
         }
     }
 
@@ -104,7 +120,10 @@ export default async function handler(req, res){
                     removeRandomFromMine(game)
                   }
             }
+            spender(die, game_uid)
             res.status(200).json({message:"success"})
+        } else {
+            res.status(200).json({message:"sorry, this die is spent"})
         }
     }
 
@@ -120,7 +139,10 @@ export default async function handler(req, res){
                     removeRandomFromMine(game)
                   }
             }
+            spender(die, game_uid)
             res.status(200).json({message:"success"})
+        } else {
+            res.status(200).json({message:"sorry, this die is spent"})
         }
     }
 
@@ -136,7 +158,10 @@ export default async function handler(req, res){
                     removeRandomFromMine(game)
                   }
             }
+            spender(die, game_uid)
             res.status(200).json({message:"success"})
+        } else {
+            res.status(200).json({message:"sorry, this die is spent"})
         }
     }
 

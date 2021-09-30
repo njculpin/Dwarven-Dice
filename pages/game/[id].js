@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { supabase } from '../../utils/supabaseClient'
+import Modal from 'react-modal';
 import axios from 'axios'
+
+Modal.setAppElement("#__next")
 
 export default function Game() {
 
   const router = useRouter()
   const [game, setGame] = useState()
   const [profile, setProfile] = useState(null)
-
+  const [lanternDie, setLanternDie] = useState(0)
+  const [lanternModalIsOpen, setLanternModalIsOpen] = useState(false);
 
   useEffect(() => {
     fetchProfile()
@@ -22,6 +26,23 @@ export default function Game() {
       setGame(data[0])
     }
   },[game])
+
+
+  function openLanternModal(die) {
+    console.log(`die -> ${die}`)
+    setLanternDie(die)
+    setLanternModalIsOpen(true);
+  }
+
+  function closeLanternModal(color) {
+    setLanternModalIsOpen(false);
+    axios.post(`/api/game/spend/lanterns`, {
+      die: lanternDie, 
+      game_uid: router.query.id, 
+      color: color
+    })
+
+  }
 
   async function fetchProfile() {
     const profileData = await supabase.auth.user()
@@ -58,10 +79,8 @@ export default function Game() {
   }
 
   const useDie = (action, face, number) => {
-    console.log(`face -> ${face}`)
     if (action === 'spend'){
       if (face === 0){
-        // throw player selector
         const secondary_player = ''
         axios.post(`/api/game/spend/heads`, {
           game_uid: router.query.id, 
@@ -74,14 +93,7 @@ export default function Game() {
           game.red_mine + 
           game.blue_mine + 
           game.black_mine >= 3){
-          // throw color selector
-          const color = 'red'
-          axios.post(`/api/game/spend/lanterns`, {
-            die: number, 
-            game_uid: router.query.id, 
-            color: 'red'})
-        } else {
-          // throw not enough gems in mine error
+          openLanternModal(number)
         }
       }
       if (face === 2 || face === 3){
@@ -196,15 +208,17 @@ export default function Game() {
             </div>
           </div>
           <div className={activePlayerStyle(game.p3_address)}>
-            <h1>{rollsAvailable(game.p3_address)} rolls remaining</h1>
-            <h1 className="truncate p-2">{game.p3_address? game.p3_address : 'empty'}</h1>
-            <div className="grid grid-flow-col grid-cols-5">
-              <div className="span-1 bg-green-500 p-3">{game.green_p3}</div>
-              <div className="span-1 bg-purple-500 p-3">{game.purple_p3}</div>
-              <div className="span-1 bg-red-500 p-3">{game.red_p3}</div>
-              <div className="span-1 bg-blue-500 p-3">{game.blue_p3}</div>
-              <div className="span-1 bg-gray-500 p-3">{game.black_p3}</div>
-            </div>
+            <button>
+              <h1>{rollsAvailable(game.p3_address)} rolls remaining</h1>
+              <h1 className="truncate p-2">{game.p3_address? game.p3_address : 'empty'}</h1>
+              <div className="grid grid-flow-col grid-cols-5">
+                <div className="span-1 bg-green-500 p-3">{game.green_p3}</div>
+                <div className="span-1 bg-purple-500 p-3">{game.purple_p3}</div>
+                <div className="span-1 bg-red-500 p-3">{game.red_p3}</div>
+                <div className="span-1 bg-blue-500 p-3">{game.blue_p3}</div>
+                <div className="span-1 bg-gray-500 p-3">{game.black_p3}</div>
+              </div>
+            </button>
           </div>
           <div className={activePlayerStyle(game.p4_address)}>
             <h1>{rollsAvailable(game.p4_address)} rolls remaining</h1>
@@ -283,7 +297,30 @@ export default function Game() {
         </div>
   
         <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>rollAllDie()}><h1>Roll</h1></button>
-        <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>passTurn()}><h1>Pass</h1></button>          
+        <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>passTurn()}><h1>Pass</h1></button>
+
+        <Modal
+          isOpen={lanternModalIsOpen}
+          style={{
+            content: {
+              top: '50%',
+              left: '50%',
+              right: 'auto',
+              bottom: 'auto',
+              marginRight: '-50%',
+              transform: 'translate(-50%, -50%)',
+            },
+          }}
+          contentLabel="Select a color to remove from the Mine"
+        >
+            <div className="grid grid-flow-col grid-cols-5">
+              <div className="span-1 bg-green-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('green')}>{game.green_mine}</button></div>
+              <div className="span-1 bg-purple-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('purple')}>{game.purple_mine}</button></div>
+              <div className="span-1 bg-red-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('red')}>{game.red_mine}</button></div>
+              <div className="span-1 bg-blue-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('blue')}>{game.blue_mine}</button></div>
+              <div className="span-1 bg-gray-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('black')}>{game.black_mine}</button></div>
+            </div>
+        </Modal>         
       </div>
     )
   }

@@ -1,9 +1,33 @@
 import { supabase } from '../../../../utils/supabaseClient'
+import spender from './spender'
 
 export default async function handler(req, res){
+
     const game_uid = req.body.game_uid
     const die = req.body.die
     const color = req.body.color
+
+    console.log(die)
+    console.log(game_uid)
+
+    const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
+    if (error){
+        res.status(400).json({message:'something went wrong'})
+    }
+
+    const game = data[0]
+
+    const green_mine = game.green_mine
+    const purple_mine = game.purple_mine
+    const red_mine = game.red_mine
+    const blue_mine = game.blue_mine
+    const black_mine = game.black_mine
+
+    const green_table = game.green_table
+    const purple_table = game.purple_table
+    const red_table = game.red_table
+    const blue_table = game.blue_table
+    const black_table = game.black_table
 
     if (color === 'green'){
         console.log('pulled green')

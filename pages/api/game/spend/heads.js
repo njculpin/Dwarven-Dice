@@ -68,23 +68,18 @@ export default async function handler(req, res){
 
         for (let i = 0; i < half; i++) {
             var assign_secondary = dice[Math.floor(Math.random()*dice.length)];
-            assignDieToPlayer(assign_secondary, secondary_player)
+            assignDieToPlayer(assign_secondary, secondary_player, game_uid)
             const index = dice.indexOf(assign_secondary)
             if (index > -1) {
                 dice.splice(index, 1)
             }
          }
-        
-        
-
     }
-
-
 }
 
 function isOdd(num) { return num % 2;}
 
-async function assignDieToPlayer(assign_secondary, secondary_player){
+async function assignDieToPlayer(assign_secondary, secondary_player, game_uid){
     // assign to secondary player
     if (assign_secondary === 1){
         const { data, error } = await supabase
