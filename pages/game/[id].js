@@ -29,9 +29,54 @@ export default function Game() {
 
 
   function openLanternModal(die) {
-    console.log(`die -> ${die}`)
-    setLanternDie(die)
-    setLanternModalIsOpen(true);
+    if (die === 1){
+      if (game.die1_state === 0){
+        setLanternDie(die)
+        setLanternModalIsOpen(true)
+      }
+    }
+    if (die === 2){
+      if (game.die2_state === 0){
+        setLanternDie(die)
+        setLanternModalIsOpen(true)
+      }
+    }
+    if (die === 3){
+      if (game.die3_state === 0){
+        setLanternDie(die)
+        setLanternModalIsOpen(true)
+      }
+    }
+    if (die === 4){
+      if (game.die4_state === 0){
+        setLanternDie(die)
+        setLanternModalIsOpen(true)
+      }
+    }
+    if (die === 5){
+      if (game.die5_state === 0){
+        setLanternDie(die)
+        setLanternModalIsOpen(true)
+      }
+    }
+    if (die === 6){
+      if (game.die6_state === 0){
+        setLanternDie(die)
+        setLanternModalIsOpen(true)
+      }
+    }
+    if (die === 7){
+      if (game.die7_state === 0){
+        setLanternDie(die)
+        setLanternModalIsOpen(true)
+      }
+    }
+    if (die === 8){
+      if (game.die8_state === 0){
+        setLanternDie(die)
+        setLanternModalIsOpen(true)
+      }
+    }
   }
 
   function closeLanternModal(color) {
