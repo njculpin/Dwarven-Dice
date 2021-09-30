@@ -381,11 +381,11 @@ export default function Game() {
           contentLabel="Select a color to remove from the Mine"
         >
             <div className="grid grid-flow-col grid-cols-5">
-              <div className="span-1 bg-green-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('green')}>{game.green_mine}</button></div>
-              <div className="span-1 bg-purple-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('purple')}>{game.purple_mine}</button></div>
-              <div className="span-1 bg-red-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('red')}>{game.red_mine}</button></div>
-              <div className="span-1 bg-blue-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('blue')}>{game.blue_mine}</button></div>
-              <div className="span-1 bg-gray-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('black')}>{game.black_mine}</button></div>
+              {game.green_mine >= 1 && <div className="span-1 bg-green-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('green')}>{game.green_mine}</button></div>}
+              {game.purple_mine >= 1 &&<div className="span-1 bg-purple-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('purple')}>{game.purple_mine}</button></div>}
+              {game.red_mine >= 1 &&<div className="span-1 bg-red-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('red')}>{game.red_mine}</button></div>}
+              {game.blue_mine >= 1 &&<div className="span-1 bg-blue-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('blue')}>{game.blue_mine}</button></div>}
+              {game.black_mine >= 1 &&<div className="span-1 bg-gray-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('black')}>{game.black_mine}</button></div>}
             </div>
         </Modal>         
       </div>
