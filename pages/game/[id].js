@@ -233,7 +233,7 @@ export default function Game() {
       case 1:
         return "border px-4 py-2 text-center bg-black"
       case 2:
-        return "border px-4 py-2 text-center opacity-50"
+        return "border px-4 py-2 text-center"
       default:
           return "border px-4 py-2 text-center shadow-lg"
     }
@@ -244,7 +244,7 @@ export default function Game() {
       case 1:
         return "border px-4 py-2 text-center"
       case 2:
-        return "border px-4 py-2 text-center bg-black opacity-50"
+        return "border px-4 py-2 text-center bg-black"
       default:
           return "border px-4 py-2 text-center shadow-lg"
     }
@@ -364,17 +364,15 @@ export default function Game() {
             </div>
           </div>
           <div className={activePlayerStyle(game.p3_address)}>
-            <button>
-              <h1>{rollsAvailable(game.p3_address)} rolls remaining</h1>
-              <h1 className="truncate p-2">{game.p3_address? game.p3_address : 'empty'}</h1>
-              <div className="grid grid-flow-col grid-cols-5">
-                <div className="span-1 bg-green-500 p-3">{game.green_p3}</div>
-                <div className="span-1 bg-purple-500 p-3">{game.purple_p3}</div>
-                <div className="span-1 bg-red-500 p-3">{game.red_p3}</div>
-                <div className="span-1 bg-blue-500 p-3">{game.blue_p3}</div>
-                <div className="span-1 bg-gray-500 p-3">{game.black_p3}</div>
-              </div>
-            </button>
+            <h1>{rollsAvailable(game.p2_address)} rolls remaining</h1>
+            <h1 className="truncate p-2">{game.p3_address? game.p3_address : 'empty'}</h1>
+            <div className="grid grid-flow-col grid-cols-5">
+              <div className="span-1 bg-green-500 p-2">{game.green_p33}</div>
+              <div className="span-1 bg-purple-500 p-2">{game.purple_p3}</div>
+              <div className="span-1 bg-red-500 p-2">{game.red_p3}</div>
+              <div className="span-1 bg-blue-500 p-2">{game.blue_p3}</div>
+              <div className="span-1 bg-gray-500 p-2">{game.black_p3}</div>
+            </div>
           </div>
           <div className={activePlayerStyle(game.p4_address)}>
             <h1>{rollsAvailable(game.p4_address)} rolls remaining</h1>
