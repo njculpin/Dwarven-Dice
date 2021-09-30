@@ -1,10 +1,15 @@
 import { supabase } from '../../../../utils/supabaseClient'
+import spender from './spender'
 
 export default async function handler(req, res){
 
     const secondary_player = req.body.secondary_player
     const game_uid = req.body.game_uid
+    const die = req.body.die
 
+    // spend before getting the correct amount of dice to divide
+    spender(die, game_uid)
+    
     const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
     if (error){
         res.status(400).json({message:'something went wrong'})

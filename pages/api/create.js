@@ -7,6 +7,7 @@ export default async function handler(req, res){
     const { data, error } = await supabase.from('gamestates').insert({
         "game_version": 1,
         "game_uid": uuid,
+        "turns": 1,
         "active_player": host,
         "secondary_player": '',
         "active_player_rolls": 1,

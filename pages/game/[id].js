@@ -11,6 +11,8 @@ export default function Game() {
   const router = useRouter()
   const [game, setGame] = useState()
   const [profile, setProfile] = useState(null)
+  const [headDie, setHeadDie] = useState(0)
+  const [headModalIsOpen, setHeadModalOpen] = useState(false);
   const [lanternDie, setLanternDie] = useState(0)
   const [lanternModalIsOpen, setLanternModalIsOpen] = useState(false);
 
@@ -79,6 +81,57 @@ export default function Game() {
     }
   }
 
+  function openHeadModal(die) {
+    if (die === 1){
+      if (game.die1_state === 0){
+        setHeadDie(die)
+        setHeadModalOpen(true)
+      }
+    }
+    if (die === 2){
+      if (game.die2_state === 0){
+        setHeadDie(die)
+        setHeadModalOpen(true)
+      }
+    }
+    if (die === 3){
+      if (game.die3_state === 0){
+        setHeadDie(die)
+        setHeadModalOpen(true)
+      }
+    }
+    if (die === 4){
+      if (game.die4_state === 0){
+        setHeadDie(die)
+        setHeadModalOpen(true)
+      }
+    }
+    if (die === 5){
+      if (game.die5_state === 0){
+        setHeadDie(die)
+        setHeadModalOpen(true)
+      }
+    }
+    if (die === 6){
+      if (game.die6_state === 0){
+        setHeadDie(die)
+        setHeadModalOpen(true)
+      }
+    }
+    if (die === 7){
+      if (game.die7_state === 0){
+        setHeadDie(die)
+        setHeadModalOpen(true)
+      }
+    }
+    if (die === 8){
+      if (game.die8_state === 0){
+        setHeadDie(die)
+        setHeadModalOpen(true)
+      }
+    }
+  }
+
   function closeLanternModal(color) {
     setLanternModalIsOpen(false);
     axios.post(`/api/game/spend/lanterns`, {
@@ -86,7 +139,15 @@ export default function Game() {
       game_uid: router.query.id, 
       color: color
     })
+  }
 
+  function closeHeadModal(secondary_player) {
+    setHeadModalOpen(false);
+    axios.post(`/api/game/spend/heads`, {
+      die: headDie, 
+      game_uid: router.query.id, 
+      secondary_player: secondary_player
+    })
   }
 
   async function fetchProfile() {
@@ -124,12 +185,19 @@ export default function Game() {
   }
 
   const useDie = (action, face, number) => {
+    console.log(`action -> ${action}`)
+    console.log(`face -> ${face}`)
+    console.log(`number -> ${number}`)
     if (action === 'spend'){
       if (face === 0){
-        const secondary_player = ''
-        axios.post(`/api/game/spend/heads`, {
-          game_uid: router.query.id, 
-          secondary_player:secondary_player})
+        if (
+          game.p1_address !== profile.id ||
+          game.p2_address !== profile.id ||
+          game.p3_address !== profile.id ||
+          game.p4_address !== profile.id ||
+          game.p5_address !== profile.id){
+            openHeadModal(number)
+          }
       }
       if (face === 1){
         if (
@@ -363,9 +431,13 @@ export default function Game() {
   
         </div>
   
-        <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>rollAllDie()}><h1>Roll</h1></button>
-        <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>passTurn()}><h1>Pass</h1></button>
+        <div className="w-1/4 flex justify-between items-center p-4">
+          <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>rollAllDie()}><h1>Roll</h1></button>
+          <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>passTurn()}><h1>Pass</h1></button>
+        </div>
 
+
+        {/* LANTERN COLOR SELECTOR MODAL */}
         <Modal
           isOpen={lanternModalIsOpen}
           style={{
@@ -387,7 +459,73 @@ export default function Game() {
               {game.blue_mine >= 1 &&<div className="span-1 bg-blue-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('blue')}>{game.blue_mine}</button></div>}
               {game.black_mine >= 1 &&<div className="span-1 bg-gray-500 p-2"><button className="w-full h-full" onClick={()=>closeLanternModal('black')}>{game.black_mine}</button></div>}
             </div>
-        </Modal>         
+        </Modal>
+
+          {/* HEAD SECONDARY PLAYER SELECTOR MODAL */}
+          <Modal
+          isOpen={headModalIsOpen}
+          style={{
+            content: {
+              top: '50%',
+              left: '50%',
+              right: 'auto',
+              bottom: 'auto',
+              marginRight: '-50%',
+              transform: 'translate(-50%, -50%)',
+            },
+          }}
+          contentLabel="Select a color to remove from the Mine"
+        >
+            <div className="grid grid-flow-col grid-cols-1 grid-rows-5">
+
+              {game.p1_address !== '' && 
+              game.p1_address !== profile.id && 
+              <div className="span-1 p-2">
+                <button className="w-full h-full" 
+                onClick={()=>closeHeadModal(game.p1_address)}>
+                {game.p1_address}
+                </button>
+              </div>}
+
+              {game.p2_address !== '' && 
+              game.p12address !== profile.id && 
+              <div className="span-1 p-2">
+                <button className="w-full h-full" 
+                onClick={()=>closeHeadModal(game.p2_address)}>
+                {game.p2_address}
+                </button>
+              </div>}
+
+              {game.p3_address !== '' && 
+              game.p3_address !== profile.id && 
+              <div className="span-1 p-2">
+                <button className="w-full h-full" 
+                onClick={()=>closeHeadModal(game.p3_address)}>
+                {game.p3_address}
+                </button>
+              </div>}
+
+              {game.p4_address !== '' && 
+              game.p4_address !== profile.id && 
+              <div className="span-1 p-2">
+                <button className="w-full h-full" 
+                onClick={()=>closeHeadModal(game.p4_address)}>
+                {game.p4_address}
+                </button>
+              </div>}
+
+              {game.p5_address !== '' && 
+              game.p5_address !== profile.id && 
+              <div className="span-1 p-2">
+                <button className="w-full h-full" 
+                onClick={()=>closeHeadModal(game.p5_address)}>
+                {game.p5_address}
+                </button>
+              </div>}
+
+            </div>
+        </Modal>
+
       </div>
     )
   }
