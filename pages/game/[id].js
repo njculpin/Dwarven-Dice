@@ -435,10 +435,11 @@ export default function Game() {
   
         </div>
   
-        <div className="w-1/4 flex justify-between items-center p-4">
+        <div className="w-1/2 flex justify-between items-center p-4">
           <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>rollAllDie()}><h1>Roll</h1></button>
           <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>collectOnCommits()}><h1>Collect</h1></button>
           <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>passTurn()}><h1>Pass</h1></button>
+          <p>Turn {game.turns}</p>
         </div>
 
 
