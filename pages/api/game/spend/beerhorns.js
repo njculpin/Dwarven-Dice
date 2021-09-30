@@ -1,4 +1,5 @@
 import { supabase } from '../../../../utils/supabaseClient'
+import spender from './spender'
 
 export default async function handler(req, res){
 
@@ -23,6 +24,7 @@ export default async function handler(req, res){
             if (game.die1_face === 5){
                 quantity = 1
             }
+            spender(die, game_uid)
         }
     }
 
@@ -34,6 +36,7 @@ export default async function handler(req, res){
             if (game.die2_face === 5){
                 quantity = 1
             }
+            spender(die, game_uid)
         }
     }
 
@@ -45,6 +48,7 @@ export default async function handler(req, res){
             if (game.die3_face === 5){
                 quantity = 1
             }
+            spender(die, game_uid)
         }
     }
 
@@ -56,6 +60,7 @@ export default async function handler(req, res){
             if (game.die4_face === 5){
                 quantity = 1
             }
+            spender(die, game_uid)
         }
     }
 
@@ -67,6 +72,7 @@ export default async function handler(req, res){
             if (game.die5_face === 5){
                 quantity = 1
             }
+            spender(die, game_uid)
         }
     }
 
@@ -78,6 +84,7 @@ export default async function handler(req, res){
             if (game.die6_face === 5){
                 quantity = 1
             }
+            spender(die, game_uid)
         }
     }
 
@@ -89,6 +96,7 @@ export default async function handler(req, res){
             if (game.die7_face === 5){
                 quantity = 1
             }
+            spender(die, game_uid)
         }
     }
 
@@ -100,6 +108,7 @@ export default async function handler(req, res){
             if (game.die8_face === 5){
                 quantity = 1
             }
+            spender(die, game_uid)
         }
     }
 

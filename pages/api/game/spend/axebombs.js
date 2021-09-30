@@ -15,94 +15,136 @@ export default async function handler(req, res){
     if (die === 1){
         if (game.die1_state === 0){
             if (game.die1_face === 2){
-                removeRandomFromMine(game, 3)
+                for (let i = 0; i < 3; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
             if (game.die1_face === 3){
-                removeRandomFromMine(game, 1)
+                for (let i = 0; i < 1; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
+            res.status(200).json({message:"success"})
         }
     }
 
     if (die === 2){
         if (game.die2_state === 0){
             if (game.die2_face === 2){
-                removeRandomFromMine(game, 3)
+                for (let i = 0; i < 3; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
             if (game.die2_face === 3){
-                removeRandomFromMine(game, 1)
+                for (let i = 0; i < 1; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
+            res.status(200).json({message:"success"})
         }
     }
 
     if (die === 3){
         if (game.die3_state === 0){
             if (game.die3_face === 2){
-                removeRandomFromMine(game, 3)
+                for (let i = 0; i < 3; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
             if (game.die3_face === 3){
-                removeRandomFromMine(game, 1)
+                for (let i = 0; i < 1; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
+            res.status(200).json({message:"success"})
         }
     }
 
     if (die === 4){
         if (game.die4_state === 0){
             if (game.die4_face === 2){
-                removeRandomFromMine(game, 3)
+                for (let i = 0; i < 3; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
             if (game.die4_face === 3){
-                removeRandomFromMine(game, 1)
+                for (let i = 0; i < 1; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
+            res.status(200).json({message:"success"})
         }
     }
 
     if (die === 5){
         if (game.die5_state === 0){
             if (game.die5_face === 2){
-                removeRandomFromMine(game, 3)
+                for (let i = 0; i < 3; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
             if (game.die5_face === 3){
-                removeRandomFromMine(game, 1)
+                for (let i = 0; i < 1; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
+            res.status(200).json({message:"success"})
         }
     }
 
     if (die === 6){
         if (game.die6_state === 0){
             if (game.die6_face === 2){
-                removeRandomFromMine(game, 3)
+                for (let i = 0; i < 3; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
             if (game.die6_face === 3){
-                removeRandomFromMine(game, 1)
+                for (let i = 0; i < 1; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
+            res.status(200).json({message:"success"})
         }
     }
 
     if (die === 7){
         if (game.die7_state === 0){
             if (game.die7_face === 2){
-                removeRandomFromMine(game, 3)
+                for (let i = 0; i < 3; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
             if (game.die7_face === 3){
-                removeRandomFromMine(game, 1)
+                for (let i = 0; i < 1; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
+            res.status(200).json({message:"success"})
         }
     }
 
     if (die === 8){
         if (game.die8_state === 0){
             if (game.die8_face === 2){
-                removeRandomFromMine(game, 3)
+                for (let i = 0; i < 3; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
             if (game.die8_face === 3){
-                removeRandomFromMine(game, 1)
+                for (let i = 0; i < 1; i++) {
+                    removeRandomFromMine(game)
+                  }
             }
+            res.status(200).json({message:"success"})
         }
     }
 
 }
 
-async function removeRandomFromMine(game,quantity){
+async function removeRandomFromMine(game){
+
+    const quantity = 1
     const green_mine = game.green_mine
     const purple_mine = game.purple_mine
     const red_mine = game.red_mine
@@ -124,25 +166,39 @@ async function removeRandomFromMine(game,quantity){
 
     var color = all[Math.floor(Math.random()*all.length)];
     if (color === 'green'){
-        console.log('pulled green')
-        supabase.from('gamestates').update({green_mine:green_mine-quantity, green_table:green_table+quantity}).match({game_uid: game.game_uid})
+        const { data, error } = await supabase.from('gamestates').update({green_mine:green_mine-quantity, green_table:green_table+quantity}).match({game_uid: game.game_uid})
+        if (error){
+            return error
+        }
+        return data
     }
     if (color === 'purple'){
-        console.log('pulled purple')
-        supabase.from('gamestates').update({purple_mine:purple_mine-quantity, purple_table:purple_table+quantity}).match({game_uid: game.game_uid})
+        const { data, error } = await supabase.from('gamestates').update({purple_mine:purple_mine-quantity, purple_table:purple_table+quantity}).match({game_uid: game.game_uid})
+        if (error){
+            return error
+        }
+        return data
     }
     if (color === 'red'){
-        console.log('pulled red')
-        supabase.from('gamestates').update({red_mine:red_mine-quantity, red_table:red_table+quantity}).match({game_uid: game.game_uid})
+        const { data, error } = await supabase.from('gamestates').update({red_mine:red_mine-quantity, red_table:red_table+quantity}).match({game_uid: game.game_uid})
+        if (error){
+            return error
+        }
+        return data
     }
     if (color === 'blue'){
-        console.log('pulled blue')
-        supabase.from('gamestates').update({blue_mine:blue_mine-quantity, blue_table:blue_table+quantity}).match({game_uid: game.game_uid})
+        const { data, error } = await supabase.from('gamestates').update({blue_mine:blue_mine-quantity, blue_table:blue_table+quantity}).match({game_uid: game.game_uid})
+        if (error){
+            return error
+        }
+        return data
     }
     if (color === 'black'){
-        console.log('pulled black')
-        supabase.from('gamestates').update({black_mine:black_mine-quantity, black_table:black_table+quantity}).match({game_uid: game.game_uid})
+        const { data, error } = await supabase.from('gamestates').update({black_mine:black_mine-quantity, black_table:black_table+quantity}).match({game_uid: game.game_uid})
+        if (error){
+            return error
+        }
+        return data
     }
 
-    res.status(200).json({message:"success"})
 }
