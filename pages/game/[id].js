@@ -30,17 +30,6 @@ export default function Game() {
     }
   },[game])
 
-  useEffect(async ()=> {
-    const {data, error} = await supabase.from('games').select().match({game_uid: router.query.id})
-    if (error){
-      console.log(`error -> ${JSON.stringify(error)}`)
-    } else {
-      const game = data[0]
-      setWinner(game.winner)
-    }
-  }, [winner])
-
-
   function openLanternModal(die) {
     if (die === 1){
       if (game.die1_state === 0){
@@ -238,8 +227,11 @@ export default function Game() {
         game.red_mine + 
         game.blue_mine + 
         game.black_mine <= 0){
+          console.log('end game')
           axios.post(`/api/game/end`, {
             game_uid: router.query.id
+          }).then(res => {
+            setWinner(res.data.message.player_uid)
           })
         }
     }
@@ -340,7 +332,9 @@ export default function Game() {
   if (winner !== ''){ return <div className="p-2 flex flex-col justify-center items-center space-y-4">
    <h1>WINNER {winner}!</h1> 
   </div> }
+
   if (!game){ return null }
+
   if (game) {
     return (
       <div className="p-2 flex flex-col justify-center items-center space-y-4">

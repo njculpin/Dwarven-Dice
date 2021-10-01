@@ -62,8 +62,7 @@ export default async function handler(req, res){
     const winner = maxValues.pop()
     
     setWinner(winner, game_uid)
-    console.log(winner);
-
+    
     res.status(200).json({message:winner})
 
 }
