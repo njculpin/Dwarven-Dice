@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { supabase } from '../../utils/supabaseClient'
+import Loader from "react-loader-spinner"
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import Modal from 'react-modal';
 import axios from 'axios'
 
@@ -13,9 +15,10 @@ export default function Game() {
   const [winner, setWinner] = useState('')
   const [profile, setProfile] = useState(null)
   const [headDie, setHeadDie] = useState(0)
-  const [headModalIsOpen, setHeadModalOpen] = useState(false);
+  const [headModalIsOpen, setHeadModalOpen] = useState(false)
   const [lanternDie, setLanternDie] = useState(0)
-  const [lanternModalIsOpen, setLanternModalIsOpen] = useState(false);
+  const [lanternModalIsOpen, setLanternModalIsOpen] = useState(false)
+  const [isLoadModalOpen, setLoadModalIsOpen] = useState(false)
 
   useEffect(() => {
     fetchProfile()
@@ -133,20 +136,26 @@ export default function Game() {
   }
 
   function closeLanternModal(color) {
+    setLoadModalIsOpen(true)
     setLanternModalIsOpen(false);
     axios.post(`/api/game/spend/lanterns`, {
       die: lanternDie, 
       game_uid: router.query.id, 
       color: color
+    }).then(()=>{
+      setLoadModalIsOpen(false)
     })
   }
 
   function closeHeadModal(secondary_player) {
+    setLoadModalIsOpen(true)
     setHeadModalOpen(false);
     axios.post(`/api/game/spend/heads`, {
       die: headDie, 
       game_uid: router.query.id, 
       secondary_player: secondary_player
+    }).then(()=>{
+      setLoadModalIsOpen(false)
     })
   }
 
@@ -160,11 +169,17 @@ export default function Game() {
   }
 
   function rollAllDie(){
-    axios.post('/api/game/roll', {game_uid: router.query.id, pid: profile.id})
+    setLoadModalIsOpen(true)
+    axios.post('/api/game/roll', {game_uid: router.query.id, pid: profile.id}).then(()=>{
+      setLoadModalIsOpen(false)
+    })
   }
 
   function passTurn(){
-    axios.post('/api/game/pass', {game_uid: router.query.id, active_player: game.active_player, pid: profile.id})
+    setLoadModalIsOpen(true)
+    axios.post('/api/game/pass', {game_uid: router.query.id, active_player: game.active_player, pid: profile.id}).then(()=>{
+      setLoadModalIsOpen(false)
+    })
   }
 
   const getFaceValue = (value) => {
@@ -185,13 +200,16 @@ export default function Game() {
   }
 
   const collectOnCommits = () => {
+    setLoadModalIsOpen(true)
     axios.post(`/api/game/collect/collect`, {
       game_uid: router.query.id
+    }).then(()=>{
+      setLoadModalIsOpen(false)
     })
   }
 
   const activateDie = (action, face, number) => {
-
+    setLoadModalIsOpen(true)
     if (action === 'spend'){
       if (face === 0){
         openHeadModal(number)
@@ -203,20 +221,25 @@ export default function Game() {
           game.red_mine + 
           game.blue_mine + 
           game.black_mine >= 3){
-          openLanternModal(number)
+          setLoadModalIsOpen(false)
         }
+        openLanternModal(number)
       }
       if (face === 2 || face === 3){
         axios.post(`/api/game/spend/axebombs`, {
           die: number, 
           game_uid: router.query.id, 
-          pid:profile.id})
+          pid:profile.id}).then(()=>{
+            setLoadModalIsOpen(false)
+          })
       }
       if (face === 4 || face === 5){
         axios.post(`/api/game/spend/beerhorns`, {
           die: number, 
           game_uid: router.query.id, 
-          pid:profile.id})
+          pid:profile.id}).then(()=>{
+            setLoadModalIsOpen(false)
+          })
       }
 
       // if mine count is less than or equal to
@@ -231,6 +254,7 @@ export default function Game() {
           axios.post(`/api/game/end`, {
             game_uid: router.query.id
           }).then(res => {
+            setLoadModalIsOpen(false)
             setWinner(res.data.message.player_uid)
           })
         }
@@ -240,6 +264,8 @@ export default function Game() {
       axios.post(`/api/game/commit/commit`, {
         die: number,
         game_uid: router.query.id
+      }).then(()=>{
+        setLoadModalIsOpen(false)
       })
       }
 
@@ -568,6 +594,35 @@ export default function Game() {
 
             </div>
         </Modal>
+
+      <Modal
+      isOpen={isLoadModalOpen}
+      style={{
+        overlay:{
+          backgroundColor: 'rgba(0, 0, 0, 0.0)'
+        },
+        content: {
+          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+          outline: 'none',
+          border: '0px',
+          top: '50%',
+          left: '50%',
+          right: 'auto',
+          bottom: 'auto',
+          marginRight: '-50%',
+          transform: 'translate(-50%, -50%)',
+        },
+      }}
+      >
+        <Loader
+        type="Oval"
+        color="#000000"
+        height={100}
+        width={100}
+        timeout={3000}
+        />
+      </Modal>
+
 
       </div>
     )

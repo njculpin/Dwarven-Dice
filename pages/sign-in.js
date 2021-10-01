@@ -17,7 +17,7 @@ export default function SignIn() {
   }
   if (submitted) {
     return (
-      <div className="">
+      <div>
         <h1>Please check your email to sign in</h1>
       </div>
     )
