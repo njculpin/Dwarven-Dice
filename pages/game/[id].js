@@ -190,7 +190,7 @@ export default function Game() {
     })
   }
 
-  function useDie(action, face, number){
+  const activateDie = (action, face, number) => {
 
     if (action === 'spend'){
       if (face === 0){
@@ -423,51 +423,51 @@ export default function Game() {
         <div className="grid grid-flow-col grid-cols-4 grid-rows-2 md:grid-cols-8 md:grid-rows-1 gap-4">
 
           <div className={activeDieStyle(game.die1_location)}>
-            <button className={dieSpendButtonStyle(game.die1_state)} onClick={()=>useDie('spend',game.die1_face,1)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die1_state)} onClick={()=>activateDie('spend',game.die1_face,1)}><h1>Spend</h1></button>
             <div className={getDiceStyle(game.die1_face)}>{getFaceValue(game.die1_face)}</div>
-            <button className={dieCommitButtonStyle(game.die1_state)} onClick={()=>useDie('commit',game.die1_face,1)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die1_state)} onClick={()=>activateDie('commit',game.die1_face,1)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die2_location)}>
-            <button className={dieSpendButtonStyle(game.die2_state)} onClick={()=>useDie('spend',game.die2_face,2)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die2_state)} onClick={()=>activateDie('spend',game.die2_face,2)}><h1>Spend</h1></button>
             <div className={getDiceStyle(game.die2_face)}>{getFaceValue(game.die2_face)}</div>
-            <button className={dieCommitButtonStyle(game.die2_state)} onClick={()=>useDie('commit',game.die2_face,2)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die2_state)} onClick={()=>activateDie('commit',game.die2_face,2)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die3_location)}>
-            <button className={dieSpendButtonStyle(game.die3_state)} onClick={()=>useDie('spend',game.die3_face,3)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die3_state)} onClick={()=>activateDie('spend',game.die3_face,3)}><h1>Spend</h1></button>
             <div className={getDiceStyle(game.die3_face)}>{getFaceValue(game.die3_face)}</div>
-            <button className={dieCommitButtonStyle(game.die3_state)} onClick={()=>useDie('commit',game.die3_face,3)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die3_state)} onClick={()=>activateDie('commit',game.die3_face,3)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die4_location)}>
-            <button className={dieSpendButtonStyle(game.die4_state)} onClick={()=>useDie('spend',game.die4_face,4)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die4_state)} onClick={()=>activateDie('spend',game.die4_face,4)}><h1>Spend</h1></button>
             <div className={getDiceStyle(game.die4_face)}>{getFaceValue(game.die4_face)}</div>
-            <button className={dieCommitButtonStyle(game.die4_state)} onClick={()=>useDie('commit',game.die4_face, 4)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die4_state)} onClick={()=>activateDie('commit',game.die4_face, 4)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die5_location)}>
-            <button className={dieSpendButtonStyle(game.die5_state)} onClick={()=>useDie('spend',game.die5_face,5)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die5_state)} onClick={()=>activateDie('spend',game.die5_face,5)}><h1>Spend</h1></button>
             <div className={getDiceStyle(game.die5_face)}>{getFaceValue(game.die5_face)}</div>
-            <button className={dieCommitButtonStyle(game.die5_state)} onClick={()=>useDie('commit',game.die5_face, 5)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die5_state)} onClick={()=>activateDie('commit',game.die5_face, 5)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die6_location)}>
-            <button className={dieSpendButtonStyle(game.die6_state)}  onClick={()=>useDie('spend',game.die6_face,6)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die6_state)}  onClick={()=>activateDie('spend',game.die6_face,6)}><h1>Spend</h1></button>
             <div className={getDiceStyle(game.die6_face)}>{getFaceValue(game.die6_face)}</div>
-            <button className={dieCommitButtonStyle(game.die6_state)} onClick={()=>useDie('commit',game.die6_face, 6)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die6_state)} onClick={()=>activateDie('commit',game.die6_face, 6)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die7_location)}>
-            <button className={dieSpendButtonStyle(game.die7_state)} onClick={()=>useDie('spend',game.die7_face,7)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die7_state)} onClick={()=>activateDie('spend',game.die7_face,7)}><h1>Spend</h1></button>
             <div className={getDiceStyle(game.die7_face)}>{getFaceValue(game.die7_face)}</div>
-            <button className={dieCommitButtonStyle(game.die7_state)} onClick={()=>useDie('commit',game.die7_face,7)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die7_state)} onClick={()=>activateDie('commit',game.die7_face,7)}><h1>Keep</h1></button>
           </div>
   
           <div className={activeDieStyle(game.die8_location)}>
-            <button className={dieSpendButtonStyle(game.die8_state)} onClick={()=>useDie('spend',game.die8_face,8)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die8_state)} onClick={()=>activateDie('spend',game.die8_face,8)}><h1>Spend</h1></button>
             <div className={getDiceStyle(game.die8_face)}>{getFaceValue(game.die8_face)}</div>
-            <button className={dieCommitButtonStyle(game.die8_state)} onClick={()=>useDie('commit',game.die8_face,8)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die8_state)} onClick={()=>activateDie('commit',game.die8_face,8)}><h1>Keep</h1></button>
           </div>
   
         </div>
