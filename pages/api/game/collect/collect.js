@@ -89,7 +89,7 @@ export default async function handler(req, res){
         beers.forEach(beer => collected(beer.die))
         res.status(200).json({message:data})
     } else if (beers.length === 3){
-        const { data, error } = await supabase.from('gamestates').update({black_table:black_table-quantity, black_p1:game.black_p1+black_table}).match({game_uid: game.game_uid})
+        const { data, error } = await supabase.from('gamestates').update({black_table:0, black_p1:game.black_p1+black_table}).match({game_uid: game.game_uid})
         if (error){
             res.status(200).json({message:error})
         }

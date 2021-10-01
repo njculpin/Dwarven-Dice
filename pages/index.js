@@ -76,8 +76,8 @@ export default function Home() {
   }
 
   const closeGame = (game_uid) => {
-    axios.post('api/close', { game_uid: game_uid}).then(res => {
-      console.log(res)
+    axios.post('api/close', { game_uid: game_uid}).then(() => {
+      console.log('closed game')
     })
   }
 
@@ -95,7 +95,8 @@ export default function Home() {
     <div className="p-2 flex flex-col justify-center items-center space-y-4">
 
       <div className="flex flex-col gap-8 my-4">
-          <div className="flex flex-row justify-between items-center">
+        
+        <div className="w-full flex flex-row justify-between items-center space-x-4">
           <button onClick={()=>createGame()} className="h-12 border px-4 py-2 rounded-full w-32">
             <h1 className="text-center">New Game</h1>
           </button>

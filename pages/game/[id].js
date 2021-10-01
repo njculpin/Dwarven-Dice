@@ -10,6 +10,7 @@ export default function Game() {
 
   const router = useRouter()
   const [game, setGame] = useState()
+  const [winner, setWinner] = useState('')
   const [profile, setProfile] = useState(null)
   const [headDie, setHeadDie] = useState(0)
   const [headModalIsOpen, setHeadModalOpen] = useState(false);
@@ -28,6 +29,16 @@ export default function Game() {
       setGame(data[0])
     }
   },[game])
+
+  useEffect(async ()=> {
+    const {data, error} = await supabase.from('games').select().match({game_uid: router.query.id})
+    if (error){
+      console.log(`error -> ${JSON.stringify(error)}`)
+    } else {
+      const game = data[0]
+      setWinner(game.winner)
+    }
+  }, [winner])
 
 
   function openLanternModal(die) {
@@ -218,6 +229,19 @@ export default function Game() {
           game_uid: router.query.id, 
           pid:profile.id})
       }
+
+      // if mine count is less than or equal to
+      // zero after this spend action
+      // the game is over
+      if (game.green_mine + 
+        game.purple_mine + 
+        game.red_mine + 
+        game.blue_mine + 
+        game.black_mine <= 0){
+          axios.post(`/api/game/end`, {
+            game_uid: router.query.id
+          })
+        }
     }
 
     if (action === 'commit'){
@@ -226,7 +250,8 @@ export default function Game() {
         game_uid: router.query.id
       })
       }
-    }
+
+  }
 
   const dieSpendButtonStyle = (state) => {
     switch(state){
@@ -312,6 +337,9 @@ export default function Game() {
     }
   }
 
+  if (winner !== ''){ return <div className="p-2 flex flex-col justify-center items-center space-y-4">
+   <h1>WINNER {winner}!</h1> 
+  </div> }
   if (!game){ return null }
   if (game) {
     return (

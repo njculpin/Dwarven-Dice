@@ -5,8 +5,6 @@ export default async function handler(req, res){
     const game_uid = req.body.game_uid
     const user = req.body.userid
 
-    console.log(req.body)
-
     const { data, error } = await supabase.from('games').select().match({game_uid: game_uid})
     const first = data[0]
 
