@@ -190,7 +190,7 @@ export default function Game() {
     })
   }
 
-  const useDie = (action, face, number) => {
+  function useDie(action, face, number){
 
     if (action === 'spend'){
       if (face === 0){
