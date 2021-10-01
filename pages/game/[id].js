@@ -11,7 +11,7 @@ Modal.setAppElement("#__next")
 export default function Game() {
 
   const router = useRouter()
-  const [game, setGame] = useState()
+  const [game, setGameState] = useState()
   const [winner, setWinner] = useState('')
   const [profile, setProfile] = useState(null)
   const [headDie, setHeadDie] = useState(0)
@@ -29,7 +29,7 @@ export default function Game() {
     if (error){
       console.log(`error -> ${JSON.stringify(error)}`)
     } else {
-      setGame(data[0])
+      setGameState(data[0])
     }
   },[game])
 
