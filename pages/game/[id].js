@@ -44,7 +44,7 @@ export default function Game() {
     if (!mySubscription){
       mySubscription = supabase
         .from("gamestates")
-        .on("UPDATE", (payload) => {
+        .on("*", (payload) => {
           setGameState(payload.new)
         })
         .subscribe();
