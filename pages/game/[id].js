@@ -22,16 +22,34 @@ export default function Game() {
 
   useEffect(() => {
     fetchProfile()
+  })
+
+  let mySubscription = null;
+
+  useEffect(()=>{
+    getInitialGame()
+    getGameAndSubscribe()
   },[])
 
-  useEffect(async ()=>{
+  async function getInitialGame(){
     const {data, error} = await supabase.from('gamestates').select().match({game_uid: router.query.id})
     if (error){
       console.log(`error -> ${JSON.stringify(error)}`)
     } else {
       setGameState(data[0])
     }
-  },[game])
+  }
+
+  function getGameAndSubscribe(){
+    if (!mySubscription){
+      mySubscription = supabase
+        .from("gamestates")
+        .on("UPDATE", (payload) => {
+          setGameState(payload.new)
+        })
+        .subscribe();
+    }
+  }
 
   function openLanternModal(die) {
     if (die === 1){
