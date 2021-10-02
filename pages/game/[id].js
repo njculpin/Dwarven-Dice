@@ -226,6 +226,41 @@ export default function Game() {
     })
   }
 
+  const getTip = (action, face) => {
+    if (action === 'spend'){
+      switch (face) {
+        case 0:
+          return 'spend head'
+        case 1:
+          return 'spend lantern'
+        case 2:
+          return 'spend bomb'
+        case 3:
+          return 'spend axe'
+        case 4:
+          return 'spend horns'
+        case 5:
+          return 'spend beers'
+      }
+    }
+    if (action === 'commit'){
+      switch (face) {
+        case 0:
+          return 'commit head'
+        case 1:
+          return 'commit lantern'
+        case 2:
+          return 'commit bomb'
+        case 3:
+          return 'commit axe'
+        case 4:
+          return 'commit horns'
+        case 5:
+          return 'commit beers'
+      }
+    }
+  }
+
   const activateDie = (action, face, number) => {
     setLoadModalIsOpen(true)
     if (action === 'spend'){
@@ -296,7 +331,7 @@ export default function Game() {
       case 2:
         return "border px-4 py-2 text-center"
       default:
-          return "border px-4 py-2 text-center shadow-lg"
+          return "border px-4 py-2 text-center shadow-lg has-tooltip"
     }
   }
 
@@ -307,7 +342,7 @@ export default function Game() {
       case 2:
         return "border px-4 py-2 text-center bg-black"
       default:
-          return "border px-4 py-2 text-center shadow-lg"
+          return "border px-4 py-2 text-center shadow-lg has-tooltip"
     }
   }
 
@@ -467,51 +502,99 @@ export default function Game() {
         <div className="grid grid-flow-col grid-cols-4 grid-rows-2 md:grid-cols-8 md:grid-rows-1 gap-4">
 
           <div className={activeDieStyle(game.die1_location)}>
-            <button className={dieSpendButtonStyle(game.die1_state)} onClick={()=>activateDie('spend',game.die1_face,1)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die1_state)} onClick={()=>activateDie('spend',game.die1_face,1)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die1_face)}</span>
+              <h1>Spend</h1>
+            </button>
             <div className={getDiceStyle(game.die1_face)}>{getFaceValue(game.die1_face)}</div>
-            <button className={dieCommitButtonStyle(game.die1_state)} onClick={()=>activateDie('commit',game.die1_face,1)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die1_state)} onClick={()=>activateDie('commit',game.die1_face,1)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die1_face)}</span>
+              <h1>Keep</h1>
+            </button>
           </div>
   
           <div className={activeDieStyle(game.die2_location)}>
-            <button className={dieSpendButtonStyle(game.die2_state)} onClick={()=>activateDie('spend',game.die2_face,2)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die2_state)} onClick={()=>activateDie('spend',game.die2_face,2)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die2_face)}</span>
+              <h1>Spend</h1>
+            </button>
             <div className={getDiceStyle(game.die2_face)}>{getFaceValue(game.die2_face)}</div>
-            <button className={dieCommitButtonStyle(game.die2_state)} onClick={()=>activateDie('commit',game.die2_face,2)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die2_state)} onClick={()=>activateDie('commit',game.die2_face,2)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die2_face)}</span>
+              <h1>Keep</h1>
+            </button>
           </div>
   
           <div className={activeDieStyle(game.die3_location)}>
-            <button className={dieSpendButtonStyle(game.die3_state)} onClick={()=>activateDie('spend',game.die3_face,3)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die3_state)} onClick={()=>activateDie('spend',game.die3_face,3)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die3_face)}</span>
+              <h1>Spend</h1>
+            </button>
             <div className={getDiceStyle(game.die3_face)}>{getFaceValue(game.die3_face)}</div>
-            <button className={dieCommitButtonStyle(game.die3_state)} onClick={()=>activateDie('commit',game.die3_face,3)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die3_state)} onClick={()=>activateDie('commit',game.die3_face,3)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die3_face)}</span>
+              <h1>Keep</h1>
+            </button>
           </div>
   
           <div className={activeDieStyle(game.die4_location)}>
-            <button className={dieSpendButtonStyle(game.die4_state)} onClick={()=>activateDie('spend',game.die4_face,4)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die4_state)} onClick={()=>activateDie('spend',game.die4_face,4)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die4_face)}</span>
+              <h1>Spend</h1>
+            </button>
             <div className={getDiceStyle(game.die4_face)}>{getFaceValue(game.die4_face)}</div>
-            <button className={dieCommitButtonStyle(game.die4_state)} onClick={()=>activateDie('commit',game.die4_face, 4)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die4_state)} onClick={()=>activateDie('commit',game.die4_face, 4)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die4_face)}</span>
+              <h1>Keep</h1>
+            </button>
           </div>
   
           <div className={activeDieStyle(game.die5_location)}>
-            <button className={dieSpendButtonStyle(game.die5_state)} onClick={()=>activateDie('spend',game.die5_face,5)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die5_state)} onClick={()=>activateDie('spend',game.die5_face,5)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die5_face)}</span>
+              <h1>Spend</h1>
+            </button>
             <div className={getDiceStyle(game.die5_face)}>{getFaceValue(game.die5_face)}</div>
-            <button className={dieCommitButtonStyle(game.die5_state)} onClick={()=>activateDie('commit',game.die5_face, 5)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die5_state)} onClick={()=>activateDie('commit',game.die5_face, 5)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die6_face)}</span>
+              <h1>Keep</h1>
+            </button>
           </div>
   
           <div className={activeDieStyle(game.die6_location)}>
-            <button className={dieSpendButtonStyle(game.die6_state)}  onClick={()=>activateDie('spend',game.die6_face,6)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die6_state)}  onClick={()=>activateDie('spend',game.die6_face,6)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die6_face)}</span>
+              <h1>Spend</h1>
+            </button>
             <div className={getDiceStyle(game.die6_face)}>{getFaceValue(game.die6_face)}</div>
-            <button className={dieCommitButtonStyle(game.die6_state)} onClick={()=>activateDie('commit',game.die6_face, 6)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die6_state)} onClick={()=>activateDie('commit',game.die6_face, 6)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die6_face)}</span>
+              <h1>Keep</h1>
+            </button>
           </div>
   
           <div className={activeDieStyle(game.die7_location)}>
-            <button className={dieSpendButtonStyle(game.die7_state)} onClick={()=>activateDie('spend',game.die7_face,7)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die7_state)} onClick={()=>activateDie('spend',game.die7_face,7)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die7_face)}</span>
+              <h1>Spend</h1>
+            </button>
             <div className={getDiceStyle(game.die7_face)}>{getFaceValue(game.die7_face)}</div>
-            <button className={dieCommitButtonStyle(game.die7_state)} onClick={()=>activateDie('commit',game.die7_face,7)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die7_state)} onClick={()=>activateDie('commit',game.die7_face,7)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die7_face)}</span>
+              <h1>Keep</h1>
+            </button>
           </div>
   
           <div className={activeDieStyle(game.die8_location)}>
-            <button className={dieSpendButtonStyle(game.die8_state)} onClick={()=>activateDie('spend',game.die8_face,8)}><h1>Spend</h1></button>
+            <button className={dieSpendButtonStyle(game.die8_state)} onClick={()=>activateDie('spend',game.die8_face,8)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die8_face)}</span>
+              <h1>Spend</h1>
+            </button>
             <div className={getDiceStyle(game.die8_face)}>{getFaceValue(game.die8_face)}</div>
-            <button className={dieCommitButtonStyle(game.die8_state)} onClick={()=>activateDie('commit',game.die8_face,8)}><h1>Keep</h1></button>
+            <button className={dieCommitButtonStyle(game.die8_state)} onClick={()=>activateDie('commit',game.die8_face,8)}>
+              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die8_face)}</span>
+              <h1>Keep</h1>
+            </button>
           </div>
   
         </div>
