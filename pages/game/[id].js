@@ -230,33 +230,33 @@ export default function Game() {
     if (action === 'spend'){
       switch (face) {
         case 0:
-          return 'spend head'
+          return 'Take the remaining dice divided in half and rounded up and give them to another player of your choice. Select a color of gem they control. Each player rolls. If you roll more heads from the player you selected, you recieve all the gems of the chosen color.'
         case 1:
-          return 'spend lantern'
+          return 'select a color gem of your choice from the mine and move it to the table'
         case 2:
-          return 'spend bomb'
+          return 'remove three random gems from the mine and move them to the table'
         case 3:
-          return 'spend axe'
+          return 'remove a random gem from the mine and move them to the table'
         case 4:
-          return 'spend horns'
+          return 'get 2 rerolls'
         case 5:
-          return 'spend beers'
+          return 'get 1 reroll'
       }
     }
     if (action === 'commit'){
       switch (face) {
         case 0:
-          return 'commit head'
+          return 'Keep 3 Heads then press commit to collect all green gems from the table'
         case 1:
-          return 'commit lantern'
+          return 'Keep 3 Heads then press commit to collect all purple gems from the table'
         case 2:
-          return 'commit bomb'
+          return 'Keep 3 Heads then press commit to collect all red gems from the table'
         case 3:
-          return 'commit axe'
+          return 'Keep 3 Heads then press commit to collect all blue gems from the table'
         case 4:
-          return 'commit horns'
+          return 'Keep 1 Horn and 2 Beers then press commit to collect all black gems from the table'
         case 5:
-          return 'commit beers'
+          return 'Keep 3 Beers then press commit to collect all black gems from the table'
       }
     }
   }
