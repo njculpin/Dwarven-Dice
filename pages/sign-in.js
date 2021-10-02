@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../utils/supabaseClient'
+import Modal from 'react-modal';
 
 export default function SignIn() {
   const [email, setEmail] = useState('')
@@ -9,26 +10,20 @@ export default function SignIn() {
     const { error, data } = await supabase.auth.signIn({
       email
     })
+
     if (error) {
-      console.log({ error })
+      console.log(error)
     } else {
       setSubmitted(true)
     }
-  }
-  if (submitted) {
-    return (
-      <div>
-        <h1>Please check your email to sign in</h1>
-      </div>
-    )
+
   }
 
 return (
     <div className=" h-screen w-screen bg-white sm:px-6 lg:px-8">
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" action="#" method="POST">
-            <div>
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 space-y-4">
+          <div>
               <label htmlFor="email" className="block text-sm font-medium text-black">
                 Email address
               </label>
@@ -53,10 +48,26 @@ return (
                 Sign in
               </button>
             </div>
-          </form>
-
         </div>
       </div>
+
+      <Modal
+      isOpen={submitted}
+      style={{
+        content: {
+          outline: 'none',
+          border: '0px',
+          top: '50%',
+          left: '50%',
+          right: 'auto',
+          bottom: 'auto',
+          marginRight: '-50%',
+          transform: 'translate(-50%, -50%)',
+        },
+      }}
+      >
+        <div><h1>Please check your email for link!</h1></div>
+      </Modal>
     </div>
   )
 }
