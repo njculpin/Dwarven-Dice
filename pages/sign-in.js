@@ -5,6 +5,7 @@ import Modal from 'react-modal';
 export default function SignIn() {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [magicLinkError, setMagicLinkError] = useState('')
 
   async function signIn() {
     const { error, data } = await supabase.auth.signIn({
@@ -13,6 +14,7 @@ export default function SignIn() {
 
     if (error) {
       console.log(error)
+      setMagicLinkError(error.message)
     } else {
       setSubmitted(true)
     }
@@ -23,6 +25,7 @@ return (
     <div className=" h-screen w-screen bg-white sm:px-6 lg:px-8">
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 space-y-4">
+          {magicLinkError && <div><p className="text-red-600 p-4 font-bold">{magicLinkError}</p></div>}
           <div>
               <label htmlFor="email" className="block text-sm font-medium text-black">
                 Email address

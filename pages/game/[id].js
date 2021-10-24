@@ -11,7 +11,81 @@ Modal.setAppElement("#__next")
 export default function Game() {
 
   const router = useRouter()
-  const [game, setGameState] = useState()
+  const [game, setGameState] = useState({
+    "game_version": 1,
+    "game_uid": '',
+    "host": '',
+    "turns": 0,
+    "active_player": '',
+    "secondary_player": '',
+    "active_player_rolls": 0,
+    "secondary_player_rolls": 0,
+    "p1_address": '',
+    "p2_address": '',
+    "p3_address": '',
+    "p4_address": '',
+    "p5_address": '',
+    "die1_face": 0,
+    "die2_face": 0,
+    "die3_face": 0,
+    "die4_face": 0,
+    "die5_face": 0,
+    "die6_face": 0,
+    "die7_face": 0,
+    "die8_face": 0,
+    "die1_state": 0,
+    "die2_state": 0,
+    "die3_state": 0,
+    "die4_state": 0,
+    "die5_state": 0,
+    "die6_state": 0,
+    "die7_state": 0,
+    "die8_state": 0,
+    "die1_location": '',
+    "die2_location": '',
+    "die3_location": '',
+    "die4_location": '',
+    "die5_location": '',
+    "die6_location": '',
+    "die7_location": '',
+    "die8_location": '',
+    "green_mine": 3,
+    "purple_mine": 4,
+    "red_mine": 6,
+    "blue_mine": 12,
+    "black_mine": 60,
+    "green_table": 0,
+    "purple_table": 0,
+    "red_table": 0,
+    "blue_table": 0,
+    "black_table": 0,
+    "green_p1": 0,
+    "purple_p1": 0,
+    "red_p1": 0,
+    "blue_p1": 0,
+    "black_p1": 0,
+    "green_p2": 0,
+    "purple_p2": 0,
+    "red_p2": 0,
+    "blue_p2": 0,
+    "black_p2": 0,
+    "green_p3": 0,
+    "purple_p3": 0,
+    "red_p3": 0,
+    "blue_p3": 0,
+    "black_p3": 0,
+    "green_p4": 0,
+    "purple_p4": 0,
+    "red_p4": 0,
+    "blue_p4": 0,
+    "black_p4": 0,
+    "green_p5": 0,
+    "purple_p5": 0,
+    "red_p5": 0,
+    "blue_p5": 0,
+    "black_p5": 0,
+  })
+
   const [winner, setWinner] = useState('')
   const [profile, setProfile] = useState(null)
   const [headDie, setHeadDie] = useState(0)
@@ -24,14 +98,7 @@ export default function Game() {
     fetchProfile()
   })
 
-  let mySubscription = null;
-
-  useEffect(()=>{
-    getInitialGame()
-    getGameAndSubscribe()
-  },[])
-
-  async function getInitialGame(){
+  const getGameState = async () => {
     const {data, error} = await supabase.from('gamestates').select().match({game_uid: router.query.id})
     if (error){
       console.log(`error -> ${JSON.stringify(error)}`)
@@ -40,18 +107,19 @@ export default function Game() {
     }
   }
 
-  function getGameAndSubscribe(){
-    if (!mySubscription){
-      mySubscription = supabase
-        .from("gamestates")
-        .on("*", (payload) => {
-          setGameState(payload.new)
-        })
-        .subscribe();
-    }
-  }
+  useEffect(() => {
+    getGameState()
+    const query = String(`gamestates:game_uid=eq.${router.query.id}`)
+    const mySubscription = supabase
+      .from(query)
+      .on("UPDATE", (payload) => {
+        setGameState(payload.new)
+      })
+      .subscribe()
+    return () => supabase.removeSubscription(mySubscription)
+  }, [])
 
-  function openLanternModal(die) {
+  const openLanternModal = (die) => {
     if (die === 1){
       if (game.die1_state === 0){
         setLanternDie(die)
@@ -102,7 +170,7 @@ export default function Game() {
     }
   }
 
-  function openHeadModal(die) {
+  const openHeadModal = (die) => {
     if (die === 1){
       if (game.die1_state === 0){
         setHeadDie(die)
@@ -153,10 +221,10 @@ export default function Game() {
     }
   }
 
-  function closeLanternModal(color) {
+  const closeLanternModal = async (color) => {
     setLoadModalIsOpen(true)
     setLanternModalIsOpen(false);
-    axios.post(`/api/game/spend/lanterns`, {
+    await axios.post(`/api/game/spend/lanterns`, {
       die: lanternDie, 
       game_uid: router.query.id, 
       color: color
@@ -165,10 +233,10 @@ export default function Game() {
     })
   }
 
-  function closeHeadModal(secondary_player) {
+  const closeHeadModal = async (secondary_player) => {
     setLoadModalIsOpen(true)
     setHeadModalOpen(false);
-    axios.post(`/api/game/spend/heads`, {
+    await axios.post(`/api/game/spend/heads`, {
       die: headDie, 
       game_uid: router.query.id, 
       secondary_player: secondary_player
@@ -177,7 +245,7 @@ export default function Game() {
     })
   }
 
-  async function fetchProfile() {
+  const fetchProfile = async () => {
     const profileData = await supabase.auth.user()
     if (!profileData) {
       router.push('/sign-in')
@@ -186,16 +254,16 @@ export default function Game() {
     }
   }
 
-  function rollAllDie(){
+  const rollAllDie = async () => {
     setLoadModalIsOpen(true)
-    axios.post('/api/game/roll', {game_uid: router.query.id, pid: profile.id}).then(()=>{
+    await axios.post('/api/game/roll', {game_uid: router.query.id, pid: profile.id}).then(()=>{
       setLoadModalIsOpen(false)
     })
   }
 
-  function passTurn(){
+  const passTurn = async () => {
     setLoadModalIsOpen(true)
-    axios.post('/api/game/pass', {game_uid: router.query.id, active_player: game.active_player, pid: profile.id}).then(()=>{
+    await axios.post('/api/game/pass', {game_uid: router.query.id, active_player: game.active_player, pid: profile.id}).then(()=>{
       setLoadModalIsOpen(false)
     })
   }
@@ -217,9 +285,9 @@ export default function Game() {
     }
   }
 
-  const collectOnCommits = () => {
+  const collectOnCommits = async () => {
     setLoadModalIsOpen(true)
-    axios.post(`/api/game/collect/collect`, {
+    await axios.post(`/api/game/collect/collect`, {
       game_uid: router.query.id
     }).then(()=>{
       setLoadModalIsOpen(false)
@@ -261,7 +329,7 @@ export default function Game() {
     }
   }
 
-  const activateDie = (action, face, number) => {
+  const activateDie = async (action, face, number) => {
     setLoadModalIsOpen(true)
     if (action === 'spend'){
       if (face === 0){
@@ -279,7 +347,7 @@ export default function Game() {
         openLanternModal(number)
       }
       if (face === 2 || face === 3){
-        axios.post(`/api/game/spend/axebombs`, {
+        await axios.post(`/api/game/spend/axebombs`, {
           die: number, 
           game_uid: router.query.id, 
           pid:profile.id}).then(()=>{
@@ -287,7 +355,7 @@ export default function Game() {
           })
       }
       if (face === 4 || face === 5){
-        axios.post(`/api/game/spend/beerhorns`, {
+        await axios.post(`/api/game/spend/beerhorns`, {
           die: number, 
           game_uid: router.query.id, 
           pid:profile.id}).then(()=>{
@@ -303,8 +371,7 @@ export default function Game() {
         game.red_mine + 
         game.blue_mine + 
         game.black_mine <= 0){
-          console.log('end game')
-          axios.post(`/api/game/end`, {
+          await axios.post(`/api/game/end`, {
             game_uid: router.query.id
           }).then(res => {
             setLoadModalIsOpen(false)
@@ -314,7 +381,7 @@ export default function Game() {
     }
 
     if (action === 'commit'){
-      axios.post(`/api/game/commit/commit`, {
+      await axios.post(`/api/game/commit/commit`, {
         die: number,
         game_uid: router.query.id
       }).then(()=>{
