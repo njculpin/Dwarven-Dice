@@ -1,13 +1,12 @@
-import { supabase } from '../../../utils/supabaseClient'
+import { supabase } from '../utils/supabaseClient'
 
-export default async function handler(req, res){
-    const game_uid = req.body.game_uid
+export default async function handler(game_uid){
 
     const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
     const game = data[0]
 
     if (error){
-        res.status(400).json({message: error})
+        return error
     }
 
     var player_points = []
@@ -63,7 +62,7 @@ export default async function handler(req, res){
     
     setWinner(winner, game_uid)
     
-    res.status(200).json({message:winner})
+    return winner
 
 }
 

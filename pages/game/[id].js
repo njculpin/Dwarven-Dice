@@ -6,6 +6,12 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import Modal from 'react-modal';
 import axios from 'axios'
 
+// Game Imports
+import roll from '../../game/roll'
+import pass from '../../game/pass'
+import end from '../../game/end'
+
+
 Modal.setAppElement("#__next")
 
 export default function Game() {
@@ -272,9 +278,11 @@ export default function Game() {
       if (game.active_player === profile.id || game.secondary_player === profile.id){
         if (game.active_player_rolls >= 1 || game.secondary_player_rolls >= 1){
           setLoadModalIsOpen(true)
-          axios.post('/api/game/roll', {game_uid: router.query.id, pid: profile.id}).then(()=>{
+
+          roll(router.query.id, profile.id).then(()=>{
             setLoadModalIsOpen(false)
           })
+
         } else {
           setTip('sorry you have no rolls! spend a beer or horns to get more.')
         }
@@ -286,7 +294,7 @@ export default function Game() {
 
   const passTurn = () => {
     setLoadModalIsOpen(true)
-    axios.post('/api/game/pass', {game_uid: router.query.id, active_player: game.active_player, pid: profile.id}).then(()=>{
+    pass(router.query.id, game.active_player, profile.id).then(()=>{
       setLoadModalIsOpen(false)
     })
   }
@@ -394,12 +402,12 @@ export default function Game() {
         game.red_mine + 
         game.blue_mine + 
         game.black_mine <= 0){
-          axios.post(`/api/game/end`, {
-            game_uid: router.query.id
-          }).then(res => {
+
+          end(router.query.id).then((player_uid)=>{
             setLoadModalIsOpen(false)
-            setWinner(res.data.message.player_uid)
+            setWinner(player_uid)
           })
+
         }
     }
 

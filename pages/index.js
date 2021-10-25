@@ -5,6 +5,15 @@ import { supabase } from '../utils/supabaseClient'
 
 export default function Home() {
 
+  /*
+
+  TODO: 
+  Move game logic outside of API Routes. 
+  Next / Vercel Api routes maybe a bottleneck to using 
+  supabase realtime db to full speed
+
+  */
+
   const router = useRouter()
 
   const [profile, setProfile] = useState(null)

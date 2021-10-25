@@ -1,15 +1,15 @@
-import { supabase } from '../../../utils/supabaseClient'
+import { supabase } from '../utils/supabaseClient'
 
-export default async function handler(req, res){
 
-    const game_uid = req.body.game_uid
-    const pid = req.body.pid
+export default async function roll(game_uid, pid){
+
+    console.log('rolls hit')
 
     const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
     const game = data[0]
 
     if (error){
-        res.status(400).json({message: error})
+        return error
     }
 
     const active_player = game.active_player
@@ -33,9 +33,46 @@ export default async function handler(req, res){
         }  
     }
 
-    return res.status(200).json({status:'success', message:game})
+    return game
         
 }
+
+// export default async function handler(req, res){
+
+//     const game_uid = req.body.game_uid
+//     const pid = req.body.pid
+
+//     const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
+//     const game = data[0]
+
+//     if (error){
+//         res.status(400).json({message: error})
+//     }
+
+//     const active_player = game.active_player
+//     const active_player_rolls = game.active_player_rolls
+
+//     const secondary_player = game.secondary_player
+//     const secondary_player_rolls = game.secondary_player_rolls
+
+//     if (active_player === pid){
+//         if (active_player_rolls >= 1){
+//             rollDice(game, game_uid)
+//             reduce_player_roll(game, pid)
+//         }    
+//     }
+
+//     if (secondary_player === pid){
+//         if (secondary_player_rolls >= 1){
+//             rollDice(game, game_uid)
+//             reduce_player_roll(game, pid)
+            
+//         }  
+//     }
+
+//     return res.status(200).json({status:'success', message:game})
+        
+// }
 
 async function rollDice(game, game_uid){
     if (game.die1_state === 0){

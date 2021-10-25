@@ -1,9 +1,6 @@
-import { supabase } from '../../../utils/supabaseClient'
+import { supabase } from '../utils/supabaseClient'
 
-export default async function handler(req, res){
-    const active_player = req.body.active_player
-    const game_uid = req.body.game_uid
-    const pid = req.body.pid
+export default async function pass(game_uid, active_player, pid){
 
     if (active_player === pid){
 
@@ -55,7 +52,7 @@ export default async function handler(req, res){
         }
 
         if (error){
-            res.status(400).json({message: error})
+            return error
         }
     
         if (game.p1_address){
@@ -142,7 +139,7 @@ export default async function handler(req, res){
         
     }
 
-    res.status(200).json({message:'success'})
+    return 'success'
 }
 
 async function setActivePlayer(active_player, game_uid, turn, die1_face, die2_face, die3_face, die4_face, die5_face, die6_face, die7_face, die8_face){

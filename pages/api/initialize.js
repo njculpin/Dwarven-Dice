@@ -2,8 +2,6 @@ import { supabase } from '../../utils/supabaseClient'
 
 export default async function handler(req, res){
 
-    //{ game_uid: res.data.game_uid, host: res.data.host }
-
     const game_uid = req.body.game_uid
     const host = req.body.host
 
