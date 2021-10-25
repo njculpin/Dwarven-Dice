@@ -18,10 +18,13 @@ export default function Home() {
 
   useEffect(()=>{
     fetchGames()
+    return (() => {
+      setGames([])
+    })
   }, [games])
 
   async function fetchProfile() {
-    const profileData = await supabase.auth.user()
+    const profileData = supabase.auth.user()
     if (!profileData) {
       router.push('/sign-in')
     } else {

@@ -93,9 +93,25 @@ export default function Game() {
   const [lanternDie, setLanternDie] = useState(0)
   const [lanternModalIsOpen, setLanternModalIsOpen] = useState(false)
   const [isLoadModalOpen, setLoadModalIsOpen] = useState(false)
+  const [tip, setTip] = useState('')
 
   useEffect(() => {
     fetchProfile()
+  })
+
+  useEffect(() => {
+    getGameState()
+    const query = String(`gamestates:game_uid=eq.${router.query.id}`)
+    const mySubscription = supabase
+      .from(query)
+      .on("UPDATE", (payload) => {
+        console.log('update hit')
+        setGameState(payload.new)
+      })
+      .subscribe()
+    return () => {
+      supabase.removeSubscription(mySubscription)
+    }
   })
 
   const getGameState = async () => {
@@ -106,18 +122,6 @@ export default function Game() {
       setGameState(data[0])
     }
   }
-
-  useEffect(() => {
-    getGameState()
-    const query = String(`gamestates:game_uid=eq.${router.query.id}`)
-    const mySubscription = supabase
-      .from(query)
-      .on("UPDATE", (payload) => {
-        setGameState(payload.new)
-      })
-      .subscribe()
-    return () => supabase.removeSubscription(mySubscription)
-  }, [])
 
   const openLanternModal = (die) => {
     if (die === 1){
@@ -246,7 +250,7 @@ export default function Game() {
   }
 
   const fetchProfile = async () => {
-    const profileData = await supabase.auth.user()
+    const profileData = supabase.auth.user()
     if (!profileData) {
       router.push('/sign-in')
     } else {
@@ -255,10 +259,20 @@ export default function Game() {
   }
 
   const rollAllDie = async () => {
-    setLoadModalIsOpen(true)
-    await axios.post('/api/game/roll', {game_uid: router.query.id, pid: profile.id}).then(()=>{
-      setLoadModalIsOpen(false)
-    })
+    if (profile){
+      if (game.active_player === profile.id || game.secondary_player === profile.id){
+        if (game.active_player_rolls >= 1 || game.secondary_player_rolls >= 1){
+          setLoadModalIsOpen(true)
+          await axios.post('/api/game/roll', {game_uid: router.query.id, pid: profile.id}).then(()=>{
+            setLoadModalIsOpen(false)
+          })
+        } else {
+          setTip('sorry you have no rolls! spend a beer or horns to get more.')
+        }
+      } else {
+        setTip('sorry its not your turn to roll')
+      }
+    }
   }
 
   const passTurn = async () => {
@@ -298,33 +312,33 @@ export default function Game() {
     if (action === 'spend'){
       switch (face) {
         case 0:
-          return 'Take the remaining dice divided in half and rounded up and give them to another player of your choice. Select a color of gem they control. Each player rolls. If you roll more heads from the player you selected, you recieve all the gems of the chosen color.'
+          return setTip('Take the remaining dice divided in half and rounded up and give them to another player of your choice. Select a color of gem they control. Each player rolls. If you roll more heads from the player you selected, you recieve all the gems of the chosen color.')
         case 1:
-          return 'select a color gem of your choice from the mine and move it to the table'
+          return setTip('select a color gem of your choice from the mine and move it to the table')
         case 2:
-          return 'remove three random gems from the mine and move them to the table'
+          return setTip('remove three random gems from the mine and move them to the table')
         case 3:
-          return 'remove a random gem from the mine and move them to the table'
+          return setTip('remove a random gem from the mine and move them to the table')
         case 4:
-          return 'get 2 rerolls'
+          return setTip('get 2 rerolls')
         case 5:
-          return 'get 1 reroll'
+          return setTip('get 1 reroll')
       }
     }
     if (action === 'commit'){
       switch (face) {
         case 0:
-          return 'Keep 3 Heads then press commit to collect all green gems from the table'
+          return setTip('Keep 3 Heads then press commit to collect all green gems from the table')
         case 1:
-          return 'Keep 3 Heads then press commit to collect all purple gems from the table'
+          return setTip('Keep 3 Heads then press commit to collect all purple gems from the table')
         case 2:
-          return 'Keep 3 Heads then press commit to collect all red gems from the table'
+          return setTip('Keep 3 Heads then press commit to collect all red gems from the table')
         case 3:
-          return 'Keep 3 Heads then press commit to collect all blue gems from the table'
+          return setTip('Keep 3 Heads then press commit to collect all blue gems from the table')
         case 4:
-          return 'Keep 1 Horn and 2 Beers then press commit to collect all black gems from the table'
+          return setTip('Keep 1 Horn and 2 Beers then press commit to collect all black gems from the table')
         case 5:
-          return 'Keep 3 Beers then press commit to collect all black gems from the table'
+          return setTip('Keep 3 Beers then press commit to collect all black gems from the table')
       }
     }
   }
@@ -342,8 +356,8 @@ export default function Game() {
           game.red_mine + 
           game.blue_mine + 
           game.black_mine >= 3){
-          setLoadModalIsOpen(false)
-        }
+            setLoadModalIsOpen(false)
+          }
         openLanternModal(number)
       }
       if (face === 2 || face === 3){
@@ -387,18 +401,58 @@ export default function Game() {
       }).then(()=>{
         setLoadModalIsOpen(false)
       })
-      }
+    }
 
   }
 
   const dieSpendButtonStyle = (state) => {
     switch(state){
       case 1:
-        return "border px-4 py-2 text-center bg-black"
+        return "border px-4 py-2 text-center text-gray-100"
       case 2:
         return "border px-4 py-2 text-center"
       default:
-          return "border px-4 py-2 text-center shadow-lg has-tooltip"
+          return "border px-4 py-2 text-center shadow-lg"
+    }
+  }
+
+  const rollButtonStyle = () => {
+    if (profile){
+      if (game.active_player === profile.id){
+        if (game.active_player_rolls >= 1){
+          return "border px-4 py-2 text-center shadow-lg"
+        } else {
+          return "border px-4 py-2 text-center"
+        }
+      } else {
+        return "border px-4 py-2 text-center"
+      }
+    } else {
+      return "border px-4 py-2 text-center"
+    }
+  }
+
+  const commitButtonStyle = () => {
+    if (profile){
+      if (game.active_player === profile.id){
+        return "border px-4 py-2 text-center shadow-lg"
+      } else {
+        return "border px-4 py-2 text-center"
+      }
+    } else {
+      return "border px-4 py-2 text-center"
+    }
+  }
+
+  const passButtonStyle = () => {
+    if (profile){
+      if (game.active_player === profile.id){
+        return "border px-4 py-2 text-center shadow-lg"
+      } else {
+        return "border px-4 py-2 text-center"
+      }
+    } else {
+      return "border px-4 py-2 text-center"
     }
   }
 
@@ -407,9 +461,9 @@ export default function Game() {
       case 1:
         return "border px-4 py-2 text-center"
       case 2:
-        return "border px-4 py-2 text-center bg-black"
+        return "border px-4 py-2 text-center text-gray-100"
       default:
-          return "border px-4 py-2 text-center shadow-lg has-tooltip"
+          return "border px-4 py-2 text-center shadow-lg"
     }
   }
 
@@ -422,7 +476,6 @@ export default function Game() {
       if (game.secondary_player === player){
         return game.secondary_player_rolls
       }
-
     }
   }
 
@@ -510,8 +563,8 @@ export default function Game() {
   
         <div className="grid grid-flow-col grid-cols-2 grid-rows-3 md:grid-cols-5 md:grid-rows-1 gap-4 text-center">
           <div className={activePlayerStyle(game.p1_address)}>
-            <h1>{rollsAvailable(game.p1_address)} rolls remaining</h1>
-            <h1 className="truncate p-2">{game.p1_address? game.p1_address : 'empty'}</h1>
+            {game.p1_address && <h1>{rollsAvailable(game.p1_address)} rolls remaining</h1>}
+            <h1 className="truncate p-2">{game.p1_address? game.p1_address : 'empty seat'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-2">{game.green_p1}</div>
               <div className="span-1 bg-purple-500 p-2">{game.purple_p1}</div>
@@ -521,8 +574,8 @@ export default function Game() {
             </div>
           </div>
           <div className={activePlayerStyle(game.p2_address)}>
-            <h1>{rollsAvailable(game.p2_address)} rolls remaining</h1>
-            <h1 className="truncate p-2">{game.p2_address? game.p2_address : 'empty'}</h1>
+            {game.p2_address && <h1>{rollsAvailable(game.p2_address)} rolls remaining</h1>}
+            <h1 className="truncate p-2">{game.p2_address? game.p2_address : 'empty seat'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-2">{game.green_p2}</div>
               <div className="span-1 bg-purple-500 p-2">{game.purple_p2}</div>
@@ -532,10 +585,10 @@ export default function Game() {
             </div>
           </div>
           <div className={activePlayerStyle(game.p3_address)}>
-            <h1>{rollsAvailable(game.p2_address)} rolls remaining</h1>
-            <h1 className="truncate p-2">{game.p3_address? game.p3_address : 'empty'}</h1>
+            {game.p3_address && <h1>{rollsAvailable(game.p2_address)} rolls remaining</h1>}
+            <h1 className="truncate p-2">{game.p3_address? game.p3_address : 'empty seat'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
-              <div className="span-1 bg-green-500 p-2">{game.green_p33}</div>
+              <div className="span-1 bg-green-500 p-2">{game.green_p3}</div>
               <div className="span-1 bg-purple-500 p-2">{game.purple_p3}</div>
               <div className="span-1 bg-red-500 p-2">{game.red_p3}</div>
               <div className="span-1 bg-blue-500 p-2">{game.blue_p3}</div>
@@ -543,8 +596,8 @@ export default function Game() {
             </div>
           </div>
           <div className={activePlayerStyle(game.p4_address)}>
-            <h1>{rollsAvailable(game.p4_address)} rolls remaining</h1>
-            <h1 className="truncate p-2">{game.p4_address? game.p4_address : 'empty'}</h1>
+            {game.p4_address && <h1>{rollsAvailable(game.p4_address)} rolls remaining</h1>}
+            <h1 className="truncate p-2">{game.p4_address? game.p4_address : 'empty seat'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-2">{game.green_p4}</div>
               <div className="span-1 bg-purple-500 p-2">{game.purple_p4}</div>
@@ -554,8 +607,8 @@ export default function Game() {
             </div>
           </div>
           <div className={activePlayerStyle(game.p5_address)}>
-            <h1>{rollsAvailable(game.p5_address)} rolls remaining</h1>
-            <h1 className="truncate p-2">{game.p5_address? game.p5_address : 'empty'}</h1>
+            {game.p5_address && <h1>{rollsAvailable(game.p5_address)} rolls remaining</h1>}
+            <h1 className="truncate p-2">{game.p5_address? game.p5_address : 'empty seat'}</h1>
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-2">{game.green_p5}</div>
               <div className="span-1 bg-purple-500 p-2">{game.purple_p5}</div>
@@ -569,97 +622,81 @@ export default function Game() {
         <div className="grid grid-flow-col grid-cols-4 grid-rows-2 md:grid-cols-8 md:grid-rows-1 gap-4">
 
           <div className={activeDieStyle(game.die1_location)}>
-            <button className={dieSpendButtonStyle(game.die1_state)} onClick={()=>activateDie('spend',game.die1_face,1)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die1_face)}</span>
+            <button onMouseOver={()=>getTip('spend',game.die1_face)} onMouseLeave={()=>setTip('')} className={dieSpendButtonStyle(game.die1_state)} onClick={()=>activateDie('spend',game.die1_face,1)}>
               <h1>Spend</h1>
             </button>
             <div className={getDiceStyle(game.die1_face)}>{getFaceValue(game.die1_face)}</div>
-            <button className={dieCommitButtonStyle(game.die1_state)} onClick={()=>activateDie('commit',game.die1_face,1)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die1_face)}</span>
+            <button onMouseOver={()=>getTip('commit',game.die1_face)} onMouseLeave={()=>setTip('')} className={dieCommitButtonStyle(game.die1_state)} onClick={()=>activateDie('commit',game.die1_face,1)}>
               <h1>Keep</h1>
             </button>
           </div>
   
           <div className={activeDieStyle(game.die2_location)}>
-            <button className={dieSpendButtonStyle(game.die2_state)} onClick={()=>activateDie('spend',game.die2_face,2)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die2_face)}</span>
+            <button onMouseOver={()=>getTip('spend',game.die2_face)} onMouseLeave={()=>setTip('')} className={dieSpendButtonStyle(game.die2_state)} onClick={()=>activateDie('spend',game.die2_face,2)}>
               <h1>Spend</h1>
             </button>
             <div className={getDiceStyle(game.die2_face)}>{getFaceValue(game.die2_face)}</div>
-            <button className={dieCommitButtonStyle(game.die2_state)} onClick={()=>activateDie('commit',game.die2_face,2)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die2_face)}</span>
+            <button onMouseOver={()=>getTip('commit',game.die2_face)} onMouseLeave={()=>setTip('')} className={dieCommitButtonStyle(game.die2_state)} onClick={()=>activateDie('commit',game.die2_face,2)}>
               <h1>Keep</h1>
             </button>
           </div>
   
           <div className={activeDieStyle(game.die3_location)}>
-            <button className={dieSpendButtonStyle(game.die3_state)} onClick={()=>activateDie('spend',game.die3_face,3)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die3_face)}</span>
+            <button onMouseOver={()=>getTip('spend',game.die3_face)} onMouseLeave={()=>setTip('')} className={dieSpendButtonStyle(game.die3_state)} onClick={()=>activateDie('spend',game.die3_face,3)}>
               <h1>Spend</h1>
             </button>
             <div className={getDiceStyle(game.die3_face)}>{getFaceValue(game.die3_face)}</div>
-            <button className={dieCommitButtonStyle(game.die3_state)} onClick={()=>activateDie('commit',game.die3_face,3)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die3_face)}</span>
+            <button onMouseOver={()=>getTip('commit',game.die3_face)} onMouseLeave={()=>setTip('')} className={dieCommitButtonStyle(game.die3_state)} onClick={()=>activateDie('commit',game.die3_face,3)}>
               <h1>Keep</h1>
             </button>
           </div>
   
           <div className={activeDieStyle(game.die4_location)}>
-            <button className={dieSpendButtonStyle(game.die4_state)} onClick={()=>activateDie('spend',game.die4_face,4)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die4_face)}</span>
+            <button onMouseOver={()=>getTip('spend',game.die4_face)} onMouseLeave={()=>setTip('')} className={dieSpendButtonStyle(game.die4_state)} onClick={()=>activateDie('spend',game.die4_face,4)}>
               <h1>Spend</h1>
             </button>
             <div className={getDiceStyle(game.die4_face)}>{getFaceValue(game.die4_face)}</div>
-            <button className={dieCommitButtonStyle(game.die4_state)} onClick={()=>activateDie('commit',game.die4_face, 4)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die4_face)}</span>
+            <button onMouseOver={()=>getTip('commit',game.die4_face)} onMouseLeave={()=>setTip('')} className={dieCommitButtonStyle(game.die4_state)} onClick={()=>activateDie('commit',game.die4_face, 4)}>
               <h1>Keep</h1>
             </button>
           </div>
   
           <div className={activeDieStyle(game.die5_location)}>
-            <button className={dieSpendButtonStyle(game.die5_state)} onClick={()=>activateDie('spend',game.die5_face,5)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die5_face)}</span>
+            <button onMouseOver={()=>getTip('spend',game.die5_face)} onMouseLeave={()=>setTip('')} className={dieSpendButtonStyle(game.die5_state)} onClick={()=>activateDie('spend',game.die5_face,5)}>
               <h1>Spend</h1>
             </button>
             <div className={getDiceStyle(game.die5_face)}>{getFaceValue(game.die5_face)}</div>
-            <button className={dieCommitButtonStyle(game.die5_state)} onClick={()=>activateDie('commit',game.die5_face, 5)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die6_face)}</span>
+            <button onMouseOver={()=>getTip('commit',game.die6_face)} onMouseLeave={()=>setTip('')} className={dieCommitButtonStyle(game.die5_state)} onClick={()=>activateDie('commit',game.die5_face, 5)}>
               <h1>Keep</h1>
             </button>
           </div>
   
           <div className={activeDieStyle(game.die6_location)}>
-            <button className={dieSpendButtonStyle(game.die6_state)}  onClick={()=>activateDie('spend',game.die6_face,6)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die6_face)}</span>
+            <button onMouseOver={()=>getTip('spend',game.die6_face)} onMouseLeave={()=>setTip('')}   className={dieSpendButtonStyle(game.die6_state)}  onClick={()=>activateDie('spend',game.die6_face,6)}>
               <h1>Spend</h1>
             </button>
             <div className={getDiceStyle(game.die6_face)}>{getFaceValue(game.die6_face)}</div>
-            <button className={dieCommitButtonStyle(game.die6_state)} onClick={()=>activateDie('commit',game.die6_face, 6)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die6_face)}</span>
+            <button onMouseOver={()=>getTip('commit',game.die6_face)} onMouseLeave={()=>setTip('')}   className={dieCommitButtonStyle(game.die6_state)} onClick={()=>activateDie('commit',game.die6_face, 6)}>
               <h1>Keep</h1>
             </button>
           </div>
   
           <div className={activeDieStyle(game.die7_location)}>
-            <button className={dieSpendButtonStyle(game.die7_state)} onClick={()=>activateDie('spend',game.die7_face,7)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die7_face)}</span>
+            <button onMouseOver={()=>getTip('spend',game.die7_face)} onMouseLeave={()=>setTip('')}   className={dieSpendButtonStyle(game.die7_state)} onClick={()=>activateDie('spend',game.die7_face,7)}>
               <h1>Spend</h1>
             </button>
             <div className={getDiceStyle(game.die7_face)}>{getFaceValue(game.die7_face)}</div>
-            <button className={dieCommitButtonStyle(game.die7_state)} onClick={()=>activateDie('commit',game.die7_face,7)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die7_face)}</span>
+            <button onMouseOver={()=>getTip('commit',game.die7_face)} onMouseLeave={()=>setTip('')}   className={dieCommitButtonStyle(game.die7_state)} onClick={()=>activateDie('commit',game.die7_face,7)}>
               <h1>Keep</h1>
             </button>
           </div>
   
           <div className={activeDieStyle(game.die8_location)}>
-            <button className={dieSpendButtonStyle(game.die8_state)} onClick={()=>activateDie('spend',game.die8_face,8)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('spend',game.die8_face)}</span>
+            <button onMouseOver={()=>getTip('spend',game.die8_face)} onMouseLeave={()=>setTip('')}   className={dieSpendButtonStyle(game.die8_state)} onClick={()=>activateDie('spend',game.die8_face,8)}>
               <h1>Spend</h1>
             </button>
             <div className={getDiceStyle(game.die8_face)}>{getFaceValue(game.die8_face)}</div>
-            <button className={dieCommitButtonStyle(game.die8_state)} onClick={()=>activateDie('commit',game.die8_face,8)}>
-              <span className='tooltip rounded shadow-lg p-2 bg-white text-black'>{getTip('commit',game.die8_face)}</span>
+            <button onMouseOver={()=>getTip('commit',game.die8_face)} onMouseLeave={()=>setTip('')}  className={dieCommitButtonStyle(game.die8_state)} onClick={()=>activateDie('commit',game.die8_face,8)}>
               <h1>Keep</h1>
             </button>
           </div>
@@ -667,10 +704,15 @@ export default function Game() {
         </div>
   
         <div className="w-1/2 flex justify-between items-center p-4">
-          <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>rollAllDie()}><h1>Roll</h1></button>
-          <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>collectOnCommits()}><h1>Collect</h1></button>
-          <button className="border px-4 py-2 text-center shadow-lg" onClick={()=>passTurn()}><h1>Pass</h1></button>
+          <button className={rollButtonStyle()} onClick={()=>rollAllDie()}><h1>Roll</h1></button>
+          <button className={commitButtonStyle()} onClick={()=>collectOnCommits()}><h1>Collect</h1></button>
+          <button className={passButtonStyle()} onClick={()=>passTurn()}><h1>Pass</h1></button>
           <p>Turn {game.turns}</p>
+          <p>It's {game.active_player}'s' Turn</p>
+        </div>
+
+        <div className="w-1/2 flex justify-between items-center p-4 text-center">
+          <p className="w-full italic">{tip}</p>
         </div>
 
 
@@ -725,7 +767,7 @@ export default function Game() {
               </div>}
 
               {game.p2_address !== '' && 
-              game.p12address !== profile.id && 
+              game.p2_address !== profile.id && 
               <div className="span-1 p-2">
                 <button className="w-full h-full" 
                 onClick={()=>closeHeadModal(game.p2_address)}>
