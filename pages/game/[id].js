@@ -114,7 +114,8 @@ export default function Game() {
         _isMounted.current = false;
         supabase.removeSubscription(mySubscription)
     }
-  },[])
+    
+  })
 
   const getGameState = async () => {
     const {data, error} = await supabase.from('gamestates').select().match({game_uid: router.query.id})
