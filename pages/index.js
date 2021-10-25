@@ -14,13 +14,13 @@ export default function Home() {
 
   useEffect(() => {
     fetchProfile()
-  })
+    return (()=>{
+      setGames([])
+    })
+  },[])
 
   useEffect(()=>{
     fetchGames()
-    return (() => {
-      setGames([])
-    })
   }, [games])
 
   async function fetchProfile() {
