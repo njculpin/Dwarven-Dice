@@ -225,10 +225,10 @@ export default function Game() {
     }
   }
 
-  const closeLanternModal = async (color) => {
+  const closeLanternModal = (color) => {
     setLoadModalIsOpen(true)
     setLanternModalIsOpen(false);
-    await axios.post(`/api/game/spend/lanterns`, {
+    axios.post(`/api/game/spend/lanterns`, {
       die: lanternDie, 
       game_uid: router.query.id, 
       color: color
@@ -237,10 +237,10 @@ export default function Game() {
     })
   }
 
-  const closeHeadModal = async (secondary_player) => {
+  const closeHeadModal = (secondary_player) => {
     setLoadModalIsOpen(true)
     setHeadModalOpen(false);
-    await axios.post(`/api/game/spend/heads`, {
+    axios.post(`/api/game/spend/heads`, {
       die: headDie, 
       game_uid: router.query.id, 
       secondary_player: secondary_player
@@ -258,12 +258,12 @@ export default function Game() {
     }
   }
 
-  const rollAllDie = async () => {
+  const rollAllDie = () => {
     if (profile){
       if (game.active_player === profile.id || game.secondary_player === profile.id){
         if (game.active_player_rolls >= 1 || game.secondary_player_rolls >= 1){
           setLoadModalIsOpen(true)
-          await axios.post('/api/game/roll', {game_uid: router.query.id, pid: profile.id}).then(()=>{
+          axios.post('/api/game/roll', {game_uid: router.query.id, pid: profile.id}).then(()=>{
             setLoadModalIsOpen(false)
           })
         } else {
@@ -275,9 +275,9 @@ export default function Game() {
     }
   }
 
-  const passTurn = async () => {
+  const passTurn = () => {
     setLoadModalIsOpen(true)
-    await axios.post('/api/game/pass', {game_uid: router.query.id, active_player: game.active_player, pid: profile.id}).then(()=>{
+    axios.post('/api/game/pass', {game_uid: router.query.id, active_player: game.active_player, pid: profile.id}).then(()=>{
       setLoadModalIsOpen(false)
     })
   }
@@ -299,9 +299,9 @@ export default function Game() {
     }
   }
 
-  const collectOnCommits = async () => {
+  const collectOnCommits = () => {
     setLoadModalIsOpen(true)
-    await axios.post(`/api/game/collect/collect`, {
+    axios.post(`/api/game/collect/collect`, {
       game_uid: router.query.id
     }).then(()=>{
       setLoadModalIsOpen(false)
@@ -343,7 +343,7 @@ export default function Game() {
     }
   }
 
-  const activateDie = async (action, face, number) => {
+  const activateDie = (action, face, number) => {
     setLoadModalIsOpen(true)
     if (action === 'spend'){
       if (face === 0){
@@ -361,7 +361,7 @@ export default function Game() {
         openLanternModal(number)
       }
       if (face === 2 || face === 3){
-        await axios.post(`/api/game/spend/axebombs`, {
+        axios.post(`/api/game/spend/axebombs`, {
           die: number, 
           game_uid: router.query.id, 
           pid:profile.id}).then(()=>{
@@ -369,7 +369,7 @@ export default function Game() {
           })
       }
       if (face === 4 || face === 5){
-        await axios.post(`/api/game/spend/beerhorns`, {
+        axios.post(`/api/game/spend/beerhorns`, {
           die: number, 
           game_uid: router.query.id, 
           pid:profile.id}).then(()=>{
@@ -385,7 +385,7 @@ export default function Game() {
         game.red_mine + 
         game.blue_mine + 
         game.black_mine <= 0){
-          await axios.post(`/api/game/end`, {
+          axios.post(`/api/game/end`, {
             game_uid: router.query.id
           }).then(res => {
             setLoadModalIsOpen(false)
@@ -395,7 +395,7 @@ export default function Game() {
     }
 
     if (action === 'commit'){
-      await axios.post(`/api/game/commit/commit`, {
+      axios.post(`/api/game/commit/commit`, {
         die: number,
         game_uid: router.query.id
       }).then(()=>{
