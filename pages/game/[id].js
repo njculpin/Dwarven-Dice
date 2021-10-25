@@ -710,7 +710,7 @@ export default function Game() {
           <button className={commitButtonStyle()} onClick={()=>collectOnCommits()}><h1>Collect</h1></button>
           <button className={passButtonStyle()} onClick={()=>passTurn()}><h1>Pass</h1></button>
           <p>Turn {game.turns}</p>
-          <p>It's {game.active_player}'s' Turn</p>
+          <p>Its {game.active_player} Turn</p>
         </div>
 
         <div className="w-1/2 flex justify-between items-center p-4 text-center">
