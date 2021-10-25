@@ -95,8 +95,6 @@ export default function Game() {
   const [isLoadModalOpen, setLoadModalIsOpen] = useState(false)
   const [tip, setTip] = useState('')
 
-  const _isMounted = useRef(true)
-
   useEffect(() => {
 
     fetchProfile()
@@ -111,10 +109,9 @@ export default function Game() {
       .subscribe()
     
     return () => {
-        _isMounted.current = false;
         supabase.removeSubscription(mySubscription)
     }
-    
+
   })
 
   const getGameState = async () => {
