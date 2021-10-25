@@ -1,4 +1,4 @@
-import { supabase } from '../../../../utils/supabaseClient'
+import { supabase } from '../../utils/supabaseClient'
 
 export default async function handler(die, game_uid){
     if (die === 1){

@@ -1,15 +1,12 @@
-import { supabase } from '../../../../utils/supabaseClient'
+import { supabase } from '../../utils/supabaseClient'
 import spender from './spender'
 
-export default async function handler(req, res){
+export default async function handler(game_uid, die, pid){
 
-    const game_uid = req.body.game_uid
-    const die = req.body.die
-    const pid = req.body.pid
 
     const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
     if (error){
-        res.status(400).json({message:'something went wrong'})
+        return error
     }
 
     const game = data[0]
@@ -121,10 +118,10 @@ export default async function handler(req, res){
             game_uid: game_uid
         })
         if (error){
-            res.status(400).json({message:error})
+            return error
         }
 
-        res.status(200).json({message:data})
+        return data
     }
 
     if (game.secondary_player === pid){
@@ -137,10 +134,10 @@ export default async function handler(req, res){
             game_uid: game.game_uid
         })
         if (error){
-            res.status(400).json({message:error})
+            return error
         }
 
-        res.status(200).json({message:data})
+        return data
     }
 
 }

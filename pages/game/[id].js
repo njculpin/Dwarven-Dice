@@ -4,13 +4,17 @@ import { supabase } from '../../utils/supabaseClient'
 import Loader from "react-loader-spinner"
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import Modal from 'react-modal';
-import axios from 'axios'
 
 // Game Imports
 import roll from '../../game/roll'
 import pass from '../../game/pass'
 import end from '../../game/end'
-
+import axebombs from '../../game/spend/axebombs'
+import beerhorns from '../../game/spend/beerhorns'
+import heads from '../../game/spend/heads'
+import lanterns from '../../game/spend/lanterns'
+import commit from '../../game/commit/committer'
+import collect from '../../game/collect/collect'
 
 Modal.setAppElement("#__next")
 
@@ -243,25 +247,21 @@ export default function Game() {
   const closeLanternModal = (color) => {
     setLoadModalIsOpen(true)
     setLanternModalIsOpen(false);
-    axios.post(`/api/game/spend/lanterns`, {
-      die: lanternDie, 
-      game_uid: router.query.id, 
-      color: color
-    }).then(()=>{
+
+    lanterns(lanternDie, router.query.id, color).then(()=>{
       setLoadModalIsOpen(false)
     })
+
   }
 
   const closeHeadModal = (secondary_player) => {
     setLoadModalIsOpen(true)
     setHeadModalOpen(false);
-    axios.post(`/api/game/spend/heads`, {
-      die: headDie, 
-      game_uid: router.query.id, 
-      secondary_player: secondary_player
-    }).then(()=>{
+
+    heads(headDie, router.query.id, secondary_player).then(()=>{
       setLoadModalIsOpen(false)
     })
+
   }
 
   const fetchProfile = async () => {
@@ -318,9 +318,7 @@ export default function Game() {
 
   const collectOnCommits = () => {
     setLoadModalIsOpen(true)
-    axios.post(`/api/game/collect/collect`, {
-      game_uid: router.query.id
-    }).then(()=>{
+    collect(router.query.id).then(()=>{
       setLoadModalIsOpen(false)
     })
   }
@@ -378,20 +376,18 @@ export default function Game() {
         openLanternModal(number)
       }
       if (face === 2 || face === 3){
-        axios.post(`/api/game/spend/axebombs`, {
-          die: number, 
-          game_uid: router.query.id, 
-          pid:profile.id}).then(()=>{
-            setLoadModalIsOpen(false)
-          })
+
+        axebombs(number, router.query.id, profile.id).then(()=>{
+          setLoadModalIsOpen(false)
+        })
+
       }
       if (face === 4 || face === 5){
-        axios.post(`/api/game/spend/beerhorns`, {
-          die: number, 
-          game_uid: router.query.id, 
-          pid:profile.id}).then(()=>{
-            setLoadModalIsOpen(false)
-          })
+
+        beerhorns(number, game_uid, pid).then(()=>{
+          setLoadModalIsOpen(false)
+        })
+
       }
 
       // if mine count is less than or equal to
@@ -412,10 +408,7 @@ export default function Game() {
     }
 
     if (action === 'commit'){
-      axios.post(`/api/game/commit/commit`, {
-        die: number,
-        game_uid: router.query.id
-      }).then(()=>{
+      commit(die, router.query.id).then(()=>{
         setLoadModalIsOpen(false)
       })
     }

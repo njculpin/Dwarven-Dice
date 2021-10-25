@@ -1,4 +1,4 @@
-import { supabase } from '../../../../utils/supabaseClient'
+import { supabase } from '../../utils/supabaseClient'
 
 export default async function handler(die, game_uid){
     if (die === 1){
@@ -13,6 +13,7 @@ export default async function handler(die, game_uid){
         if (error){
             return error
         }
+        return data
     }
     if (die === 2){
         const { data, error } = await supabase
@@ -26,6 +27,7 @@ export default async function handler(die, game_uid){
         if (error){
             return error
         }
+        return data
     }
     if (die === 3){
         const { data, error } = await supabase
@@ -39,6 +41,7 @@ export default async function handler(die, game_uid){
         if (error){
             return error
         }
+        return data
     }
     if (die === 4){
         const { data, error } = await supabase
@@ -52,6 +55,7 @@ export default async function handler(die, game_uid){
         if (error){
             return error
         }
+        return data
     }
     if (die === 5){
         const { data, error } = await supabase
@@ -65,6 +69,7 @@ export default async function handler(die, game_uid){
         if (error){
             return error
         }
+        return data
     }
     if (die === 6){
         const { data, error } = await supabase
@@ -78,6 +83,7 @@ export default async function handler(die, game_uid){
         if (error){
             return error
         }
+        return data
     }
     if (die === 7){
         const { data, error } = await supabase
@@ -91,6 +97,7 @@ export default async function handler(die, game_uid){
         if (error){
             return error
         }
+        return data
     }
     if (die === 8){
         const { data, error } = await supabase
@@ -104,5 +111,6 @@ export default async function handler(die, game_uid){
         if (error){
             return error
         }
+        return data
     }
 }

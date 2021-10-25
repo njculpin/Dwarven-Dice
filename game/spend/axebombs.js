@@ -1,14 +1,11 @@
-import { supabase } from '../../../../utils/supabaseClient'
+import { supabase } from '../../utils/supabaseClient'
 import spender from './spender'
 
-export default async function handler(req, res){
-
-    const game_uid = req.body.game_uid
-    const die = req.body.die
+export default async function handler(game_uid, die){
 
     const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
     if (error){
-        res.status(400).json({message:'something went wrong'})
+        return error
     }
 
     const game = data[0]
@@ -26,9 +23,9 @@ export default async function handler(req, res){
                   }
             }
             spender(die, game_uid)
-            res.status(200).json({message:"success"})
+            return "success"
         } else {
-            res.status(200).json({message:"sorry, this die is spent"})
+            return "sorry, this die is spent"
         }
     }
 
@@ -45,9 +42,9 @@ export default async function handler(req, res){
                   }
             }
             spender(die, game_uid)
-            res.status(200).json({message:"success"})
+            return "success"
         } else {
-            res.status(200).json({message:"sorry, this die is spent"})
+            return "sorry, this die is spent"
         }
     }
 
@@ -64,9 +61,9 @@ export default async function handler(req, res){
                   }
             }
             spender(die, game_uid)
-            res.status(200).json({message:"success"})
+            return "success"
         } else {
-            res.status(200).json({message:"sorry, this die is spent"})
+            return "sorry, this die is spent"
         }
     }
 
@@ -83,9 +80,9 @@ export default async function handler(req, res){
                   }
             }
             spender(die, game_uid)
-            res.status(200).json({message:"success"})
+            return "success"
         } else {
-            res.status(200).json({message:"sorry, this die is spent"})
+            return "sorry, this die is spent"
         }
     }
 
@@ -102,9 +99,9 @@ export default async function handler(req, res){
                   }
             }
             spender(die, game_uid)
-            res.status(200).json({message:"success"})
+            return "success"
         } else {
-            res.status(200).json({message:"sorry, this die is spent"})
+            return "sorry, this die is spent"
         }
     }
 
@@ -121,9 +118,9 @@ export default async function handler(req, res){
                   }
             }
             spender(die, game_uid)
-            res.status(200).json({message:"success"})
+            return "success"
         } else {
-            res.status(200).json({message:"sorry, this die is spent"})
+            return "sorry, this die is spent"
         }
     }
 
@@ -140,9 +137,9 @@ export default async function handler(req, res){
                   }
             }
             spender(die, game_uid)
-            res.status(200).json({message:"success"})
+            return "success"
         } else {
-            res.status(200).json({message:"sorry, this die is spent"})
+            return "sorry, this die is spent"
         }
     }
 
@@ -159,9 +156,9 @@ export default async function handler(req, res){
                   }
             }
             spender(die, game_uid)
-            res.status(200).json({message:"success"})
+            return "success"
         } else {
-            res.status(200).json({message:"sorry, this die is spent"})
+            return "sorry, this die is spent"
         }
     }
 
