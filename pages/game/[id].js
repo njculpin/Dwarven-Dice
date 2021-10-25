@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { supabase } from '../../utils/supabaseClient'
 import Loader from "react-loader-spinner"
@@ -96,10 +96,23 @@ export default function Game() {
   const [tip, setTip] = useState('')
 
   useEffect(() => {
-
+    
     fetchProfile()
     getGameState()
 
+    const mySubscription = getChange();
+    return () => {
+      supabase.removeSubscription(mySubscription);
+    };
+  }, []);
+  
+  useEffect(() => {
+    if (game) {
+      setGameState(game)
+    }
+  }, [game]);
+
+  const getChange = async () => {
     const query = String(`gamestates:game_uid=eq.${router.query.id}`)
     const mySubscription = supabase
       .from(query)
@@ -107,12 +120,8 @@ export default function Game() {
         setGameState(payload.new)
       })
       .subscribe()
-    
-    return () => {
-        supabase.removeSubscription(mySubscription)
-    }
-
-  })
+    return mySubscription;
+  }
 
   const getGameState = async () => {
     const {data, error} = await supabase.from('gamestates').select().match({game_uid: router.query.id})
