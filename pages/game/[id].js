@@ -118,7 +118,18 @@ export default function Game() {
   
   useEffect(() => {
     if (game) {
+
       setGameState(game)
+
+      // check for winner
+      let totalMine = game.green_mine + game.purple_mine + game.red_mine + game.blue_mine + game.black_mine
+      if (totalMine <= 0){
+        end(router.query.id).then((player_uid)=>{
+          setLoadModalIsOpen(false)
+          setWinner(player_uid)
+        })
+      }
+
     }
   }, [game]);
 
@@ -388,20 +399,7 @@ export default function Game() {
         })
       }
 
-      // if mine count is less than or equal to
-      // zero after this spend action
-      // the game is over
-      let totalMine = game.green_mine + game.purple_mine + game.red_mine + game.blue_mine + game.black_mine
-      console.log(`total mine -> ${totalMine}`)
-
-      if (totalMine <= 0){
-          end(router.query.id).then((player_uid)=>{
-            console.log(player_uid)
-            setLoadModalIsOpen(false)
-            setWinner(player_uid)
-          })
-        }
-      }
+    }
 
     if (action === 'commit'){
       commit(number, router.query.id).then(()=>{
