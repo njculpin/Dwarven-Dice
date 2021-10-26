@@ -359,7 +359,9 @@ export default function Game() {
   }
 
   const activateDie = (action, face, number) => {
+
     setLoadModalIsOpen(true)
+
     if (action === 'spend'){
       if (face === 0){
         openHeadModal(number)
@@ -377,14 +379,14 @@ export default function Game() {
       }
       if (face === 2 || face === 3){
 
-        axebombs(number, router.query.id, profile.id).then(()=>{
+        axebombs(number, router.query.id).then(()=>{
           setLoadModalIsOpen(false)
         })
 
       }
       if (face === 4 || face === 5){
 
-        beerhorns(number, game_uid, pid).then(()=>{
+        beerhorns(number, game.game_uid, profile.id).then(()=>{
           setLoadModalIsOpen(false)
         })
 
@@ -408,7 +410,7 @@ export default function Game() {
     }
 
     if (action === 'commit'){
-      commit(die, router.query.id).then(()=>{
+      commit(number, router.query.id).then(()=>{
         setLoadModalIsOpen(false)
       })
     }

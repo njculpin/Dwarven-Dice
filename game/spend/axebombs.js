@@ -1,7 +1,7 @@
 import { supabase } from '../../utils/supabaseClient'
 import spender from './spender'
 
-export default async function handler(game_uid, die){
+export default async function handler(die, game_uid){
 
     const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
     if (error){

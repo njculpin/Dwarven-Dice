@@ -7,6 +7,7 @@ export default async function handler(game_uid){
     if (error){
         return error
     }
+
     const game = data[0]
 
     const die1_state = game.die1_state

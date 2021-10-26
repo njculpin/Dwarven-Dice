@@ -3,8 +3,6 @@ import { supabase } from '../utils/supabaseClient'
 
 export default async function roll(game_uid, pid){
 
-    console.log('rolls hit')
-
     const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
     const game = data[0]
 
