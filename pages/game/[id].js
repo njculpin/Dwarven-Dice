@@ -20,12 +20,14 @@ Modal.setAppElement("#__next")
 
 export default function Game() {
 
+
   const router = useRouter()
   const [game, setGameState] = useState({
     "game_version": 1,
     "game_uid": '',
     "host": '',
     "turns": 0,
+    "players": 0,
     "active_player": '',
     "secondary_player": '',
     "active_player_rolls": 0,
@@ -111,25 +113,25 @@ export default function Game() {
     getGameState()
 
     const mySubscription = getChange();
+
     return () => {
       supabase.removeSubscription(mySubscription);
     };
+    
   }, []);
   
   useEffect(() => {
     if (game) {
-
       setGameState(game)
-
-      // check for winner
       let totalMine = game.green_mine + game.purple_mine + game.red_mine + game.blue_mine + game.black_mine
       if (totalMine <= 0){
-        end(router.query.id).then((player_uid)=>{
+        end(router.query.id).then((res)=>{
           setLoadModalIsOpen(false)
-          setWinner(player_uid)
+          if (res){
+            setWinner(res.player_uid)
+          }
         })
       }
-
     }
   }, [game]);
 
@@ -205,6 +207,8 @@ export default function Game() {
   }
 
   const openHeadModal = (die) => {
+    // check player count
+    // if only one player prevent this
     if (die === 1){
       if (game.die1_state === 0){
         setHeadDie(die)
@@ -370,14 +374,18 @@ export default function Game() {
   }
 
   const activateDie = (action, face, number) => {
-
-    setLoadModalIsOpen(true)
-
     if (action === 'spend'){
       if (face === 0){
-        openHeadModal(number)
+        if (game.players >= 2){
+          setLoadModalIsOpen(true)
+          console.log(`game.players -> ${game.players}`)
+          openHeadModal(number)
+        } else {
+          setTip('Not enough players to challenge')
+        }
       }
       if (face === 1){
+        setLoadModalIsOpen(true)
         if (
           game.green_mine + 
           game.purple_mine + 
@@ -389,19 +397,21 @@ export default function Game() {
         openLanternModal(number)
       }
       if (face === 2 || face === 3){
+        setLoadModalIsOpen(true)
         axebombs(number, router.query.id).then(()=>{
           setLoadModalIsOpen(false)
         })
       }
       if (face === 4 || face === 5){
+        setLoadModalIsOpen(true)
         beerhorns(number, game.game_uid, profile.id).then(()=>{
           setLoadModalIsOpen(false)
         })
       }
-
     }
 
     if (action === 'commit'){
+      setLoadModalIsOpen(true)
       commit(number, router.query.id).then(()=>{
         setLoadModalIsOpen(false)
       })
@@ -569,6 +579,7 @@ export default function Game() {
           <div className={activePlayerStyle(game.p1_address)}>
             {game.p1_address && <h1>{rollsAvailable(game.p1_address)} rolls remaining</h1>}
             <h1 className="truncate p-2">{game.p1_address? game.p1_address : 'empty seat'}</h1>
+            {game.p1_address && 
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-2">{game.green_p1}</div>
               <div className="span-1 bg-purple-500 p-2">{game.purple_p1}</div>
@@ -576,10 +587,12 @@ export default function Game() {
               <div className="span-1 bg-blue-500 p-2">{game.blue_p1}</div>
               <div className="span-1 bg-gray-500 p-2">{game.black_p1}</div>
             </div>
+            }
           </div>
           <div className={activePlayerStyle(game.p2_address)}>
             {game.p2_address && <h1>{rollsAvailable(game.p2_address)} rolls remaining</h1>}
             <h1 className="truncate p-2">{game.p2_address? game.p2_address : 'empty seat'}</h1>
+            {game.p2_address && 
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-2">{game.green_p2}</div>
               <div className="span-1 bg-purple-500 p-2">{game.purple_p2}</div>
@@ -587,21 +600,25 @@ export default function Game() {
               <div className="span-1 bg-blue-500 p-2">{game.blue_p2}</div>
               <div className="span-1 bg-gray-500 p-2">{game.black_p2}</div>
             </div>
+            }
           </div>
           <div className={activePlayerStyle(game.p3_address)}>
             {game.p3_address && <h1>{rollsAvailable(game.p2_address)} rolls remaining</h1>}
             <h1 className="truncate p-2">{game.p3_address? game.p3_address : 'empty seat'}</h1>
-            <div className="grid grid-flow-col grid-cols-5">
-              <div className="span-1 bg-green-500 p-2">{game.green_p3}</div>
-              <div className="span-1 bg-purple-500 p-2">{game.purple_p3}</div>
-              <div className="span-1 bg-red-500 p-2">{game.red_p3}</div>
-              <div className="span-1 bg-blue-500 p-2">{game.blue_p3}</div>
-              <div className="span-1 bg-gray-500 p-2">{game.black_p3}</div>
-            </div>
+            {game.p3_address && 
+              <div className="grid grid-flow-col grid-cols-5">
+                <div className="span-1 bg-green-500 p-2">{game.green_p3}</div>
+                <div className="span-1 bg-purple-500 p-2">{game.purple_p3}</div>
+                <div className="span-1 bg-red-500 p-2">{game.red_p3}</div>
+                <div className="span-1 bg-blue-500 p-2">{game.blue_p3}</div>
+                <div className="span-1 bg-gray-500 p-2">{game.black_p3}</div>
+              </div>
+            }
           </div>
           <div className={activePlayerStyle(game.p4_address)}>
             {game.p4_address && <h1>{rollsAvailable(game.p4_address)} rolls remaining</h1>}
             <h1 className="truncate p-2">{game.p4_address? game.p4_address : 'empty seat'}</h1>
+            {game.p4_address && 
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-2">{game.green_p4}</div>
               <div className="span-1 bg-purple-500 p-2">{game.purple_p4}</div>
@@ -609,10 +626,12 @@ export default function Game() {
               <div className="span-1 bg-blue-500 p-2">{game.blue_p4}</div>
               <div className="span-1 bg-gray-500 p-2">{game.black_p4}</div>
             </div>
+            }
           </div>
           <div className={activePlayerStyle(game.p5_address)}>
             {game.p5_address && <h1>{rollsAvailable(game.p5_address)} rolls remaining</h1>}
             <h1 className="truncate p-2">{game.p5_address? game.p5_address : 'empty seat'}</h1>
+            {game.p5_address && 
             <div className="grid grid-flow-col grid-cols-5">
               <div className="span-1 bg-green-500 p-2">{game.green_p5}</div>
               <div className="span-1 bg-purple-500 p-2">{game.purple_p5}</div>
@@ -620,6 +639,7 @@ export default function Game() {
               <div className="span-1 bg-blue-500 p-2">{game.blue_p5}</div>
               <div className="span-1 bg-gray-500 p-2">{game.black_p5}</div>
             </div>
+            }
           </div>
         </div>
   
@@ -841,4 +861,11 @@ export default function Game() {
       </div>
     )
   }
+}
+
+export async function getServerSideProps(context) {
+  console.log(context)
+  return {
+      props: {},
+  };
 }

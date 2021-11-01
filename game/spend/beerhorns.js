@@ -3,13 +3,13 @@ import spender from './spender'
 
 export default async function handler(die, game_uid, pid){
 
-    const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
+    const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid}).single()
 
     if (error){
         return error
     }
 
-    const game = data[0]
+    const game = data
 
     var quantity = 0
 

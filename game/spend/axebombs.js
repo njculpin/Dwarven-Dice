@@ -3,12 +3,12 @@ import spender from './spender'
 
 export default async function handler(die, game_uid){
 
-    const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
+    const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid}).single()
     if (error){
         return error
     }
 
-    const game = data[0]
+    const game = data
 
     if (die === 1){
         if (game.die1_state === 0){

@@ -10,6 +10,7 @@ export default async function handler(req, res){
         "game_uid": game_uid,
         "host": host,
         "turns": 1,
+        "players": 1,
         "active_player": host,
         "secondary_player": '',
         "active_player_rolls": 1,

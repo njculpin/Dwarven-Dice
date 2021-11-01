@@ -3,8 +3,8 @@ import { supabase } from '../utils/supabaseClient'
 
 export default async function roll(game_uid, pid){
 
-    const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
-    const game = data[0]
+    const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid}).single()
+    const game = data
 
     if (error){
         return error
@@ -34,43 +34,6 @@ export default async function roll(game_uid, pid){
     return game
         
 }
-
-// export default async function handler(req, res){
-
-//     const game_uid = req.body.game_uid
-//     const pid = req.body.pid
-
-//     const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
-//     const game = data[0]
-
-//     if (error){
-//         res.status(400).json({message: error})
-//     }
-
-//     const active_player = game.active_player
-//     const active_player_rolls = game.active_player_rolls
-
-//     const secondary_player = game.secondary_player
-//     const secondary_player_rolls = game.secondary_player_rolls
-
-//     if (active_player === pid){
-//         if (active_player_rolls >= 1){
-//             rollDice(game, game_uid)
-//             reduce_player_roll(game, pid)
-//         }    
-//     }
-
-//     if (secondary_player === pid){
-//         if (secondary_player_rolls >= 1){
-//             rollDice(game, game_uid)
-//             reduce_player_roll(game, pid)
-            
-//         }  
-//     }
-
-//     return res.status(200).json({status:'success', message:game})
-        
-// }
 
 async function rollDice(game, game_uid){
     if (game.die1_state === 0){
@@ -127,8 +90,9 @@ const reduce_player_roll = async (game, pid) => {
                 game_uid: game.game_uid
             })
             if (error){
-                console.log(error)
+                return error
             }
+            return data
         }
     }
 
@@ -144,8 +108,9 @@ const reduce_player_roll = async (game, pid) => {
                 game_uid: game.game_uid
             })
             if (error){
-                console.log(error)
+                return error
             }
+            return data
         }
     }
 
@@ -158,8 +123,9 @@ const updateDie = async (die, face, game) => {
         .update({die1_face: face})
         .match({ game_uid: game })
         if (error){
-            console.log(error)
+            return error
         }
+        return data
     }
     if (die === 2){
         const { data, error } = await supabase
@@ -167,8 +133,9 @@ const updateDie = async (die, face, game) => {
         .update({die2_face: face})
         .match({ game_uid: game })
         if (error){
-            console.log(error)
+            return error
         }
+        return data
     }
     if (die === 3){
         const { data, error } = await supabase
@@ -176,8 +143,9 @@ const updateDie = async (die, face, game) => {
         .update({die3_face: face})
         .match({ game_uid: game })
         if (error){
-            console.log(error)
+            return error
         }
+        return data
     }
     if (die === 4){
         const { data, error } = await supabase
@@ -185,8 +153,9 @@ const updateDie = async (die, face, game) => {
         .update({die4_face: face})
         .match({ game_uid: game })
         if (error){
-            console.log(error)
+            return error
         }
+        return data
     }
     if (die === 5){
         const { data, error } = await supabase
@@ -194,8 +163,9 @@ const updateDie = async (die, face, game) => {
         .update({die5_face: face})
         .match({ game_uid: game })
         if (error){
-            console.log(error)
+            return error
         }
+        return data
     }
     if (die === 6){
         const { data, error } = await supabase
@@ -203,8 +173,9 @@ const updateDie = async (die, face, game) => {
         .update({die6_face: face})
         .match({ game_uid: game })
         if (error){
-            console.log(error)
+            return error
         }
+        return data
     }
     if (die === 7){
         const { data, error } = await supabase
@@ -212,8 +183,9 @@ const updateDie = async (die, face, game) => {
         .update({die7_face: face})
         .match({ game_uid: game })
         if (error){
-            console.log(error)
+            return error
         }
+        return data
     }
     if (die === 8){
         const { data, error } = await supabase
@@ -221,7 +193,8 @@ const updateDie = async (die, face, game) => {
         .update({die8_face: face})
         .match({ game_uid: game })
         if (error){
-            console.log(error)
+            return error
         }
+        return data
     }
 }

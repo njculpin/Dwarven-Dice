@@ -4,19 +4,19 @@ export default async function pass(game_uid, active_player, pid){
 
     if (active_player === pid){
 
-        const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
-        const game = data[0]
+        const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid}).single()
+        const game = data
 
         const turn = game.turns
 
-        let die1_face = 0
-        let die2_face = 0
-        let die3_face = 0
-        let die4_face = 0
-        let die5_face = 0
-        let die6_face = 0
-        let die7_face = 0
-        let die8_face = 0
+        let die1_face = randomFace()
+        let die2_face = randomFace()
+        let die3_face = randomFace()
+        let die4_face = randomFace()
+        let die5_face = randomFace()
+        let die6_face = randomFace()
+        let die7_face = randomFace()
+        let die8_face = randomFace()
 
         const die1_state = game.die1_state
         if (die1_state === 2){
@@ -184,3 +184,9 @@ async function setActivePlayer(active_player, game_uid, turn, die1_face, die2_fa
         }
     return data
 }
+
+const randomFace = () => {
+    const items = [0,1,2,3,4,5]
+    const randomFace = items[Math.floor(Math.random()*items.length)]
+    return randomFace
+  }

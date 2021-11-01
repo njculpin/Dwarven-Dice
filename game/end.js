@@ -2,8 +2,8 @@ import { supabase } from '../utils/supabaseClient'
 
 export default async function handler(game_uid){
 
-    const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
-    const game = data[0]
+    const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid}).single()
+    const game = data
 
     if (error){
         return error

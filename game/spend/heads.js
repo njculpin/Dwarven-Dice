@@ -6,12 +6,12 @@ export default async function handler(die, game_uid, secondary_player){
     // spend before getting the correct amount of dice to divide
     spender(die, game_uid)
     
-    const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid})
+    const { data, error } = await supabase.from('gamestates').select().match({game_uid: game_uid}).single()
     if (error){
         return error
     }
 
-    const game = data[0]
+    const game = data
     
     const die1_state = game.die1_state
     const die2_state = game.die2_state

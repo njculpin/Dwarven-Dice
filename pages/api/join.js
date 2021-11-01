@@ -5,8 +5,8 @@ export default async function handler(req, res){
     const game_uid = req.body.game_uid
     const user = req.body.userid
 
-    const { data, error } = await supabase.from('games').select().match({game_uid: game_uid})
-    const first = data[0]
+    const { data, error } = await supabase.from('games').select().match({game_uid: game_uid}).single()
+    const first = data
 
     if (error){
         res.status(400).json({message: error})
@@ -17,12 +17,12 @@ export default async function handler(req, res){
 
         // if the first seat is the user
         if (first.p1_address === user) {
-            const take = await takeSeat({p1_address: user}, first.game_uid, user)
+            const take = await takeSeat({p1_address: user, players:first.players+1}, first.game_uid, user)
             if (take.status === 'error'){
                 res.status(400).json({message: `error taking seat 1`})
             }
             if (take.status === 'success'){
-                const initialize = await initializePlayer({p1_address: user}, first.game_uid)
+                const initialize = await initializePlayer({p1_address: user , players:first.players+1}, first.game_uid)
                 if (initialize.status === 'error'){
                     res.status(400).json({message: `error initializing seat 2`})
                 }
@@ -34,12 +34,12 @@ export default async function handler(req, res){
 
             // if the second seat is the user
             if (first.p2_address === user) {
-                const take = await takeSeat({p2_address: user}, first.game_uid, user)
+                const take = await takeSeat({p2_address: user, players:first.players+1}, first.game_uid, user)
                 if (take.status === 'error'){
                     res.status(400).json({message: `error taking seat 2`})
                 }
                 if (take.status === 'success'){
-                    const initialize = await initializePlayer({p2_address: user}, first.game_uid)
+                    const initialize = await initializePlayer({p2_address: user, players:first.players+1}, first.game_uid)
                     if (initialize.status === 'error'){
                         res.status(400).json({message: `error initializing seat 2`})
                     }
@@ -51,12 +51,12 @@ export default async function handler(req, res){
 
                 // if the 3rd seat is the user
                 if (first.p3_address === user) {
-                    const take = await takeSeat({p3_address: user}, first.game_uid, user)
+                    const take = await takeSeat({p3_address: user, players:first.players+1}, first.game_uid, user)
                     if (take.status === 'error'){
                         res.status(400).json({message: `error taking seat 3`})
                     }
                     if (take.status === 'success'){
-                        const initialize = await initializePlayer({p3_address: user}, first.game_uid)
+                        const initialize = await initializePlayer({p3_address: user, players:first.players+1}, first.game_uid)
                         if (initialize.status === 'error'){
                             res.status(400).json({message: `error initializing seat 2`})
                         }
@@ -68,12 +68,12 @@ export default async function handler(req, res){
 
                     // if the 4th seat is the user
                     if (first.p4_address === user) {
-                        const take = await takeSeat({p4_address: user}, first.game_uid, user)
+                        const take = await takeSeat({p4_address: user, players:first.players+1}, first.game_uid, user)
                         if (take.status === 'error'){
                             res.status(400).json({message: `error taking seat 4`})
                         }
                         if (take.status === 'success'){
-                            const initialize = await initializePlayer({p4_address: user}, first.game_uid)
+                            const initialize = await initializePlayer({p4_address: user, players:first.players+1}, first.game_uid)
                             if (initialize.status === 'error'){
                                 res.status(400).json({message: `error initializing seat 2`})
                             }
@@ -88,12 +88,12 @@ export default async function handler(req, res){
 
                         // if the 5th seat is the user
                         if (first.p5_address === user) {
-                            const take = await takeSeat({p5_address: user}, first.game_uid, user)
+                            const take = await takeSeat({p5_address: user, players:first.players+1}, first.game_uid, user)
                             if (take.status === 'error'){
                                 res.status(400).json({message: `error taking seat 5`})
                             }
                             if (take.status === 'success'){
-                                const initialize = await initializePlayer({p5_address: user}, first.game_uid)
+                                const initialize = await initializePlayer({p5_address: user, players:first.players+1}, first.game_uid)
                                 if (initialize.status === 'error'){
                                     res.status(400).json({message: `error initializing seat 2`})
                                 }
@@ -108,12 +108,12 @@ export default async function handler(req, res){
 
                     } else {
                         // if the 5th seat is not the user and available
-                        const take = await takeSeat({p5_address: user}, first.game_uid, user)
+                        const take = await takeSeat({p5_address: user, players:first.players+1}, first.game_uid, user)
                         if (take.status === 'error'){
                             res.status(400).json({message: `error taking seat 5`})
                         }
                         if (take.status === 'success'){
-                            const initialize = await initializePlayer({p5_address: user}, first.game_uid)
+                            const initialize = await initializePlayer({p5_address: user, players:first.players+1}, first.game_uid)
                             if (initialize.status === 'error'){
                                 res.status(400).json({message: `error initializing seat 2`})
                             }
@@ -124,12 +124,12 @@ export default async function handler(req, res){
                     }
                 } else {
                     // if the 4th seat is not taken and this is not the user
-                    const take = await takeSeat({p4_address: user}, first.game_uid, user)
+                    const take = await takeSeat({p4_address: user, players:first.players+1}, first.game_uid, user)
                     if (take.status === 'error'){
                         res.status(400).json({message: `error taking seat 4`})
                     }
                     if (take.status === 'success'){
-                        const initialize = await initializePlayer({p4_address: user}, first.game_uid)
+                        const initialize = await initializePlayer({p4_address: user, players:first.players+1}, first.game_uid)
                         if (initialize.status === 'error'){
                             res.status(400).json({message: `error initializing seat 2`})
                         }
@@ -140,12 +140,12 @@ export default async function handler(req, res){
                 }
             } else {
                 // if the 3rd seat is not taken and this is not the user
-                const take = await takeSeat({p3_address: user}, first.game_uid, user)
+                const take = await takeSeat({p3_address: user, players:first.players+1}, first.game_uid, user)
                 if (take.status === 'error'){
                     res.status(400).json({message: `error taking seat 3`})
                 }
                 if (take.status === 'success'){
-                    const initialize = await initializePlayer({p3_address: user}, first.game_uid)
+                    const initialize = await initializePlayer({p3_address: user, players:first.players+1}, first.game_uid)
                     if (initialize.status === 'error'){
                         res.status(400).json({message: `error initializing seat 2`})
                     }
@@ -156,12 +156,12 @@ export default async function handler(req, res){
             }
         } else {
             // if the 2nd seat is not taken and this is not the user
-            const take = await takeSeat({p2_address: user}, first.game_uid, user)
+            const take = await takeSeat({p2_address: user, players:first.players+1}, first.game_uid, user)
             if (take.status === 'error'){
                 res.status(400).json({message: `error taking seat 2`})
             }
             if (take.status === 'success'){
-                const initialize = await initializePlayer({p2_address: user}, first.game_uid)
+                const initialize = await initializePlayer({p2_address: user, players:first.players+1}, first.game_uid)
                 if (initialize.status === 'error'){
                     res.status(400).json({message: `error initializing seat 2`})
                 }
@@ -172,12 +172,12 @@ export default async function handler(req, res){
         }
     } else {
         // if the 1st seat is not taken and this is not the user
-        const take = await takeSeat({p1_address: user}, first.game_uid, user)
+        const take = await takeSeat({p1_address: user, players:first.players+1}, first.game_uid, user)
         if (take.status === 'error'){
             res.status(400).json({message: `error taking seat 1`})
         }
         if (take.status === 'success'){
-            const initialize = await initializePlayer({p1_address: user}, first.game_uid)
+            const initialize = await initializePlayer({p1_address: user, players:first.players+1}, first.game_uid)
             if (initialize.status === 'error'){
                 res.status(400).json({message: `error initializing seat 2`})
             }
