@@ -112,6 +112,7 @@ export default function Game() {
     const mySubscription = supabase
       .from(query)
       .on("*", (payload) => {
+        console.log("update", payload.new);
         setGameState(payload.new);
       })
       .subscribe();
@@ -1065,11 +1066,4 @@ export default function Game() {
       </div>
     );
   }
-}
-
-export async function getServerSideProps(context) {
-  console.log(context);
-  return {
-    props: {},
-  };
 }
