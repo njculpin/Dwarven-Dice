@@ -108,7 +108,13 @@ export default function Game() {
   useEffect(() => {
     fetchProfile();
     getGameState();
-    const mySubscription = getChange();
+    const query = String(`gamestates:game_uid=eq.${router.query.id}`);
+    const mySubscription = supabase
+      .from(query)
+      .on("*", (payload) => {
+        setGameState(payload.new);
+      })
+      .subscribe();
     return () => {
       supabase.removeSubscription(mySubscription);
     };
@@ -133,17 +139,6 @@ export default function Game() {
       }
     }
   }, [game]);
-
-  const getChange = async () => {
-    const query = String(`gamestates:game_uid=eq.${router.query.id}`);
-    const mySubscription = supabase
-      .from(query)
-      .on("*", (payload) => {
-        setGameState(payload.new);
-      })
-      .subscribe();
-    return mySubscription;
-  };
 
   const getGameState = async () => {
     const { data, error } = await supabase
