@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { useGameManager } from "../hooks/useGameManager";
 import { Die } from "./Die";
-import { Walls } from "./Walls";
+import { Box } from "./Box";
 import { Ground } from "./Ground";
 
 type Die = {
@@ -27,8 +27,8 @@ export function MobileController() {
           return <Die key={die.id} die={die} />;
         })}
       </Suspense>
+      <Box />
       <Ground />
-      <Walls />
     </group>
   );
 }

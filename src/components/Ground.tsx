@@ -4,7 +4,7 @@ export function Ground() {
   const { viewport } = useThree();
   return (
     <CuboidCollider
-      args={[viewport.width, 0.5, viewport.height]}
+      args={[viewport.width / 2, 0.5, viewport.height / 2]}
       position={[0, -1, 0]}
     />
   );
