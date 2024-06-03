@@ -1,38 +1,29 @@
-import { useEffect } from "react";
+import { StrictMode } from "react";
 import { Canvas } from "@react-three/fiber";
+import { Physics } from "@react-three/rapier";
 import { MobileController } from "./components/MobileController";
 import { LightRig } from "./components/LightsRig";
-import { insertCoin } from "playroomkit";
+
 import { useGameManager } from "./hooks/useGameManager";
+import { OrbitControls } from "@react-three/drei";
 
 export default function App() {
   const game = useGameManager();
-
-  useEffect(() => {
-    async function initPlayRoom() {
-      await insertCoin({ streamMode: false, gameId: process.env.PLAYROOM });
-    }
-    initPlayRoom();
-  }, []);
-
-  function startGame() {
-    return game.startGame();
-  }
-
-  function roll() {
-    return game.rollDice();
-  }
-
   return (
     <div style={{ height: "100%", width: "100%" }}>
       <Canvas
         camera={{
           fov: 40,
-          position: [0, 15, 0],
+          position: [0, 30, 0],
         }}
       >
-        <MobileController />
-        <LightRig />
+        <StrictMode>
+          <Physics debug>
+            <MobileController />
+          </Physics>
+          <LightRig />
+        </StrictMode>
+        <OrbitControls />
       </Canvas>
       <button
         style={{
@@ -43,9 +34,9 @@ export default function App() {
           top: 16,
           right: 16,
         }}
-        onClick={roll}
+        onClick={() => game.startGame()}
       >
-        Roll
+        Start
       </button>
       <button
         style={{
@@ -56,9 +47,9 @@ export default function App() {
           top: 100,
           right: 16,
         }}
-        onClick={startGame}
+        onClick={() => game.rollDice()}
       >
-        Start
+        Roll
       </button>
     </div>
   );

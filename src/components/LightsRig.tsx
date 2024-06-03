@@ -1,5 +1,3 @@
-import { SoftShadows } from "@react-three/drei";
-
 export function LightRig() {
   return (
     <group>
@@ -16,7 +14,6 @@ export function LightRig() {
         shadow-camera-bottom={-10}
         shadow-camera-left={-10}
       />
-      <SoftShadows />
     </group>
   );
 }

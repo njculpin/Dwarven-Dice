@@ -26,6 +26,10 @@ type PlayerKeep = {
 export function useGameManager() {
   const isHost = useIsHost();
   const me = myPlayer();
+  const [gameStarted, setGameStarted] = useMultiplayerState(
+    "gameStarted",
+    false
+  );
   const [mineGems, setMineGems] = useMultiplayerState("mineGems", []);
   const [fieldGems, setFieldGems] = useMultiplayerState("fieldGems", []);
   const [playerGems, setPlayerGems] = useMultiplayerState("playerGems", []);
@@ -47,6 +51,7 @@ export function useGameManager() {
     if (!isHost) {
       return;
     }
+    setGameStarted(true);
     setupMineGems();
     setupPlayerGems();
     generateDice();
@@ -371,6 +376,7 @@ export function useGameManager() {
 
   return {
     isHost,
+    gameStarted,
     mineGems,
     fieldGems,
     challenged,
