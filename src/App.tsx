@@ -30,7 +30,7 @@ export default function App() {
       <Canvas
         camera={{
           fov: 35,
-          position: [0, 25, 0],
+          position: [0, 15, 0],
         }}
       >
         <MotionConfig
@@ -43,7 +43,7 @@ export default function App() {
           }}
         >
           <MobileController />
-          <CameraRig />
+          {/* <CameraRig /> */}
           <LightRight />
         </MotionConfig>
       </Canvas>

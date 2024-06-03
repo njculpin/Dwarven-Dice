@@ -20,15 +20,11 @@ export function MobileController() {
   }
   return (
     <group>
-      <GizmoHelper
-        alignment="bottom-right" // widget alignment within scene
-        margin={[80, 80]} // widget margins (X, Y)
-      >
+      <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
         <GizmoViewport
           axisColors={["red", "green", "blue"]}
           labelColor="black"
         />
-        {/* alternative: <GizmoViewcube /> */}
       </GizmoHelper>
       <Suspense fallback={null}>
         {dice.map(function (die: Die, index: number) {
@@ -36,7 +32,7 @@ export function MobileController() {
             <Die
               face={die.face}
               key={index}
-              position={new Vector3(0, 0, 1 * index)}
+              position={new Vector3(0, 0, index - dice.length / 2)}
             />
           );
         })}
