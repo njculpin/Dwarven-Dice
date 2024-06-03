@@ -1,6 +1,6 @@
 import { SoftShadows } from "@react-three/drei";
 
-export function LightRight() {
+export function LightRig() {
   return (
     <group>
       <ambientLight intensity={0.25} />

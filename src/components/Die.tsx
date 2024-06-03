@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
-import { Vector3, Group } from "three";
 import { Mesh } from "three";
 import { useRef } from "react";
+import { DragControls } from "@react-three/drei";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -13,8 +13,8 @@ type GLTFResult = GLTF & {
   materials: {};
 };
 
-export function Die({ face, position }: { face: string; position: Vector3 }) {
-  const ref = useRef<Group>(null);
+export function Die({ face }: { face: string }) {
+  const ref = useRef<Mesh>(null);
   const URL = "/models/Dice.gltf";
   const { nodes } = useGLTF(URL) as GLTFResult;
 
@@ -68,14 +68,15 @@ export function Die({ face, position }: { face: string; position: Vector3 }) {
   }
 
   return (
-    <group ref={ref} position={position} dispose={null}>
+    <DragControls>
       <mesh
+        ref={ref}
         castShadow
         receiveShadow
         geometry={nodes.Dice.geometry}
         material={nodes.Dice.material}
         scale={[0.3, 0.3, 0.3]}
       />
-    </group>
+    </DragControls>
   );
 }

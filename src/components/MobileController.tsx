@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import { GizmoHelper, GizmoViewport } from "@react-three/drei";
 import { useGameManager } from "../hooks/useGameManager";
 import { Die } from "./Die";
-import { Vector3 } from "three";
 
 type Die = {
   id: number;
@@ -29,11 +28,9 @@ export function MobileController() {
       <Suspense fallback={null}>
         {dice.map(function (die: Die, index: number) {
           return (
-            <Die
-              face={die.face}
-              key={index}
-              position={new Vector3(0, 0, index - dice.length / 2)}
-            />
+            <group key={index} position={[0, 0, index - dice.length / 2]}>
+              <Die face={die.face} />
+            </group>
           );
         })}
       </Suspense>

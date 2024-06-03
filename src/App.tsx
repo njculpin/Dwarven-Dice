@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { MotionConfig } from "framer-motion";
 import { MobileController } from "./components/MobileController";
-import { CameraRig } from "./components/CameraRig";
-import { LightRight } from "./components/LightsRig";
+import { LightRig } from "./components/LightsRig";
 import { insertCoin } from "playroomkit";
 import { useGameManager } from "./hooks/useGameManager";
 
@@ -29,23 +27,12 @@ export default function App() {
     <div style={{ height: "100%", width: "100%" }}>
       <Canvas
         camera={{
-          fov: 35,
+          fov: 40,
           position: [0, 15, 0],
         }}
       >
-        <MotionConfig
-          transition={{
-            type: "spring",
-            mass: 5,
-            stiffness: 500,
-            damping: 100,
-            restDelta: 0.0001,
-          }}
-        >
-          <MobileController />
-          {/* <CameraRig /> */}
-          <LightRight />
-        </MotionConfig>
+        <MobileController />
+        <LightRig />
       </Canvas>
       <button
         style={{
