@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
 import { MobileController } from "./components/MobileController";
@@ -8,6 +8,11 @@ import { OrbitControls } from "@react-three/drei";
 
 export default function App() {
   const game = useGameManager();
+
+  useEffect(() => {
+    game.startGame();
+  }, []);
+
   return (
     <div style={{ height: "100%", width: "100%" }}>
       <Canvas
@@ -21,35 +26,9 @@ export default function App() {
             <MobileController />
           </Physics>
           <LightRig />
+          <OrbitControls />
         </StrictMode>
-        <OrbitControls />
       </Canvas>
-      <button
-        style={{
-          border: 1,
-          padding: "16px",
-          position: "absolute",
-          zIndex: 100,
-          top: 16,
-          right: 16,
-        }}
-        onClick={() => game.startGame()}
-      >
-        Start
-      </button>
-      <button
-        style={{
-          border: 1,
-          padding: "16px",
-          position: "absolute",
-          zIndex: 100,
-          top: 100,
-          right: 16,
-        }}
-        onClick={() => game.rollDice()}
-      >
-        Roll
-      </button>
     </div>
   );
 }

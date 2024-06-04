@@ -7,10 +7,11 @@ import {
   RapierRigidBody,
   interactionGroups,
   vec3,
+  euler,
 } from "@react-three/rapier";
-import { Group, Mesh, MeshStandardMaterial } from "three";
+import { Group, Mesh, MeshStandardMaterial, Object3D } from "three";
 import { useFrame } from "@react-three/fiber";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 
@@ -79,15 +80,33 @@ export function Dice() {
   const Dice_cell023 = useRef<RapierRigidBody>(null);
 
   const [exploding, setExploding] = useState(false);
+  const [exploded, setExploded] = useState(false);
 
-  useFrame(() => {
-    if (origin.current && group.current) {
+  useFrame((_, delta) => {
+    if (origin.current && group.current && !exploding) {
       const position = vec3(origin.current.translation());
       origin.current.applyImpulse(vec3({ x: 0, y: 0.2, z: 0 }), true);
       group.current.position.x = position.x;
       group.current.position.z = position.z;
     }
+    if (exploding && !exploded && group.current) {
+      group.current.children.forEach((body) => {
+        body.scale.x -= 0.1 * delta;
+        body.scale.y -= 0.1 * delta;
+        body.scale.z -= 0.1 * delta;
+        if (body.scale.x <= 0.1 && body.scale.y <= 0.1 && body.scale.z <= 0.1) {
+          removeObject(body);
+          setExploded(true);
+        }
+      });
+    }
   });
+
+  function removeObject(object: Object3D) {
+    while (object.children.length > 0) {
+      object.remove(object.children[0]);
+    }
+  }
 
   const randomNumber = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min) + min);
@@ -105,6 +124,11 @@ export function Dice() {
           randomNumber(12, 15),
           randomNumber(-5, 5),
         ]}
+        rotation={euler({
+          x: randomNumber(-45, 45),
+          y: randomNumber(-45, 45),
+          z: randomNumber(-45, 45),
+        })}
       >
         <mesh
           name="origin"

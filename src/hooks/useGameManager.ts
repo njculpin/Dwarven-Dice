@@ -8,7 +8,6 @@ import {
 
 type Die = {
   id: number;
-  face: string;
   spent: boolean;
   commit: boolean;
   used: boolean;
@@ -92,13 +91,8 @@ export function useGameManager() {
     players.forEach((player) => {
       const d: Die[] = [];
       for (let i = 1; i <= 8; i++) {
-        const face = getNewRandomFace();
-        if (!face) {
-          continue;
-        }
         d.push({
           id: i,
-          face: face,
           spent: false,
           commit: false,
           used: false,
@@ -119,46 +113,20 @@ export function useGameManager() {
       return;
     }
     const rolls = me.getState("rolls");
-    // if (rolls < 1) {
-    //   return;
-    // }
-    const newDice = [];
-    for (let i = 0; i <= dice.length; i++) {
-      const die = dice[i];
-      if (!die) {
+    if (rolls < 1) {
+      return;
+    }
+    const remaining = [];
+    for (let i = 0; i < dice.length; i++) {
+      if (!dice[i]) {
         continue;
       }
-      if (die.used) {
-        newDice.push(die);
-      } else {
-        const newDie = {
-          ...die,
-          face: getNewRandomFace(),
-        };
-        newDice.push(newDie);
+      if (!dice[i].used) {
+        remaining.push(dice[i]);
       }
     }
-    me.setState("dice", newDice);
+    me.setState("dice", [...remaining]);
     me.setState("rolls", rolls - 1);
-    checkEndPhase();
-  }
-
-  function getNewRandomFace() {
-    const index = randomIntFromInterval(1, 6);
-    switch (index) {
-      case 1:
-        return "beers";
-      case 2:
-        return "horns";
-      case 3:
-        return "axes";
-      case 4:
-        return "bombs";
-      case 5:
-        return "lanterns";
-      case 6:
-        return "heads";
-    }
   }
 
   function spendDie({
@@ -374,6 +342,14 @@ export function useGameManager() {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
+  function rollsRemaining() {
+    if (me.getState("rolls")) {
+      return me.getState("rolls");
+    } else {
+      return 0;
+    }
+  }
+
   return {
     isHost,
     gameStarted,
@@ -382,6 +358,7 @@ export function useGameManager() {
     challenged,
     challenger,
     challengeColor,
+    rollsRemaining,
     startGame,
     myDice,
     rollDice,

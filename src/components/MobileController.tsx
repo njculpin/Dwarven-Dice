@@ -1,13 +1,11 @@
 import { Suspense } from "react";
 import { useGameManager } from "../hooks/useGameManager";
-// import { Die } from "./Die";
 import { Dice } from "./Dice";
 import { Box } from "./Box";
 import { Ground } from "./Ground";
 
 type Die = {
   id: number;
-  face: string;
   spent: boolean;
   commit: boolean;
   used: boolean;
