@@ -84,7 +84,6 @@ export function Dice() {
     if (origin.current && group.current) {
       const position = vec3(origin.current.translation());
       group.current.position.x = position.x;
-      group.current.position.y = position.y;
       group.current.position.z = position.z;
     }
   });
