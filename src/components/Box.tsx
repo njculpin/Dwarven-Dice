@@ -11,7 +11,7 @@ export function Box() {
       <Wall
         width={viewport.width / 2}
         height={wallHeight / 2}
-        depth={1}
+        depth={2}
         x={0}
         y={wallHeight / 2}
         z={viewport.height / 2}
@@ -20,14 +20,14 @@ export function Box() {
       <Wall
         width={viewport.width / 2}
         height={wallHeight / 2}
-        depth={1}
+        depth={2}
         x={0}
         y={wallHeight / 2}
         z={-viewport.height / 2}
       />
       {/* RIGHT */}
       <Wall
-        width={1}
+        width={2}
         height={wallHeight / 2}
         depth={viewport.height / 2}
         x={viewport.width / 2}
@@ -36,7 +36,7 @@ export function Box() {
       />
       {/* LEFT */}
       <Wall
-        width={1}
+        width={2}
         height={wallHeight / 2}
         depth={viewport.height / 2}
         x={-viewport.width / 2}
@@ -46,7 +46,7 @@ export function Box() {
       {/* BOTTOM */}
       <Wall
         width={viewport.width / 2}
-        height={0.5}
+        height={2}
         depth={viewport.height / 2}
         x={0}
         y={-1}
@@ -55,7 +55,7 @@ export function Box() {
       {/* TOP */}
       <Wall
         width={viewport.width / 2}
-        height={0.5}
+        height={2}
         depth={viewport.height / 2}
         x={0}
         y={wallHeight}

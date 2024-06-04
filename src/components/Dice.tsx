@@ -83,6 +83,7 @@ export function Dice() {
   useFrame(() => {
     if (origin.current && group.current) {
       const position = vec3(origin.current.translation());
+      origin.current.applyImpulse(vec3({ x: 0, y: 0.2, z: 0 }), true);
       group.current.position.x = position.x;
       group.current.position.z = position.z;
     }
