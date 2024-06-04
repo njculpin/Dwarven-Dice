@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { useGameManager } from "../hooks/useGameManager";
-import { Die } from "./Die";
+// import { Die } from "./Die";
+import { Dice } from "./Dice";
 import { Box } from "./Box";
 import { Ground } from "./Ground";
 
@@ -24,7 +25,7 @@ export function MobileController() {
     <group>
       <Suspense fallback={null}>
         {dice.map(function (die: Die) {
-          return <Die key={die.id} die={die} />;
+          return <Dice key={die.id} />;
         })}
       </Suspense>
       <Box />

@@ -7,36 +7,58 @@ export function Box() {
   const wallHeight = 25;
   return (
     <RigidBody type="fixed">
+      {/* FRONT */}
       <Wall
         width={viewport.width / 2}
-        height={wallHeight}
+        height={wallHeight / 2}
         depth={1}
         x={0}
-        y={25}
+        y={wallHeight / 2}
         z={viewport.height / 2}
       />
+      {/* BACK */}
       <Wall
         width={viewport.width / 2}
-        height={wallHeight}
+        height={wallHeight / 2}
         depth={1}
         x={0}
-        y={25}
+        y={wallHeight / 2}
         z={-viewport.height / 2}
       />
+      {/* RIGHT */}
       <Wall
         width={1}
-        height={wallHeight}
+        height={wallHeight / 2}
         depth={viewport.height / 2}
         x={viewport.width / 2}
-        y={25}
+        y={wallHeight / 2}
         z={0}
       />
+      {/* LEFT */}
       <Wall
         width={1}
-        height={wallHeight}
+        height={wallHeight / 2}
         depth={viewport.height / 2}
         x={-viewport.width / 2}
-        y={25}
+        y={wallHeight / 2}
+        z={0}
+      />
+      {/* BOTTOM */}
+      <Wall
+        width={viewport.width / 2}
+        height={0.5}
+        depth={viewport.height / 2}
+        x={0}
+        y={-1}
+        z={0}
+      />
+      {/* TOP */}
+      <Wall
+        width={viewport.width / 2}
+        height={0.5}
+        depth={viewport.height / 2}
+        x={0}
+        y={wallHeight}
         z={0}
       />
     </RigidBody>

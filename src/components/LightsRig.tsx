@@ -1,3 +1,5 @@
+import { Environment } from "@react-three/drei";
+
 export function LightRig() {
   return (
     <group>
@@ -14,6 +16,16 @@ export function LightRig() {
         shadow-camera-bottom={-10}
         shadow-camera-left={-10}
       />
+      {/* <Environment
+        background={false}
+        preset={"sunset"}
+        blur={0.4}
+        ground={{
+          height: 15,
+          radius: 60,
+          scale: 1000,
+        }}
+      /> */}
     </group>
   );
 }

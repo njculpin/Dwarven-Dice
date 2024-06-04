@@ -3,7 +3,6 @@ import { Canvas } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
 import { MobileController } from "./components/MobileController";
 import { LightRig } from "./components/LightsRig";
-
 import { useGameManager } from "./hooks/useGameManager";
 import { OrbitControls } from "@react-three/drei";
 
@@ -14,11 +13,11 @@ export default function App() {
       <Canvas
         camera={{
           fov: 40,
-          position: [0, 30, 0],
+          position: [40, 40, 40],
         }}
       >
         <StrictMode>
-          <Physics debug>
+          <Physics>
             <MobileController />
           </Physics>
           <LightRig />
