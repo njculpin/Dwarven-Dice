@@ -6,6 +6,7 @@ import {
   RigidBody,
   RapierRigidBody,
   interactionGroups,
+  vec3,
 } from "@react-three/rapier";
 import { Group, Mesh, MeshStandardMaterial } from "three";
 import { useFrame } from "@react-three/fiber";
@@ -78,11 +79,13 @@ export function Dice() {
   const Dice_cell023 = useRef<RapierRigidBody>(null);
 
   const [exploding, setExploding] = useState(false);
-  const [exploded, setExploded] = useState(false);
 
   useFrame(() => {
-    if (exploding && !exploded) {
-      setExploded(true);
+    if (origin.current && group.current) {
+      const position = vec3(origin.current.translation());
+      group.current.position.x = position.x;
+      group.current.position.y = position.y;
+      group.current.position.z = position.z;
     }
   });
 
@@ -91,19 +94,17 @@ export function Dice() {
   };
 
   return (
-    <group
-      ref={originGroup}
-      position={[
-        randomNumber(-5, 5),
-        randomNumber(12, 15),
-        randomNumber(-5, 5),
-      ]}
-    >
+    <group ref={originGroup}>
       <RigidBody
         type={exploding ? "fixed" : "dynamic"}
         name="origin"
         ref={origin}
         collisionGroups={interactionGroups(0, [0])}
+        position={[
+          randomNumber(-5, 5),
+          randomNumber(12, 15),
+          randomNumber(-5, 5),
+        ]}
       >
         <mesh
           name="origin"
@@ -121,6 +122,7 @@ export function Dice() {
           name="Dice_cell"
           ref={Dice_cell}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell"
@@ -133,6 +135,8 @@ export function Dice() {
           type={exploding ? "dynamic" : "fixed"}
           name="Dice_cell001"
           ref={Dice_cell001}
+          collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell001"
@@ -146,6 +150,7 @@ export function Dice() {
           name="Dice_cell002"
           ref={Dice_cell002}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell002"
@@ -159,6 +164,7 @@ export function Dice() {
           name="Dice_cell003"
           ref={Dice_cell003}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell003"
@@ -172,6 +178,7 @@ export function Dice() {
           name="Dice_cell004"
           ref={Dice_cell004}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell004"
@@ -185,6 +192,7 @@ export function Dice() {
           name="Dice_cell005"
           ref={Dice_cell005}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell005"
@@ -198,6 +206,7 @@ export function Dice() {
           name="Dice_cell006"
           ref={Dice_cell006}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell006"
@@ -211,6 +220,7 @@ export function Dice() {
           name="Dice_cell007"
           ref={Dice_cell007}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell007"
@@ -224,6 +234,7 @@ export function Dice() {
           name="Dice_cell008"
           ref={Dice_cell008}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell008"
@@ -237,6 +248,7 @@ export function Dice() {
           name="Dice_cell009"
           ref={Dice_cell009}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell009"
@@ -250,6 +262,7 @@ export function Dice() {
           name="Dice_cell010"
           ref={Dice_cell010}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell010"
@@ -263,6 +276,7 @@ export function Dice() {
           name="Dice_cell011"
           ref={Dice_cell011}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell011"
@@ -276,6 +290,7 @@ export function Dice() {
           name="Dice_cell012"
           ref={Dice_cell012}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell012"
@@ -289,6 +304,7 @@ export function Dice() {
           name="Dice_cell013"
           ref={Dice_cell013}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell013"
@@ -302,6 +318,7 @@ export function Dice() {
           name="Dice_cell014"
           ref={Dice_cell014}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell014"
@@ -315,6 +332,7 @@ export function Dice() {
           name="Dice_cell015"
           ref={Dice_cell015}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell015"
@@ -328,6 +346,7 @@ export function Dice() {
           name="Dice_cell016"
           ref={Dice_cell016}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell016"
@@ -341,6 +360,7 @@ export function Dice() {
           name="Dice_cell017"
           ref={Dice_cell017}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell017"
@@ -354,6 +374,7 @@ export function Dice() {
           name="Dice_cell018"
           ref={Dice_cell018}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell018"
@@ -367,6 +388,7 @@ export function Dice() {
           name="Dice_cell019"
           ref={Dice_cell019}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell019"
@@ -380,6 +402,7 @@ export function Dice() {
           name="Dice_cell020"
           ref={Dice_cell020}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell020"
@@ -393,6 +416,7 @@ export function Dice() {
           name="Dice_cell021"
           ref={Dice_cell021}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell021"
@@ -406,6 +430,7 @@ export function Dice() {
           name="Dice_cell022"
           ref={Dice_cell022}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell022"
@@ -419,6 +444,7 @@ export function Dice() {
           name="Dice_cell023"
           ref={Dice_cell023}
           collisionGroups={interactionGroups(1, [1])}
+          mass={20}
         >
           <mesh
             name="Dice_cell023"
