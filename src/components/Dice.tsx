@@ -78,11 +78,27 @@ export function Dice() {
   const Dice_cell023 = useRef<RapierRigidBody>(null);
 
   const [exploding, setExploding] = useState(false);
+  const [exploded, setExploded] = useState(false);
 
-  useFrame;
+  useFrame(() => {
+    if (exploding && !exploded) {
+      setExploded(true);
+    }
+  });
+
+  const randomNumber = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min) + min);
+  };
 
   return (
-    <group ref={originGroup}>
+    <group
+      ref={originGroup}
+      position={[
+        randomNumber(-5, 5),
+        randomNumber(12, 15),
+        randomNumber(-5, 5),
+      ]}
+    >
       <RigidBody
         type={exploding ? "fixed" : "dynamic"}
         name="origin"

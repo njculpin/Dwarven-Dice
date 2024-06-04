@@ -13,7 +13,7 @@ export default function App() {
       <Canvas
         camera={{
           fov: 40,
-          position: [40, 40, 40],
+          position: [0, 40, 0],
         }}
       >
         <StrictMode>
