@@ -1,14 +1,14 @@
 import { useState, useRef } from "react";
-import { Vector3, Group } from "three";
+import { Group } from "three";
 import { useFrame } from "@react-three/fiber";
 import { RigidBody, interactionGroups } from "@react-three/rapier";
-import { RoundedBox } from "@react-three/drei";
+import { RoundedBox, Html } from "@react-three/drei";
 
 export function RollButton({
-  position,
+  rolls,
   setRoll,
 }: {
-  position: Vector3;
+  rolls: number;
   setRoll: () => void;
 }) {
   const ref = useRef<Group>(null);
@@ -28,14 +28,13 @@ export function RollButton({
   });
 
   function handleClick() {
-    console.log("roll hit");
     setRoll();
     setClicked(true);
   }
 
   return (
     <group>
-      <group position={position} ref={ref}>
+      <group ref={ref}>
         <RigidBody
           type="fixed"
           name="origin"
@@ -44,13 +43,24 @@ export function RollButton({
         >
           <RoundedBox
             onPointerDown={() => handleClick()}
-            args={[2, 1, 1]}
-            radius={0.05}
+            args={[2, 2, 2]}
+            radius={0.3}
             smoothness={4}
             bevelSegments={4}
             creaseAngle={0.4}
           >
             <meshStandardMaterial color="gray" />
+            <Html
+              className="pointer-events-none"
+              scale={1}
+              rotation={[-Math.PI / 2, 0, 0]}
+              position={[0, 1, 0]}
+              transform
+            >
+              <div className="annotation pointer-events-none font-bold">
+                {rolls} Rolls
+              </div>
+            </Html>
           </RoundedBox>
         </RigidBody>
       </group>

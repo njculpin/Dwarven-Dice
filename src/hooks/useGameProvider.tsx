@@ -47,7 +47,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   function setUpPlayers() {
     players.forEach((player) => {
-      player.setState("rolls", 0, true);
+      player.setState("rolls", 10, true);
     });
   }
 
@@ -80,7 +80,6 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   function addRolls(amount: number) {
     const prev = me.getState("rolls");
-    console.log(prev);
     me.setState("rolls", prev + amount, true);
   }
 
@@ -89,7 +88,6 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
       return;
     }
     const prev = me.getState("rolls");
-    console.log(prev);
     me.setState("rolls", prev - 1, true);
   }
 

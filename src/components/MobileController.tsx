@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
 import { Dice } from "./Dice";
 import { Vector3 } from "three";
-import { useThree } from "@react-three/fiber";
+import { Center } from "@react-three/drei";
 import { useGame } from "../hooks/useGame";
 import { RollButton } from "./RollButton";
 import { GameContextType } from "../hooks/useGameProvider";
 
 export function MobileController() {
-  const { height } = useThree((state) => state.viewport);
-  const { setSelectedFace } = useGame() as GameContextType;
+  const { rolls, setSelectedFace, reduceOneRoll } =
+    useGame() as GameContextType;
   const [roll, setRoll] = useState(false);
 
   function handleRoll() {
-    setRoll(true);
+    if (rolls > 0) {
+      setRoll(true);
+      reduceOneRoll();
+    }
   }
 
   useEffect(() => {
@@ -26,49 +29,48 @@ export function MobileController() {
       <group>
         <Dice
           roll={roll}
-          position={new Vector3(-2.5, 0, -2.5)}
+          position={new Vector3(-2.5, 1, -2.5)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
-          position={new Vector3(-2.5, 0, 0)}
+          position={new Vector3(-2.5, 1, 0)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
-          position={new Vector3(-2.5, 0, 2.5)}
+          position={new Vector3(-2.5, 1, 2.5)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
-          position={new Vector3(0, 0, 2.5)}
+          position={new Vector3(0, 1, 2.5)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
-          position={new Vector3(0, 0, -2.5)}
+          position={new Vector3(0, 1, -2.5)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
-          position={new Vector3(2.5, 0, 0)}
+          position={new Vector3(2.5, 1, 0)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
-          position={new Vector3(2.5, 0, 2.5)}
+          position={new Vector3(2.5, 1, 2.5)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
-          position={new Vector3(2.5, 0, -2.5)}
+          position={new Vector3(2.5, 1, -2.5)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
       </group>
-      <RollButton
-        position={new Vector3(0, 0, height / 2 - 2)}
-        setRoll={() => handleRoll()}
-      />
+      <Center>
+        <RollButton rolls={rolls} setRoll={() => handleRoll()} />
+      </Center>
     </>
   );
 }
