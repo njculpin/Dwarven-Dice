@@ -1,12 +1,8 @@
-import { useEffect, useState } from "react";
 import { useGame } from "../hooks/useGame";
 import { GameContextType } from "../hooks/useGameProvider";
 
 export function UI() {
-  const { selectedFace, setSelectedFace, fieldGems, myGems } =
-    useGame() as GameContextType;
-
-  const [chooseSpendOrCommit, setChooseSpendOrCommit] = useState(false);
+  const { selectedFace, fieldGems, myGems } = useGame() as GameContextType;
 
   const fieldBlack = fieldGems.filter((x) => x === "black").length || 0;
   const fieldBlue = fieldGems.filter((x) => x === "blue").length || 0;
@@ -19,12 +15,6 @@ export function UI() {
   const myRed = myGems.filter((x) => x === "red").length || 0;
   const myPurple = myGems.filter((x) => x === "purple").length || 0;
   const myGreen = myGems.filter((x) => x === "purple").length || 0;
-
-  useEffect(() => {
-    if (selectedFace !== "") {
-      setChooseSpendOrCommit(true);
-    }
-  }, [selectedFace]);
 
   return (
     <div className="fixed pointer-events-none top-0 right-0 left-0 bottom-0">
