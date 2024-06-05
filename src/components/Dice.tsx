@@ -191,7 +191,6 @@ export function Dice({ position }: { position: Vector3 }) {
           ref={origin}
           collisionGroups={interactionGroups(0, [0])}
           mass={1}
-          friction={1}
           linearDamping={1}
         >
           <mesh
