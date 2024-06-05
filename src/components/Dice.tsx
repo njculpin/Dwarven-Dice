@@ -52,10 +52,10 @@ type GLTFResult = GLTF & {
 
 export function Dice({
   position,
-  selectFace,
+  setSelectedFace,
 }: {
   position: Vector3;
-  selectFace: (face: string) => void;
+  setSelectedFace: (face: string) => void;
 }) {
   const { nodes, materials } = useGLTF("/dice.glb") as GLTFResult;
   const originGroup = useRef<Group>(null);
@@ -98,7 +98,7 @@ export function Dice({
     const position = vec3(origin.current.translation());
     setPieces(<Pieces position={position} />);
     setExploded(true);
-    selectFace(face);
+    setSelectedFace(face);
   }
 
   function getDiceDetails() {

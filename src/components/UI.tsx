@@ -20,18 +20,18 @@ export function UI() {
     <div className="fixed pointer-events-none top-0 right-0 left-0 bottom-0">
       <div className="w-full h-full flex flex-col justify-between">
         <div className="p-8">
-          <div className="w-full flex justify-between">
+          <p className="w-full text-left text-xs italic">Gems On Field</p>
+          <div className="w-full flex space-x-2">
             <p className="font-bold">{fieldBlack}</p>
             <p className="font-bold text-blue-500">{fieldBlue}</p>
             <p className="font-bold text-red-500">{fieldRed}</p>
             <p className="font-bold text-purple-500">{fieldPurple}</p>
             <p className="font-bold text-green-500">{fieldGreen}</p>
           </div>
-          <p className="w-full text-right text-xs italic">Gems On Field</p>
         </div>
         <div className="p-8">
           <p className="w-full text-left text-xs italic">My Gems</p>
-          <div className="w-full flex justify-between">
+          <div className="w-full flex space-x-2">
             <p className="font-bold">{myBlack}</p>
             <p className="font-bold text-blue-500">{myBlue}</p>
             <p className="font-bold text-red-500">{myRed}</p>
