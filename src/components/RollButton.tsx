@@ -2,14 +2,11 @@ import { useState, useRef } from "react";
 import { Vector3, Group } from "three";
 import { useFrame } from "@react-three/fiber";
 import { RigidBody, interactionGroups } from "@react-three/rapier";
+import { RoundedBox } from "@react-three/drei";
 
 export function RollButton({ position }: { position: Vector3 }) {
   const ref = useRef<Group>(null);
   const [clicked, setClicked] = useState(false);
-
-  function handleClick() {
-    setClicked(true);
-  }
 
   useFrame((_, delta) => {
     if (ref.current && clicked) {
@@ -25,18 +22,26 @@ export function RollButton({ position }: { position: Vector3 }) {
   });
 
   return (
-    <group position={position} ref={ref}>
-      <RigidBody
-        type="fixed"
-        name="origin"
-        collisionGroups={interactionGroups(0, [0, 1])}
-        mass={1000}
-      >
-        <mesh onPointerDown={() => handleClick()}>
-          <boxGeometry />
-          <meshStandardMaterial />
-        </mesh>
-      </RigidBody>
+    <group>
+      <group position={position} ref={ref}>
+        <RigidBody
+          type="fixed"
+          name="origin"
+          collisionGroups={interactionGroups(0, [0, 1])}
+          mass={1000}
+        >
+          <RoundedBox
+            onPointerDown={() => setClicked(true)}
+            args={[1, 1, 1]}
+            radius={0.05}
+            smoothness={4}
+            bevelSegments={4}
+            creaseAngle={0.4}
+          >
+            <meshStandardMaterial color="gray" />
+          </RoundedBox>
+        </RigidBody>
+      </group>
     </group>
   );
 }
