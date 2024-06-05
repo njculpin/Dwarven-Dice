@@ -10,14 +10,7 @@ import {
   euler,
   quat,
 } from "@react-three/rapier";
-import {
-  Group,
-  Object3DEventMap,
-  Mesh,
-  MeshStandardMaterial,
-  Object3D,
-  Vector3,
-} from "three";
+import { Group, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three";
 import { ThreeEvent } from "@react-three/fiber";
 import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
@@ -60,7 +53,7 @@ type GLTFResult = GLTF & {
 };
 
 export function Dice({ position }: { position: Vector3 }) {
-  const { oneGemFromMineToField } = useGame() as GameContextType;
+  const { reduceOneRoll, oneGemFromMineToField } = useGame() as GameContextType;
 
   const { nodes, materials } = useGLTF("/models/dice.glb") as GLTFResult;
   const originGroup = useRef<Group>(null);
@@ -92,6 +85,9 @@ export function Dice({ position }: { position: Vector3 }) {
 
   function handleClick(e: ThreeEvent<PointerEvent>) {
     e.stopPropagation();
+    if (exploded) {
+      return;
+    }
     const face = getDiceDetails();
     if (!face) {
       return;
@@ -102,6 +98,7 @@ export function Dice({ position }: { position: Vector3 }) {
     const position = vec3(origin.current.translation());
     setPieces(<Pieces position={position} />);
     setExploded(true);
+    reduceOneRoll();
     oneGemFromMineToField();
   }
 
