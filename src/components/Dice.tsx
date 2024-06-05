@@ -8,12 +8,16 @@ import {
   interactionGroups,
   vec3,
   euler,
+  quat,
 } from "@react-three/rapier";
 import { Group, Mesh, MeshStandardMaterial, Object3D } from "three";
+import { ThreeEvent } from "@react-three/fiber";
 import { useFrame } from "@react-three/fiber";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
+import { useGame } from "../hooks/useGame";
+import { GameContextType } from "../hooks/useGameProvider";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -49,9 +53,11 @@ type GLTFResult = GLTF & {
 };
 
 export function Dice() {
+  const { oneGemFromMineToField } = useGame() as GameContextType;
+
   const { nodes, materials } = useGLTF("/models/dice.glb") as GLTFResult;
   const originGroup = useRef<Group>(null);
-  const group = useRef<Group>(null);
+  const piecesGroup = useRef<Group>(null);
 
   const origin = useRef<RapierRigidBody>(null);
   const Dice_cell = useRef<RapierRigidBody>(null);
@@ -83,20 +89,29 @@ export function Dice() {
   const [exploded, setExploded] = useState(false);
 
   useFrame((_, delta) => {
-    if (origin.current && group.current && !exploding) {
+    if (origin.current && piecesGroup.current && !exploding) {
       const position = vec3(origin.current.translation());
-      origin.current.applyImpulse(vec3({ x: 0, y: 0.2, z: 0 }), true);
-      group.current.position.x = position.x;
-      group.current.position.z = position.z;
+      piecesGroup.current.position.x = position.x;
+      piecesGroup.current.position.z = position.z;
     }
-    if (exploding && !exploded && group.current) {
-      group.current.children.forEach((body) => {
+    if (exploding && !exploded && piecesGroup.current && originGroup.current) {
+      piecesGroup.current.children.forEach((body) => {
+        body.scale.x -= 0.1 * delta;
+        body.scale.y -= 0.1 * delta;
+        body.scale.z -= 0.1 * delta;
+        if (body.scale.x <= 0.1 && body.scale.y <= 0.1 && body.scale.z <= 0.1) {
+          body.visible = false;
+          removeObject(body);
+          setExploded(true);
+        }
+        piecesGroup.current?.remove();
+      });
+      originGroup.current.children.forEach((body) => {
         body.scale.x -= 0.1 * delta;
         body.scale.y -= 0.1 * delta;
         body.scale.z -= 0.1 * delta;
         if (body.scale.x <= 0.1 && body.scale.y <= 0.1 && body.scale.z <= 0.1) {
           removeObject(body);
-          setExploded(true);
         }
       });
     }
@@ -108,45 +123,127 @@ export function Dice() {
     }
   }
 
-  const randomNumber = (min: number, max: number) => {
-    return Math.floor(Math.random() * (max - min) + min);
-  };
+  function handleClick(e: ThreeEvent<PointerEvent>) {
+    e.stopPropagation();
+    const face = getDiceDetails();
+    if (!face) {
+      return;
+    }
+    setExploding(true);
+    oneGemFromMineToField();
+  }
+
+  function getDiceDetails() {
+    if (!origin.current) {
+      return;
+    }
+    const rot = euler().setFromQuaternion(quat(origin.current.rotation()));
+    const x = getNormalizedDegree(rot.x);
+    const y = getNormalizedDegree(rot.y);
+    const z = getNormalizedDegree(rot.z);
+    const die = getFace({ x, y, z });
+    if (!die) {
+      return;
+    }
+    return die.face;
+  }
+
+  function getNormalizedDegree(rotationValue: number) {
+    const rotValue = rotationValue / (Math.PI / 180);
+    let normalizedDegree = 0;
+    if (rotValue > 45 && rotValue < 135) {
+      normalizedDegree = 90;
+    } else if (rotValue < -45 && rotValue > -135) {
+      normalizedDegree = -90;
+    } else if (
+      (rotValue > 135 && rotValue < 215) ||
+      (rotValue < -135 && rotValue > -215)
+    ) {
+      normalizedDegree = 180;
+    }
+    return normalizedDegree;
+  }
+
+  function getFace(degree: { x: number; y: number; z: number }) {
+    const rotationLibrary = [
+      { x: 0, y: 0, z: 0, face: "bombs" },
+      { x: 0, y: 90, z: 0, face: "bombs" },
+      { x: 180, y: 0, z: 180, face: "bombs" },
+      { x: 0, y: -90, z: 0, face: "bombs" },
+      { x: 180, y: 90, z: 180, face: "bombs" },
+      { x: 180, y: -90, z: 180, face: "bombs" },
+      { x: -90, y: 0, z: 0, face: "heads" },
+      { x: -90, y: 0, z: 90, face: "heads" },
+      { x: -90, y: 0, z: 180, face: "heads" },
+      { x: -90, y: 0, z: -90, face: "heads" },
+      { x: 0, y: 90, z: 90, face: "lanterns" },
+      { x: 0, y: 0, z: 90, face: "lanterns" },
+      { x: 90, y: 90, z: 0, face: "lanterns" },
+      { x: -90, y: -90, z: 0, face: "lanterns" },
+      { x: 0, y: -90, z: 90, face: "lanterns" },
+      { x: -180, y: -180, z: 90, face: "lanterns" },
+      { x: -90, y: 90, z: 180, face: "lanterns" },
+      { x: 180, y: 90, z: -90, face: "lanterns" },
+      { x: 180, y: 0, z: -90, face: "lanterns" },
+      { x: 180, y: -90, z: -90, face: "lanterns" },
+      { x: 180, y: 90, z: 90, face: "beers" },
+      { x: 180, y: -90, z: 90, face: "beers" },
+      { x: 0, y: 0, z: -90, face: "beers" },
+      { x: 0, y: -90, z: -90, face: "beers" },
+      { x: 90, y: -90, z: 0, face: "beers" },
+      { x: -90, y: 90, z: 0, face: "beers" },
+      { x: 180, y: 0, z: 90, face: "beers" },
+      { x: 0, y: 90, z: -90, face: "beers" },
+      { x: 90, y: 0, z: 0, face: "horns" },
+      { x: 90, y: 0, z: -90, face: "horns" },
+      { x: 90, y: 0, z: 180, face: "horns" },
+      { x: 90, y: 0, z: 90, face: "horns" },
+      { x: 90, y: 90, z: 90, face: "horns" },
+      { x: 0, y: 0, z: 180, face: "axes" },
+      { x: 180, y: -90, z: 0, face: "axes" },
+      { x: 180, y: 90, z: 0, face: "axes" },
+      { x: 180, y: 0, z: 0, face: "axes" },
+      { x: 0, y: 90, z: 180, face: "axes" },
+      { x: 0, y: -90, z: 180, face: "axes" },
+    ];
+    return rotationLibrary.find(function (obj) {
+      if (obj.x === degree.x && obj.y === degree.y && obj.z === degree.z) {
+        return obj;
+      }
+    });
+  }
 
   return (
-    <group ref={originGroup}>
-      <RigidBody
-        type={exploding ? "fixed" : "dynamic"}
-        name="origin"
-        ref={origin}
-        collisionGroups={interactionGroups(0, [0])}
-        position={[
-          randomNumber(-5, 5),
-          randomNumber(12, 15),
-          randomNumber(-5, 5),
-        ]}
-        rotation={euler({
-          x: randomNumber(-45, 45),
-          y: randomNumber(-45, 45),
-          z: randomNumber(-45, 45),
-        })}
-      >
-        <mesh
+    <group>
+      <group ref={originGroup}>
+        <RigidBody
+          type={exploding ? "fixed" : "dynamic"}
           name="origin"
-          geometry={nodes.origin.geometry}
-          material={materials.Dice}
-          onPointerOver={() => (document.body.style.cursor = "grab")}
-          onPointerOut={() => (document.body.style.cursor = "")}
-          onClick={() => setExploding(true)}
-          visible={!exploding}
-        />
-      </RigidBody>
-      <group ref={group} visible={exploding}>
+          ref={origin}
+          collisionGroups={interactionGroups(0, [0])}
+          mass={1}
+          friction={1}
+          linearDamping={1}
+        >
+          <mesh
+            onPointerDown={(event) => handleClick(event)}
+            name="origin"
+            geometry={nodes.origin.geometry}
+            material={materials.Dice}
+            onPointerOver={() => (document.body.style.cursor = "grab")}
+            onPointerOut={() => (document.body.style.cursor = "")}
+            visible={!exploding}
+          />
+        </RigidBody>
+      </group>
+      <group ref={piecesGroup} visible={exploding}>
         <RigidBody
           type={exploding ? "dynamic" : "fixed"}
           name="Dice_cell"
           ref={Dice_cell}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell"
@@ -161,6 +258,7 @@ export function Dice() {
           ref={Dice_cell001}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell001"
@@ -175,6 +273,7 @@ export function Dice() {
           ref={Dice_cell002}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell002"
@@ -189,6 +288,7 @@ export function Dice() {
           ref={Dice_cell003}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell003"
@@ -203,6 +303,7 @@ export function Dice() {
           ref={Dice_cell004}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell004"
@@ -217,6 +318,7 @@ export function Dice() {
           ref={Dice_cell005}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell005"
@@ -231,6 +333,7 @@ export function Dice() {
           ref={Dice_cell006}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell006"
@@ -245,6 +348,7 @@ export function Dice() {
           ref={Dice_cell007}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell007"
@@ -259,6 +363,7 @@ export function Dice() {
           ref={Dice_cell008}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell008"
@@ -273,6 +378,7 @@ export function Dice() {
           ref={Dice_cell009}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell009"
@@ -287,6 +393,7 @@ export function Dice() {
           ref={Dice_cell010}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell010"
@@ -301,6 +408,7 @@ export function Dice() {
           ref={Dice_cell011}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell011"
@@ -315,6 +423,7 @@ export function Dice() {
           ref={Dice_cell012}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell012"
@@ -329,6 +438,7 @@ export function Dice() {
           ref={Dice_cell013}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell013"
@@ -343,6 +453,7 @@ export function Dice() {
           ref={Dice_cell014}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell014"
@@ -357,6 +468,7 @@ export function Dice() {
           ref={Dice_cell015}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell015"
@@ -371,6 +483,7 @@ export function Dice() {
           ref={Dice_cell016}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell016"
@@ -385,6 +498,7 @@ export function Dice() {
           ref={Dice_cell017}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell017"
@@ -399,6 +513,7 @@ export function Dice() {
           ref={Dice_cell018}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell018"
@@ -413,6 +528,7 @@ export function Dice() {
           ref={Dice_cell019}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell019"
@@ -427,6 +543,7 @@ export function Dice() {
           ref={Dice_cell020}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell020"
@@ -441,6 +558,7 @@ export function Dice() {
           ref={Dice_cell021}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell021"
@@ -455,6 +573,7 @@ export function Dice() {
           ref={Dice_cell022}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell022"
@@ -469,6 +588,7 @@ export function Dice() {
           ref={Dice_cell023}
           collisionGroups={interactionGroups(1, [1])}
           mass={20}
+          friction={5}
         >
           <mesh
             name="Dice_cell023"

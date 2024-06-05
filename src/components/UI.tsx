@@ -1,3 +1,3 @@
 export function UI() {
-  return <></>;
+  return <div></div>;
 }

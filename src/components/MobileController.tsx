@@ -1,33 +1,25 @@
 import { Suspense } from "react";
-import { useGameManager } from "../hooks/useGameManager";
 import { Dice } from "./Dice";
 import { Box } from "./Box";
 import { Ground } from "./Ground";
 
-type Die = {
-  id: number;
-  spent: boolean;
-  commit: boolean;
-  used: boolean;
-  roll: () => void;
-};
-
 export function MobileController() {
-  const game = useGameManager();
-  const dice = game.myDice();
-  if (!dice) {
-    return <></>;
-  }
-
   return (
-    <group>
-      <Suspense fallback={null}>
-        {dice.map(function (die: Die) {
-          return <Dice key={die.id} />;
-        })}
-      </Suspense>
-      <Box />
-      <Ground />
-    </group>
+    <>
+      <group>
+        <Suspense fallback={null}>
+          <Dice />
+          <Dice />
+          <Dice />
+          <Dice />
+          <Dice />
+          <Dice />
+          <Dice />
+          <Dice />
+        </Suspense>
+        <Box />
+        <Ground />
+      </group>
+    </>
   );
 }

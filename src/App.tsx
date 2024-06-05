@@ -1,34 +1,27 @@
-import { StrictMode, useEffect } from "react";
+import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
-import { MobileController } from "./components/MobileController";
-import { LightRig } from "./components/LightsRig";
-import { useGameManager } from "./hooks/useGameManager";
-import { OrbitControls } from "@react-three/drei";
+import { UI } from "./components/UI";
+import { isStreamScreen } from "playroomkit";
+import { Experience } from "./components/Experience";
 
 export default function App() {
-  const game = useGameManager();
-
-  useEffect(() => {
-    game.startGame();
-  }, []);
-
+  const stream = isStreamScreen();
   return (
     <div style={{ height: "100%", width: "100%" }}>
       <Canvas
         camera={{
           fov: 40,
-          position: [0, 50, 0],
+          position: stream ? [0, 0, 0] : [0, 50, 0],
         }}
       >
-        <StrictMode>
+        <Suspense>
           <Physics>
-            <MobileController />
+            <Experience />
           </Physics>
-          <LightRig />
-          <OrbitControls />
-        </StrictMode>
+        </Suspense>
       </Canvas>
+      <UI />
     </div>
   );
 }
