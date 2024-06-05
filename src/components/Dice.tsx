@@ -16,8 +16,6 @@ import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
-import { useGame } from "../hooks/useGame";
-import { GameContextType } from "../hooks/useGameProvider";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -52,9 +50,13 @@ type GLTFResult = GLTF & {
   };
 };
 
-export function Dice({ position }: { position: Vector3 }) {
-  const { reduceOneRoll, oneGemFromMineToField } = useGame() as GameContextType;
-
+export function Dice({
+  position,
+  selectFace,
+}: {
+  position: Vector3;
+  selectFace: (face: string) => void;
+}) {
   const { nodes, materials } = useGLTF("/dice.glb") as GLTFResult;
   const originGroup = useRef<Group>(null);
   const piecesGroup = useRef<Group>(null);
@@ -67,10 +69,8 @@ export function Dice({ position }: { position: Vector3 }) {
   useFrame((_, delta) => {
     if (exploded && piecesGroup.current && originGroup.current) {
       originGroup.current.children.forEach((body) => {
-        body.scale.x -= 0.1 * delta;
-        body.scale.y -= 0.1 * delta;
-        body.scale.z -= 0.1 * delta;
-        if (body.scale.x <= 0.1 && body.scale.y <= 0.1 && body.scale.z <= 0.1) {
+        body.position.y -= 0.1 * delta;
+        if (body.position.y <= 0.01) {
           removeObject(body);
         }
       });
@@ -98,8 +98,7 @@ export function Dice({ position }: { position: Vector3 }) {
     const position = vec3(origin.current.translation());
     setPieces(<Pieces position={position} />);
     setExploded(true);
-    reduceOneRoll();
-    oneGemFromMineToField();
+    selectFace(face);
   }
 
   function getDiceDetails() {
@@ -190,8 +189,7 @@ export function Dice({ position }: { position: Vector3 }) {
           name="origin"
           ref={origin}
           collisionGroups={interactionGroups(0, [0])}
-          mass={1}
-          linearDamping={1}
+          mass={1000}
         >
           <mesh
             onPointerDown={(event) => handleClick(event)}
@@ -240,6 +238,7 @@ function Pieces({ position }: { position: Vector3 }) {
   useFrame((_, delta) => {
     if (piecesGroup.current) {
       piecesGroup.current.children.forEach((body) => {
+        body.position.y -= 0.1 * delta;
         body.scale.x -= 0.1 * delta;
         body.scale.y -= 0.1 * delta;
         body.scale.z -= 0.1 * delta;

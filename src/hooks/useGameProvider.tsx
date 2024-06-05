@@ -10,10 +10,12 @@ export interface GameContextType {
   players: PlayerState[];
   mineGems: string[];
   fieldGems: string[];
+  myGems: string[];
   rolls: number;
   start: () => void;
+  addRolls: (amount: number) => void;
   reduceOneRoll: () => void;
-  oneGemFromMineToField: () => void;
+  getGemsFromMine: (amount: number) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -42,39 +44,54 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   function setUpPlayers() {
     players.forEach((player) => {
-      player.setState("rolls", 1);
+      player.setState("rolls", 0, true);
     });
   }
 
-  function oneGemFromMineToField() {
-    const index = Math.floor(Math.random() * mineGems.length);
-    const newFieldGem = mineGems[index];
-    if (!newFieldGem) {
-      return;
+  function getGemsFromMine(amount: number) {
+    const newFieldGems: string[] = [];
+    console.log(amount);
+    for (let i = 0; i < amount; i++) {
+      const index = Math.floor(Math.random() * mineGems.length);
+      const newFieldGem = mineGems[index];
+      if (!newFieldGem) {
+        continue;
+      }
+      mineGems.splice(index, 1);
+      newFieldGems.push(newFieldGem);
     }
-    mineGems.splice(index, 1);
-    setFieldGems([...fieldGems, newFieldGem]);
-    setMineGems([...mineGems]);
-    console.log("mineGems", mineGems);
-    console.log("fieldGems", fieldGems);
+    setFieldGems([...fieldGems, ...newFieldGems], true);
+    setMineGems([...mineGems], true);
+  }
+
+  function addRolls(amount: number) {
+    const prev = me.getState("rolls");
+    console.log(prev);
+    me.setState("rolls", prev + amount, true);
   }
 
   function reduceOneRoll() {
+    if (rolls < 1) {
+      return;
+    }
     const prev = me.getState("rolls");
     console.log(prev);
-    me.setState("rolls", prev - 1);
+    me.setState("rolls", prev - 1, true);
   }
 
   const rolls = me.getState("rolls") || 0;
+  const myGems = me.getState("myGems") || [];
 
   const value: GameContextType = {
     players,
     mineGems,
     fieldGems,
+    myGems,
     rolls,
     start,
+    addRolls,
     reduceOneRoll,
-    oneGemFromMineToField,
+    getGemsFromMine,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
