@@ -47,7 +47,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   function setUpPlayers() {
     players.forEach((player) => {
-      player.setState("rolls", 10, true);
+      player.setState("rolls", 1, true);
     });
   }
 
