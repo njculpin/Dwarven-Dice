@@ -80,11 +80,9 @@ export function Dice({
 
     if (roll && origin.current) {
       const randX = randomIntFromInterval(-3, 3);
-      const randY = randomIntFromInterval(0, 10);
       const randZ = randomIntFromInterval(-3, 3);
-      const rotY = randomIntFromInterval(-8, 8);
-      origin.current.applyImpulse(new Vector3(randX, randY, randZ), true);
-      origin.current.applyTorqueImpulse({ x: randX, y: rotY, z: randZ }, true);
+      origin.current.applyImpulse(new Vector3(randX, 5, randZ), true);
+      origin.current.applyTorqueImpulse({ x: 5, y: 5, z: 5 }, true);
     }
   });
 
@@ -280,7 +278,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell}
         collisionGroups={interactionGroups(1, [1])}
         mass={100}
-        friction={5}
       >
         <mesh
           name="Dice_cell"
@@ -295,7 +292,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell001}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell001"
@@ -310,7 +306,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell002}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell002"
@@ -325,7 +320,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell003}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell003"
@@ -340,7 +334,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell004}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell004"
@@ -355,7 +348,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell005}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell005"
@@ -370,7 +362,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell006}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell006"
@@ -385,7 +376,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell007}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell007"
@@ -400,7 +390,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell008}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell008"
@@ -415,7 +404,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell009}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell009"
@@ -430,7 +418,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell010}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell010"
@@ -445,7 +432,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell011}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell011"
@@ -460,7 +446,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell012}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell012"
@@ -475,7 +460,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell013}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell013"
@@ -490,7 +474,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell014}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell014"
@@ -505,7 +488,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell015}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell015"
@@ -520,7 +502,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell016}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell016"
@@ -535,7 +516,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell017}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell017"
@@ -550,7 +530,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell018}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell018"
@@ -565,7 +544,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell019}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell019"
@@ -580,7 +558,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell020}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell020"
@@ -595,7 +572,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell021}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell021"
@@ -610,7 +586,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell022}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell022"
@@ -625,7 +600,6 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell023}
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
-        friction={5}
       >
         <mesh
           name="Dice_cell023"

@@ -44,7 +44,7 @@ export function RollButton({
         >
           <RoundedBox
             onPointerDown={() => handleClick()}
-            args={[1, 1, 1]}
+            args={[2, 1, 1]}
             radius={0.05}
             smoothness={4}
             bevelSegments={4}

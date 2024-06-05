@@ -16,7 +16,7 @@ export default function App() {
         }}
       >
         <Suspense>
-          <Physics>
+          <Physics gravity={[0, -30, 0]}>
             <Experience />
           </Physics>
         </Suspense>
