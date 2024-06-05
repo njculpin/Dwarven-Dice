@@ -4,6 +4,7 @@ import { MobileController } from "./MobileController";
 import { OrbitControls } from "@react-three/drei";
 import { useGame } from "../hooks/useGame";
 import { GameContextType } from "../hooks/useGameProvider";
+import { Box } from "./Box";
 
 export function Experience() {
   const { start } = useGame() as GameContextType;
@@ -17,6 +18,7 @@ export function Experience() {
       <LightRig />
       <OrbitControls />
       <MobileController />
+      <Box />
     </>
   );
 }
