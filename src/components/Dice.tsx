@@ -91,8 +91,8 @@ export function Dice() {
   useFrame((_, delta) => {
     if (origin.current && piecesGroup.current && !exploding) {
       const position = vec3(origin.current.translation());
-      piecesGroup.current.position.x = position.x;
-      piecesGroup.current.position.z = position.z;
+      piecesGroup.current.position.copy(position);
+      piecesGroup.current.updateMatrixWorld();
     }
     if (exploding && !exploded && piecesGroup.current && originGroup.current) {
       piecesGroup.current.children.forEach((body) => {
