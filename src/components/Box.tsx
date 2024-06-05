@@ -14,7 +14,7 @@ export function Box() {
         depth={2}
         x={0}
         y={wallHeight / 2}
-        z={viewport.height / 2}
+        z={viewport.height / 2 - 2}
       />
       {/* BACK */}
       <Wall
