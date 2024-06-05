@@ -82,8 +82,9 @@ export function Dice({
       const randX = randomIntFromInterval(-3, 3);
       const randY = randomIntFromInterval(0, 10);
       const randZ = randomIntFromInterval(-3, 3);
+      const rotY = randomIntFromInterval(-8, 8);
       origin.current.applyImpulse(new Vector3(randX, randY, randZ), true);
-      origin.current.applyTorqueImpulse({ x: randX, y: randY, z: randZ }, true);
+      origin.current.applyTorqueImpulse({ x: randX, y: rotY, z: randZ }, true);
     }
   });
 
