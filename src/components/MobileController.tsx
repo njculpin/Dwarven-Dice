@@ -101,7 +101,7 @@ export function MobileController() {
         />
       </group>
       <Center>
-        <RollButton rolls={rolls} setRoll={() => handleRoll()} />
+        <RollButton setRoll={() => handleRoll()} />
       </Center>
     </>
   );

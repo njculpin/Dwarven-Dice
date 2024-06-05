@@ -2,15 +2,9 @@ import { useState, useRef } from "react";
 import { Group } from "three";
 import { useFrame } from "@react-three/fiber";
 import { RigidBody, interactionGroups } from "@react-three/rapier";
-import { RoundedBox, Html } from "@react-three/drei";
+import { RoundedBox } from "@react-three/drei";
 
-export function RollButton({
-  rolls,
-  setRoll,
-}: {
-  rolls: number;
-  setRoll: () => void;
-}) {
+export function RollButton({ setRoll }: { setRoll: () => void }) {
   const ref = useRef<Group>(null);
   const [clicked, setClicked] = useState(false);
 
@@ -50,17 +44,6 @@ export function RollButton({
             creaseAngle={0.4}
           >
             <meshStandardMaterial color="gray" />
-            <Html
-              className="pointer-events-none"
-              scale={1}
-              rotation={[-Math.PI / 2, 0, 0]}
-              position={[0, 1, 0]}
-              transform
-            >
-              <div className="annotation pointer-events-none font-bold">
-                {rolls} Rolls
-              </div>
-            </Html>
           </RoundedBox>
         </RigidBody>
       </group>

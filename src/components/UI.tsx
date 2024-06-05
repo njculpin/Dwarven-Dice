@@ -2,7 +2,7 @@ import { useGame } from "../hooks/useGame";
 import { GameContextType } from "../hooks/useGameProvider";
 
 export function UI() {
-  const { selectedFace, fieldGems, myGems } = useGame() as GameContextType;
+  const { rolls, fieldGems, myGems } = useGame() as GameContextType;
 
   const fieldBlack = fieldGems.filter((x) => x === "black").length || 0;
   const fieldBlue = fieldGems.filter((x) => x === "blue").length || 0;
@@ -30,9 +30,8 @@ export function UI() {
           </div>
         </div>
         <div className="p-8">
-          <p className="w-full text-left text-xs italic">
-            My Gems - {selectedFace}
-          </p>
+          <p className="w-full text-left text-xs italic">My Gems</p>
+          <p className="w-full text-left text-xs italic">{rolls} remaining</p>
           <div className="w-full flex space-x-2">
             <p className="font-bold">{myBlack}</p>
             <p className="font-bold text-blue-500">{myBlue}</p>
