@@ -52,9 +52,11 @@ type GLTFResult = GLTF & {
 
 export function Dice({
   position,
+  roll,
   setSelectedFace,
 }: {
   position: Vector3;
+  roll: boolean;
   setSelectedFace: (face: string) => void;
 }) {
   const { nodes, materials } = useGLTF("/dice.glb") as GLTFResult;
@@ -75,7 +77,19 @@ export function Dice({
         }
       });
     }
+
+    if (roll && origin.current) {
+      const randX = randomIntFromInterval(-3, 3);
+      const randY = randomIntFromInterval(0, 10);
+      const randZ = randomIntFromInterval(-3, 3);
+      origin.current.applyImpulse(new Vector3(randX, randY, randZ), true);
+      origin.current.applyTorqueImpulse({ x: randX, y: randY, z: randZ }, true);
+    }
   });
+
+  function randomIntFromInterval(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
 
   function removeObject(object: Object3D) {
     while (object.children.length > 0) {
@@ -264,7 +278,7 @@ function Pieces({ position }: { position: Vector3 }) {
         name="Dice_cell"
         ref={Dice_cell}
         collisionGroups={interactionGroups(1, [1])}
-        mass={20}
+        mass={100}
         friction={5}
       >
         <mesh

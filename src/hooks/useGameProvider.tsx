@@ -53,7 +53,6 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   function getGemsFromMine(amount: number) {
     const newFieldGems: string[] = [];
-    console.log(amount);
     for (let i = 0; i < amount; i++) {
       const index = Math.floor(Math.random() * mineGems.length);
       const newFieldGem = mineGems[index];

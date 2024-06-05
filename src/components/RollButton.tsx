@@ -4,7 +4,13 @@ import { useFrame } from "@react-three/fiber";
 import { RigidBody, interactionGroups } from "@react-three/rapier";
 import { RoundedBox } from "@react-three/drei";
 
-export function RollButton({ position }: { position: Vector3 }) {
+export function RollButton({
+  position,
+  setRoll,
+}: {
+  position: Vector3;
+  setRoll: () => void;
+}) {
   const ref = useRef<Group>(null);
   const [clicked, setClicked] = useState(false);
 
@@ -21,6 +27,12 @@ export function RollButton({ position }: { position: Vector3 }) {
     }
   });
 
+  function handleClick() {
+    console.log("roll hit");
+    setRoll();
+    setClicked(true);
+  }
+
   return (
     <group>
       <group position={position} ref={ref}>
@@ -31,7 +43,7 @@ export function RollButton({ position }: { position: Vector3 }) {
           mass={1000}
         >
           <RoundedBox
-            onPointerDown={() => setClicked(true)}
+            onPointerDown={() => handleClick()}
             args={[1, 1, 1]}
             radius={0.05}
             smoothness={4}
