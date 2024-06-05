@@ -12,11 +12,11 @@ export default function App() {
       <Canvas
         camera={{
           fov: 40,
-          position: stream ? [0, 0, 0] : [0, 50, 0],
+          position: stream ? [0, 0, 0] : [0, 30, 0],
         }}
       >
         <Suspense>
-          <Physics>
+          <Physics debug>
             <Experience />
           </Physics>
         </Suspense>

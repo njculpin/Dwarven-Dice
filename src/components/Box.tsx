@@ -49,7 +49,7 @@ export function Box() {
         height={2}
         depth={viewport.height / 2}
         x={0}
-        y={-1}
+        y={-2}
         z={0}
       />
       {/* TOP */}

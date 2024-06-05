@@ -6,13 +6,11 @@ import { useGame } from "../hooks/useGame";
 import { GameContextType } from "../hooks/useGameProvider";
 
 export function Experience() {
-  const { mineGems, fieldGems, start } = useGame() as GameContextType;
+  const { start } = useGame() as GameContextType;
 
   useEffect(() => {
     start();
   }, []);
-
-  console.log(mineGems, fieldGems);
 
   return (
     <>

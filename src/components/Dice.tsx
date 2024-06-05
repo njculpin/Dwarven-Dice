@@ -10,7 +10,7 @@ import {
   euler,
   quat,
 } from "@react-three/rapier";
-import { Group, Mesh, MeshStandardMaterial, Object3D } from "three";
+import { Group, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three";
 import { ThreeEvent } from "@react-three/fiber";
 import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
@@ -52,7 +52,7 @@ type GLTFResult = GLTF & {
   };
 };
 
-export function Dice() {
+export function Dice({ position }: { position: Vector3 }) {
   const { oneGemFromMineToField } = useGame() as GameContextType;
 
   const { nodes, materials } = useGLTF("/models/dice.glb") as GLTFResult;
@@ -214,7 +214,7 @@ export function Dice() {
   }
 
   return (
-    <group>
+    <group position={position}>
       <group ref={originGroup}>
         <RigidBody
           type={exploding ? "fixed" : "dynamic"}
