@@ -82,7 +82,7 @@ export function Dice({
       const randX = randomIntFromInterval(-3, 3);
       const randZ = randomIntFromInterval(-3, 3);
       origin.current.applyImpulse(new Vector3(randX, 5, randZ), true);
-      origin.current.applyTorqueImpulse({ x: 5, y: 5, z: 5 }, true);
+      origin.current.applyTorqueImpulse({ x: 3, y: 3, z: 3 }, true);
     }
   });
 
@@ -203,6 +203,8 @@ export function Dice({
           ref={origin}
           collisionGroups={interactionGroups(0, [0])}
           mass={1000}
+          friction={0.2}
+          linearDamping={0.2}
         >
           <mesh
             onPointerDown={(event) => handleClick(event)}
@@ -278,6 +280,7 @@ function Pieces({ position }: { position: Vector3 }) {
         ref={Dice_cell}
         collisionGroups={interactionGroups(1, [1])}
         mass={100}
+        friction={0.2}
       >
         <mesh
           name="Dice_cell"

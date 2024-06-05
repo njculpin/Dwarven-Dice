@@ -100,7 +100,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     me.setState("selectedFace", face);
   }
 
-  const selectedFace = me.getState("selectedFace");
+  const selectedFace = me.getState("selectedFace") || "";
 
   const value: GameContextType = {
     players,
