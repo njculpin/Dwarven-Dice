@@ -55,7 +55,7 @@ type GLTFResult = GLTF & {
 export function Dice({ position }: { position: Vector3 }) {
   const { reduceOneRoll, oneGemFromMineToField } = useGame() as GameContextType;
 
-  const { nodes, materials } = useGLTF("/models/dice.glb") as GLTFResult;
+  const { nodes, materials } = useGLTF("/dice.glb") as GLTFResult;
   const originGroup = useRef<Group>(null);
   const piecesGroup = useRef<Group>(null);
 
@@ -211,7 +211,7 @@ export function Dice({ position }: { position: Vector3 }) {
 }
 
 function Pieces({ position }: { position: Vector3 }) {
-  const { nodes, materials } = useGLTF("/models/dice.glb") as GLTFResult;
+  const { nodes, materials } = useGLTF("/dice.glb") as GLTFResult;
   const piecesGroup = useRef<Group>(null);
   const Dice_cell = useRef<RapierRigidBody>(null);
   const Dice_cell001 = useRef<RapierRigidBody>(null);
