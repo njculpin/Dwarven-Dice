@@ -70,7 +70,7 @@ export function UI() {
             {players.map(function (player) {
               return (
                 <div key={player.id}>
-                  <div className="w-16 h-16">
+                  <div className="w-8 h-8">
                     <img src={player.getProfile().photo} />
                   </div>
                 </div>
