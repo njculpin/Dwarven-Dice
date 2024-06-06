@@ -7,15 +7,8 @@ import { RollButton } from "./RollButton";
 import { GameContextType } from "../hooks/useGameProvider";
 
 export function MobileController() {
-  const {
-    rolls,
-    selectedFace,
-    setSelectedFace,
-    reduceOneRoll,
-    addRolls,
-    getGemsFromMine,
-    pickGemFromMine,
-  } = useGame() as GameContextType;
+  const { rolls, setSelectedFace, reduceOneRoll } =
+    useGame() as GameContextType;
   const [roll, setRoll] = useState(false);
 
   function handleRoll() {
@@ -23,31 +16,6 @@ export function MobileController() {
       setRoll(true);
       reduceOneRoll();
     }
-  }
-
-  useEffect(() => {
-    if (selectedFace !== "") {
-      spendDie();
-    }
-  }, [selectedFace]);
-
-  function spendDie() {
-    if (selectedFace === "beers") {
-      addRolls(1);
-    }
-    if (selectedFace === "horns") {
-      addRolls(2);
-    }
-    if (selectedFace === "axes") {
-      getGemsFromMine(1);
-    }
-    if (selectedFace === "bombs") {
-      getGemsFromMine(3);
-    }
-    if (selectedFace === "lantern") {
-      pickGemFromMine("black");
-    }
-    setSelectedFace("");
   }
 
   useEffect(() => {
