@@ -1,13 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useGame } from "../hooks/useGame";
 import { GameContextType } from "../hooks/useGameProvider";
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  Transition,
-  TransitionChild,
-} from "@headlessui/react";
 
 export function UI() {
   const {
@@ -21,8 +14,6 @@ export function UI() {
     getGemsFromMine,
     pickGemFromMine,
   } = useGame() as GameContextType;
-
-  const [open, setOpen] = useState(false);
 
   const fieldBlack = fieldGems.filter((x) => x === "black").length || 0;
   const fieldBlue = fieldGems.filter((x) => x === "blue").length || 0;
@@ -38,7 +29,7 @@ export function UI() {
 
   useEffect(() => {
     if (selectedFace !== "") {
-      setOpen(true);
+      spendDie();
     }
   }, [selectedFace]);
 
@@ -59,7 +50,6 @@ export function UI() {
       pickGemFromMine("black");
     }
     setSelectedFace("");
-    setOpen(false);
   }
 
   return (
@@ -100,96 +90,6 @@ export function UI() {
           </div>
         </div>
       </div>
-      <Transition show={open}>
-        <Dialog className="relative z-10" onClose={setOpen}>
-          <TransitionChild
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-          </TransitionChild>
-
-          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-              <TransitionChild
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              >
-                <DialogPanel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-                  <div>
-                    <div className="mt-3 text-center sm:mt-5">
-                      <DialogTitle
-                        as="h3"
-                        className="text-base font-semibold leading-6 text-gray-900"
-                      >
-                        Choose to Spend or Commit the {selectedFace}
-                      </DialogTitle>
-                      <div className="mt-2">
-                        <Description face={selectedFace} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                    <button
-                      type="button"
-                      className="rounded-full bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                      onClick={() => spendDie()}
-                    >
-                      Spend
-                    </button>
-                    <button
-                      type="button"
-                      className="rounded-full bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                      onClick={() => setOpen(false)}
-                    >
-                      Commit
-                    </button>
-                  </div>
-                </DialogPanel>
-              </TransitionChild>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
     </div>
   );
-}
-
-function Description({ face }: { face: string }) {
-  let text = "";
-  switch (face) {
-    case "beers":
-      text =
-        "Spend a Beer to get a reroll, Commit 3 Beers to collect all black gems from the field";
-      break;
-    case "horns":
-      text =
-        "Spend a Horn to get two rerolls, Commit a Horn and 1 Beer to collect all black gems from the field";
-      break;
-    case "axes":
-      text =
-        "Spend a Axe to get 1 random gem from the mine on the field, Commit 3 axes to collect all the blue gems on the field";
-      break;
-    case "bombs":
-      text =
-        "Spend a Bomb to get 3 random gems from the mine on the field, Commit 3 bombs to collect all the red gems on the field";
-      break;
-    case "lanterns":
-      text =
-        "Spend a Lantern to get 1 gem of your choice from the mine on the field, Commit 3 lanterns to collect all the purple gems on the field";
-      break;
-    case "heads":
-      text =
-        "Spend a Head to challenge another player for your choice of colors, Commit 3 heads to collect all the green gems on the field";
-      break;
-  }
-  return <p className="text-sm text-gray-500">{text}</p>;
 }
