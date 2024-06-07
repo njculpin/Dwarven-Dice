@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dice } from "./Dice";
-import { Vector3 } from "three";
+import { Euler, Vector3 } from "three";
 import { Center } from "@react-three/drei";
 import { useGame } from "../hooks/useGame";
 import { RollButton } from "./RollButton";
@@ -30,41 +30,49 @@ export function MobileController() {
         <Dice
           roll={roll}
           position={new Vector3(-2.5, 1, -2.5)}
+          rotation={new Euler(0, 0, 0)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
           position={new Vector3(-2.5, 1, 0)}
+          rotation={new Euler(0, 0, 0)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
           position={new Vector3(-2.5, 1, 2.5)}
+          rotation={new Euler(0, 0, 0)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
           position={new Vector3(0, 1, 2.5)}
+          rotation={new Euler(0, 0, 0)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
           position={new Vector3(0, 1, -2.5)}
+          rotation={new Euler(0, 0, 0)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
           position={new Vector3(2.5, 1, 0)}
+          rotation={new Euler(0, 0, 0)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
           position={new Vector3(2.5, 1, 2.5)}
+          rotation={new Euler(0, 0, 0)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
         <Dice
           roll={roll}
           position={new Vector3(2.5, 1, -2.5)}
+          rotation={new Euler(0, 0, 0)}
           setSelectedFace={(face) => setSelectedFace(face)}
         />
       </group>

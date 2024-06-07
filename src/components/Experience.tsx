@@ -18,7 +18,6 @@ export function Experience() {
       <LightRig />
       <MobileController />
       <Box />
-      <OrbitControls />
     </>
   );
 }

@@ -1,19 +1,8 @@
-import { useEffect } from "react";
 import { useGame } from "../hooks/useGame";
 import { GameContextType } from "../hooks/useGameProvider";
 
 export function UI() {
-  const {
-    rolls,
-    fieldGems,
-    myGems,
-    players,
-    selectedFace,
-    setSelectedFace,
-    addRolls,
-    getGemsFromMine,
-    pickGemFromMine,
-  } = useGame() as GameContextType;
+  const { rolls, fieldGems, myGems, players } = useGame() as GameContextType;
 
   const fieldBlack = fieldGems.filter((x) => x === "black").length || 0;
   const fieldBlue = fieldGems.filter((x) => x === "blue").length || 0;
@@ -26,31 +15,6 @@ export function UI() {
   const myRed = myGems.filter((x) => x === "red").length || 0;
   const myPurple = myGems.filter((x) => x === "purple").length || 0;
   const myGreen = myGems.filter((x) => x === "purple").length || 0;
-
-  useEffect(() => {
-    if (selectedFace !== "") {
-      spendDie();
-    }
-  }, [selectedFace]);
-
-  function spendDie() {
-    if (selectedFace === "beers") {
-      addRolls(1);
-    }
-    if (selectedFace === "horns") {
-      addRolls(2);
-    }
-    if (selectedFace === "axes") {
-      getGemsFromMine(1);
-    }
-    if (selectedFace === "bombs") {
-      getGemsFromMine(3);
-    }
-    if (selectedFace === "lantern") {
-      pickGemFromMine("black");
-    }
-    setSelectedFace("");
-  }
 
   return (
     <div className="fixed pointer-events-none top-0 right-0 left-0 bottom-0">

@@ -10,12 +10,19 @@ import {
   euler,
   quat,
 } from "@react-three/rapier";
-import { Group, Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three";
-import { ThreeEvent } from "@react-three/fiber";
+import {
+  Euler,
+  Group,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+  Vector3,
+} from "three";
 import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
-import { useGLTF } from "@react-three/drei";
+import { useGLTF, Html } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
+import { RadialSlider } from "./RadialSlider";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -52,10 +59,12 @@ type GLTFResult = GLTF & {
 
 export function Dice({
   position,
+  rotation,
   roll,
   setSelectedFace,
 }: {
   position: Vector3;
+  rotation: Euler;
   roll: boolean;
   setSelectedFace: (face: string) => void;
 }) {
@@ -94,24 +103,6 @@ export function Dice({
     while (object.children.length > 0) {
       object.remove(object.children[0]);
     }
-  }
-
-  function handleClick(e: ThreeEvent<PointerEvent>) {
-    e.stopPropagation();
-    if (exploded) {
-      return;
-    }
-    const face = getDiceDetails();
-    if (!face) {
-      return;
-    }
-    if (!origin.current) {
-      return;
-    }
-    const position = vec3(origin.current.translation());
-    setPieces(<Pieces position={position} />);
-    setExploded(true);
-    setSelectedFace(face);
   }
 
   function getDiceDetails() {
@@ -194,10 +185,39 @@ export function Dice({
     });
   }
 
+  const [open, setOpen] = useState<boolean>(false);
+
+  function handleClick() {
+    if (exploded) {
+      return;
+    }
+    const face = getDiceDetails();
+    if (!face) {
+      return;
+    }
+    if (!origin.current) {
+      return;
+    }
+    setOpen(true);
+    // const position = vec3(origin.current.translation());
+    // setPieces(<Pieces position={position} />);
+    // setExploded(true);
+    setSelectedFace(face);
+  }
+
+  function updateFace() {
+    const face = getDiceDetails();
+    if (!face) {
+      return;
+    }
+    setSelectedFace(face);
+  }
+
   return (
     <group>
-      <group position={position} ref={originGroup}>
+      <group position={position} rotation={rotation} ref={originGroup}>
         <RigidBody
+          onSleep={() => updateFace()}
           type="dynamic"
           name="origin"
           ref={origin}
@@ -207,14 +227,19 @@ export function Dice({
           linearDamping={0.2}
         >
           <mesh
-            onPointerDown={(event) => handleClick(event)}
+            onClick={handleClick}
             name="origin"
             geometry={nodes.origin.geometry}
             material={materials.Dice}
-            onPointerOver={() => (document.body.style.cursor = "grab")}
-            onPointerOut={() => (document.body.style.cursor = "")}
             visible={!exploded}
+            onPointerOver={() => (document.body.style.cursor = "pointer")}
+            onPointerOut={() => (document.body.style.cursor = "")}
           />
+          <Html center>
+            <div className="content">
+              <RadialSlider open={open} face={"red"} />
+            </div>
+          </Html>
         </RigidBody>
       </group>
       {pieces}
