@@ -11,6 +11,7 @@ export function MobileController() {
     rolls,
     setSelectedFace,
     reduceOneRoll,
+    addRolls,
     selectedFace,
     getGemsFromMine,
   } = useGame() as GameContextType;
@@ -31,6 +32,12 @@ export function MobileController() {
       }
       if (selectedFace === "bombs") {
         getGemsFromMine(3);
+      }
+      if (selectedFace === "beers") {
+        addRolls(1);
+      }
+      if (selectedFace === "horns") {
+        addRolls(2);
       }
     }
   }
