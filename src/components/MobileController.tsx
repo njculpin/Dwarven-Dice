@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Dice } from "./Dice";
 import { Euler, Vector3 } from "three";
-import { Center } from "@react-three/drei";
 import { useGame } from "../hooks/useGame";
-import { RollButton } from "./RollButton";
 import { GameContextType } from "../hooks/useGameProvider";
+import { useEventListener } from "../hooks/useEventListener";
 
 export function MobileController() {
   const {
@@ -17,13 +16,6 @@ export function MobileController() {
   } = useGame() as GameContextType;
 
   const [roll, setRoll] = useState(false);
-
-  function handleRoll() {
-    if (rolls > 0) {
-      setRoll(true);
-      reduceOneRoll();
-    }
-  }
 
   function setSelectedAction(action: string) {
     if (action === "spend") {
@@ -41,6 +33,25 @@ export function MobileController() {
       }
     }
   }
+
+  const handleClick = (e: UIEvent) => {
+    switch (e.detail) {
+      case 1:
+        console.log("click");
+        break;
+      case 2:
+        if (rolls > 0) {
+          setRoll(true);
+          reduceOneRoll();
+        }
+        break;
+      case 3:
+        console.log("triple click");
+        break;
+    }
+  };
+
+  useEventListener("click", handleClick);
 
   useEffect(() => {
     setTimeout(() => {
@@ -108,9 +119,6 @@ export function MobileController() {
           setSelectedAction={(action) => setSelectedAction(action)}
         />
       </group>
-      <Center>
-        <RollButton setRoll={() => handleRoll()} />
-      </Center>
     </>
   );
 }
