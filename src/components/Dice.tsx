@@ -62,11 +62,13 @@ export function Dice({
   rotation,
   roll,
   setSelectedFace,
+  setSelectedAction,
 }: {
   position: Vector3;
   rotation: Euler;
   roll: boolean;
   setSelectedFace: (face: string) => void;
+  setSelectedAction: (action: string) => void;
 }) {
   const { nodes, materials } = useGLTF("/dice.glb") as GLTFResult;
   const originGroup = useRef<Group>(null);
@@ -195,14 +197,24 @@ export function Dice({
     if (!face) {
       return;
     }
-    if (!origin.current) {
-      return;
-    }
     setOpen(true);
-    // const position = vec3(origin.current.translation());
-    // setPieces(<Pieces position={position} />);
-    // setExploded(true);
     setSelectedFace(face);
+  }
+
+  function triggerAction(action: string) {
+    setSelectedAction(action);
+    if (action === "save") {
+      console.log("save");
+    }
+    if (action === "spend") {
+      if (!origin.current) {
+        return;
+      }
+      const position = vec3(origin.current.translation());
+      setPieces(<Pieces position={position} />);
+      setExploded(true);
+      setOpen(false);
+    }
   }
 
   function updateFace() {
@@ -237,7 +249,10 @@ export function Dice({
           />
           <Html center>
             <div className="content">
-              <RadialSlider open={open} face={"red"} />
+              <RadialSlider
+                open={open}
+                trigger={(action) => triggerAction(action)}
+              />
             </div>
           </Html>
         </RigidBody>

@@ -1,11 +1,24 @@
 import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 
-export function RadialSlider({ open, face }: { open: boolean; face: string }) {
+export function RadialSlider({
+  open,
+  trigger,
+}: {
+  open: boolean;
+  trigger: (action: string) => void;
+}) {
   const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0 }));
   const bind = useDrag(
-    ({ down, offset: [ox] }) =>
-      api.start({ x: down ? ox : 0, y: 0, immediate: down }),
+    ({ down, offset: [ox] }) => {
+      if (ox > 30) {
+        trigger("save");
+      }
+      if (ox < -30) {
+        trigger("spend");
+      }
+      api.start({ x: down ? ox : 0, y: 0, immediate: down });
+    },
     {
       bounds: { left: -50, right: 50, top: 0, bottom: 0 },
     }
