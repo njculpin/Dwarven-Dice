@@ -34,7 +34,7 @@ export function MobileController() {
     }
   }
 
-  const handleClick = (e: UIEvent) => {
+  function handleClick(e: UIEvent) {
     switch (e.detail) {
       case 1:
         console.log("click");
@@ -49,9 +49,25 @@ export function MobileController() {
         console.log("triple click");
         break;
     }
-  };
+  }
+
+  const [lastTap, setLastTap] = useState(0);
+
+  function handleTap() {
+    const date = new Date();
+    const time = date.getTime();
+    const time_between_taps = 200;
+    if (time - lastTap < time_between_taps) {
+      if (rolls > 0) {
+        setRoll(true);
+        reduceOneRoll();
+      }
+    }
+    setLastTap(time);
+  }
 
   useEventListener("click", handleClick);
+  useEventListener("touchstart", handleTap);
 
   useEffect(() => {
     setTimeout(() => {

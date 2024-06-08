@@ -187,8 +187,6 @@ export function Dice({
     });
   }
 
-  const [open, setOpen] = useState<boolean>(false);
-
   function handleClick() {
     if (exploded) {
       return;
@@ -197,7 +195,6 @@ export function Dice({
     if (!face) {
       return;
     }
-    setOpen(true);
     setSelectedFace(face);
   }
 
@@ -213,7 +210,6 @@ export function Dice({
       const position = vec3(origin.current.translation());
       setPieces(<Pieces position={position} />);
       setExploded(true);
-      setOpen(false);
     }
   }
 
@@ -249,10 +245,7 @@ export function Dice({
           />
           <Html center>
             <div className="content">
-              <RadialSlider
-                open={open}
-                trigger={(action) => triggerAction(action)}
-              />
+              <RadialSlider trigger={(action) => triggerAction(action)} />
             </div>
           </Html>
         </RigidBody>
