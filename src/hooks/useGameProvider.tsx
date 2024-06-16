@@ -1,4 +1,4 @@
-import React, { FC, createContext } from "react";
+import React, { FC, createContext, useEffect, useState } from "react";
 import {
   useMultiplayerState,
   myPlayer,
@@ -10,15 +10,12 @@ export interface GameContextType {
   players: PlayerState[];
   mineGems: string[];
   fieldGems: string[];
-  selectedFace: string;
   myGems: string[];
   rolls: number;
+  rolling: boolean;
+  setRolling: (rolling: boolean) => void;
   start: () => void;
-  setSelectedFace: (face: string) => void;
-  addRolls: (amount: number) => void;
-  reduceOneRoll: () => void;
-  pickGemFromMine: (color: string) => void;
-  getGemsFromMine: (amount: number) => void;
+  takeAction: (face: string, action: string) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -27,9 +24,20 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const me = myPlayer();
   const [mineGems, setMineGems] = useMultiplayerState("mineGems", []);
   const [fieldGems, setFieldGems] = useMultiplayerState("fieldGems", []);
+  const [rolling, setRolling] = useState(false);
 
   const players = usePlayersList(true);
   players.sort((a, b) => a.id.localeCompare(b.id));
+
+  useEffect(() => {
+    if (rolling) {
+      if (rolls < 1) {
+        return;
+      }
+      const prev = me.getState("rolls");
+      me.setState("rolls", prev - 1, true);
+    }
+  }, [rolling]);
 
   function start() {
     setUpPlayers();
@@ -72,7 +80,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     if (!index) {
       return;
     }
-    const pick = mineGems(index);
+    const pick = mineGems[index];
     mineGems.splice(index, 1);
     setFieldGems([...fieldGems, pick]);
     setMineGems([...mineGems], true);
@@ -83,36 +91,80 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     me.setState("rolls", prev + amount, true);
   }
 
-  function reduceOneRoll() {
-    if (rolls < 1) {
-      return;
-    }
-    const prev = me.getState("rolls");
-    me.setState("rolls", prev - 1, true);
-  }
-
   const rolls = me.getState("rolls") || 0;
   const myGems = me.getState("myGems") || [];
 
-  function setSelectedFace(face: string) {
-    me.setState("selectedFace", face);
+  function takeAction(face: string, action: string) {
+    switch (face) {
+      case "beers":
+        switch (action) {
+          case "spend":
+            return addRolls(1);
+          case "commit":
+            return;
+          default:
+            return;
+        }
+      case "horns":
+        switch (action) {
+          case "spend":
+            return addRolls(2);
+          case "commit":
+            return;
+          default:
+            return;
+        }
+      case "axes":
+        switch (action) {
+          case "spend":
+            return getGemsFromMine(1);
+          case "commit":
+            return;
+          default:
+            return;
+        }
+      case "bombs":
+        switch (action) {
+          case "spend":
+            return getGemsFromMine(3);
+          case "commit":
+            return;
+          default:
+            return;
+        }
+      case "lanterns":
+        switch (action) {
+          case "spend":
+            return pickGemFromMine("black");
+          case "commit":
+            return;
+          default:
+            return;
+        }
+      case "heads":
+        switch (action) {
+          case "spend":
+            return;
+          case "commit":
+            return;
+          default:
+            return;
+        }
+      default:
+        return;
+    }
   }
-
-  const selectedFace = me.getState("selectedFace") || "";
 
   const value: GameContextType = {
     players,
     mineGems,
     fieldGems,
-    selectedFace,
     myGems,
     rolls,
+    rolling,
+    setRolling,
     start,
-    setSelectedFace,
-    addRolls,
-    reduceOneRoll,
-    pickGemFromMine,
-    getGemsFromMine,
+    takeAction,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

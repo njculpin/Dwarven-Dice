@@ -61,14 +61,12 @@ export function Dice({
   position,
   rotation,
   roll,
-  setSelectedFace,
   setSelectedAction,
 }: {
   position: Vector3;
   rotation: Euler;
   roll: boolean;
-  setSelectedFace: (face: string) => void;
-  setSelectedAction: (action: string) => void;
+  setSelectedAction: (face: string, action: string) => void;
 }) {
   const { nodes, materials } = useGLTF("/dice.glb") as GLTFResult;
   const originGroup = useRef<Group>(null);
@@ -187,45 +185,31 @@ export function Dice({
     });
   }
 
-  function handleClick() {
+  function triggerAction(action: string) {
     if (exploded) {
       return;
     }
+    setExploded(true);
     const face = getDiceDetails();
     if (!face) {
       return;
     }
-    setSelectedFace(face);
-  }
-
-  function triggerAction(action: string) {
-    setSelectedAction(action);
-    if (action === "save") {
-      console.log("save");
-    }
-    if (action === "spend") {
-      if (!origin.current) {
-        return;
-      }
-      const position = vec3(origin.current.translation());
-      setPieces(<Pieces position={position} />);
-      setExploded(true);
-    }
-  }
-
-  function updateFace() {
-    const face = getDiceDetails();
-    if (!face) {
+    if (!origin.current) {
       return;
     }
-    setSelectedFace(face);
+    const position = vec3(origin.current.translation());
+    setPieces(<Pieces position={position} />);
+    setSelectedAction(face, action);
+  }
+
+  function handleMoveX(rotX: number) {
+    console.log(rotX);
   }
 
   return (
     <group>
       <group position={position} rotation={rotation} ref={originGroup}>
         <RigidBody
-          onSleep={() => updateFace()}
           type="dynamic"
           name="origin"
           ref={origin}
@@ -235,7 +219,6 @@ export function Dice({
           linearDamping={0.2}
         >
           <mesh
-            onClick={handleClick}
             name="origin"
             geometry={nodes.origin.geometry}
             material={materials.Dice}
@@ -245,7 +228,10 @@ export function Dice({
           />
           <Html center>
             <div className="content">
-              <RadialSlider trigger={(action) => triggerAction(action)} />
+              <RadialSlider
+                trigger={(action) => triggerAction(action)}
+                setX={(x) => handleMoveX(x)}
+              />
             </div>
           </Html>
         </RigidBody>
