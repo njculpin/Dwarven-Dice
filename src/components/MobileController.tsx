@@ -14,7 +14,6 @@ export function MobileController() {
   function handleClick(e: UIEvent) {
     switch (e.detail) {
       case 1:
-        console.log("click");
         break;
       case 2:
         if (rolls > 0) {
@@ -22,7 +21,6 @@ export function MobileController() {
         }
         break;
       case 3:
-        console.log("triple click");
         break;
     }
   }

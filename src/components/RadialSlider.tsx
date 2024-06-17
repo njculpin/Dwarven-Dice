@@ -13,7 +13,6 @@ export function RadialSlider({
   const bind = useDrag(
     ({ down, offset: [ox] }) => {
       setX(ox);
-      console.log("down", down);
       if (down) {
         if (ox > 30) {
           return trigger("save");
@@ -26,7 +25,6 @@ export function RadialSlider({
           ox = 0;
         }
       }
-
       api.start({ x: ox, y: 0, immediate: down });
     },
     {

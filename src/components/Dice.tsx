@@ -202,10 +202,6 @@ export function Dice({
     setSelectedAction(face, action);
   }
 
-  function handleMoveX(rotX: number) {
-    console.log(rotX);
-  }
-
   return (
     <group>
       <group position={position} rotation={rotation} ref={originGroup}>
@@ -230,7 +226,7 @@ export function Dice({
             <div className="content">
               <RadialSlider
                 trigger={(action) => triggerAction(action)}
-                setX={(x) => handleMoveX(x)}
+                setX={(x) => console.log(x)}
               />
             </div>
           </Html>
