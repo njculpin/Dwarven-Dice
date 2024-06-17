@@ -10,14 +10,7 @@ import {
   euler,
   quat,
 } from "@react-three/rapier";
-import {
-  Euler,
-  Group,
-  Mesh,
-  MeshStandardMaterial,
-  Object3D,
-  Vector3,
-} from "three";
+import { Euler, Group, Mesh, MeshStandardMaterial, Vector3 } from "three";
 import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import { useGLTF, Html } from "@react-three/drei";
