@@ -26,11 +26,13 @@ export interface GameContextType {
   myRed: number;
   myBlue: number;
   myBlack: number;
+  reset: boolean;
   setShowColorPicker: (show: boolean) => void;
   pickGemFromMine: (color: string, count: number) => void;
   setRolling: (rolling: boolean) => void;
   start: () => void;
   takeAction: (face: string, action: string) => void;
+  setReset: (reset: boolean) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -52,6 +54,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const [rolling, setRolling] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [reset, setReset] = useState(false);
 
   const players = usePlayersList(true);
   players.sort((a, b) => a.id.localeCompare(b.id));
@@ -77,7 +80,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   function setUpPlayers() {
     players.forEach((player) => {
-      player.setState("rolls", 1, true);
+      player.setState("rolls", 5, true);
       player.setState("myGreen", 0);
       player.setState("myPurple", 0);
       player.setState("myRed", 0);
@@ -325,11 +328,13 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     myRed,
     myBlue,
     myBlack,
+    reset,
     setShowColorPicker,
     pickGemFromMine,
     setRolling,
     start,
     takeAction,
+    setReset,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

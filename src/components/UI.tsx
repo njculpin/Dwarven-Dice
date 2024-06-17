@@ -31,6 +31,7 @@ export function UI() {
     myRed,
     myBlue,
     myBlack,
+    setReset,
   } = useGame() as GameContextType;
 
   function handlePickColor(color: string) {
@@ -74,6 +75,12 @@ export function UI() {
             <p className="font-bold text-purple-500">{myPurple}</p>
             <p className="font-bold text-green-500">{myGreen}</p>
           </div>
+          <button
+            onClick={() => setReset(true)}
+            className="pointer-events-auto border rounded-full px-4 py-2"
+          >
+            End Turn
+          </button>
         </div>
       </div>
       <Transition show={showColorPicker}>

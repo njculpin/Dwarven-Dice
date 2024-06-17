@@ -6,7 +6,7 @@ import { GameContextType } from "../hooks/useGameProvider";
 import { useEventListener } from "../hooks/useEventListener";
 
 export function MobileController() {
-  const { rolls, rolling, setRolling, takeAction } =
+  const { reset, setReset, rolls, rolling, setRolling, takeAction } =
     useGame() as GameContextType;
 
   // DESKTOP
@@ -53,48 +53,64 @@ export function MobileController() {
           roll={rolling}
           position={new Vector3(-2.5, 1, -2.5)}
           rotation={new Euler(0, 0, 0)}
+          reset={reset}
+          setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
         />
         <Dice
           roll={rolling}
           position={new Vector3(-2.5, 1, 0)}
           rotation={new Euler(0, 0, 0)}
+          reset={reset}
+          setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
         />
         <Dice
           roll={rolling}
           position={new Vector3(-2.5, 1, 2.5)}
           rotation={new Euler(0, 0, 0)}
+          reset={reset}
+          setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
         />
         <Dice
           roll={rolling}
           position={new Vector3(0, 1, 2.5)}
           rotation={new Euler(0, 0, 0)}
+          reset={reset}
+          setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
         />
         <Dice
           roll={rolling}
           position={new Vector3(0, 1, -2.5)}
           rotation={new Euler(0, 0, 0)}
+          reset={reset}
+          setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
         />
         <Dice
           roll={rolling}
           position={new Vector3(2.5, 1, 0)}
           rotation={new Euler(0, 0, 0)}
+          reset={reset}
+          setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
         />
         <Dice
           roll={rolling}
           position={new Vector3(2.5, 1, 2.5)}
           rotation={new Euler(0, 0, 0)}
+          reset={reset}
+          setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
         />
         <Dice
           roll={rolling}
           position={new Vector3(2.5, 1, -2.5)}
           rotation={new Euler(0, 0, 0)}
+          reset={reset}
+          setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
         />
       </group>

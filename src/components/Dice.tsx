@@ -61,48 +61,47 @@ export function Dice({
   position,
   rotation,
   roll,
+  reset,
+  setReset,
   setSelectedAction,
 }: {
   position: Vector3;
   rotation: Euler;
   roll: boolean;
+  reset: boolean;
+  setReset: (reset: boolean) => void;
   setSelectedAction: (face: string, action: string) => void;
 }) {
   const { nodes, materials } = useGLTF("/dice.glb") as GLTFResult;
   const originGroup = useRef<Group>(null);
-  const piecesGroup = useRef<Group>(null);
 
   const origin = useRef<RapierRigidBody>(null);
 
   const [exploded, setExploded] = useState(false);
   const [pieces, setPieces] = useState<JSX.Element | null>(null);
 
-  useFrame((_, delta) => {
-    if (exploded && piecesGroup.current && originGroup.current) {
-      originGroup.current.children.forEach((body) => {
-        body.position.y -= 0.1 * delta;
-        if (body.position.y <= 0.01) {
-          removeObject(body);
-        }
-      });
-    }
-
+  useFrame(() => {
+    // roll
     if (roll && origin.current) {
       const randX = randomIntFromInterval(-3, 3);
       const randZ = randomIntFromInterval(-3, 3);
       origin.current.applyImpulse(new Vector3(randX, 5, randZ), true);
       origin.current.applyTorqueImpulse({ x: 3, y: 3, z: 3 }, true);
     }
+
+    // reset
+    if (reset && origin.current && originGroup.current) {
+      setExploded(false);
+      origin.current.resetForces(false);
+      origin.current.resetTorques(false);
+      origin.current.setTranslation(position, false);
+      originGroup.current.position.setX(position.x);
+      setReset(false);
+    }
   });
 
   function randomIntFromInterval(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
-  function removeObject(object: Object3D) {
-    while (object.children.length > 0) {
-      object.remove(object.children[0]);
-    }
   }
 
   function getDiceDetails() {
@@ -262,27 +261,27 @@ function Pieces({ position }: { position: Vector3 }) {
   const Dice_cell022 = useRef<RapierRigidBody>(null);
   const Dice_cell023 = useRef<RapierRigidBody>(null);
 
-  useFrame((_, delta) => {
-    if (piecesGroup.current) {
-      piecesGroup.current.children.forEach((body) => {
-        body.position.y -= 0.1 * delta;
-        body.scale.x -= 0.1 * delta;
-        body.scale.y -= 0.1 * delta;
-        body.scale.z -= 0.1 * delta;
-        if (body.scale.x <= 0.1 && body.scale.y <= 0.1 && body.scale.z <= 0.1) {
-          body.visible = false;
-          removeObject(body);
-        }
-        piecesGroup.current?.remove();
-      });
-    }
-  });
+  // useFrame((_, delta) => {
+  //   if (piecesGroup.current) {
+  //     piecesGroup.current.children.forEach((body) => {
+  //       body.position.y -= 0.1 * delta;
+  //       body.scale.x -= 0.1 * delta;
+  //       body.scale.y -= 0.1 * delta;
+  //       body.scale.z -= 0.1 * delta;
+  //       if (body.scale.x <= 0.1 && body.scale.y <= 0.1 && body.scale.z <= 0.1) {
+  //         body.visible = false;
+  //         removeObject(body);
+  //       }
+  //       piecesGroup.current?.remove();
+  //     });
+  //   }
+  // });
 
-  function removeObject(object: Object3D) {
-    while (object.children.length > 0) {
-      object.remove(object.children[0]);
-    }
-  }
+  // function removeObject(object: Object3D) {
+  //   while (object.children.length > 0) {
+  //     object.remove(object.children[0]);
+  //   }
+  // }
 
   return (
     <group position={position} ref={piecesGroup}>
