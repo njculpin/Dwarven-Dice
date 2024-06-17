@@ -3,16 +3,13 @@ import { useDrag } from "@use-gesture/react";
 
 export function RadialSlider({
   trigger,
-  setX,
 }: {
   trigger: (action: string) => void;
-  setX: (x: number) => void;
 }) {
   const [{ x }, api] = useSpring(() => ({ x: 0, y: 0 }));
 
   const bind = useDrag(
     ({ down, offset: [ox] }) => {
-      setX(ox);
       if (down) {
         if (ox > 30) {
           return trigger("save");

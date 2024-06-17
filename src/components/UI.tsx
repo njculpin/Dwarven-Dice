@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useGame } from "../hooks/useGame";
 import { GameContextType } from "../hooks/useGameProvider";
 
@@ -35,7 +34,7 @@ export function UI() {
   } = useGame() as GameContextType;
 
   function handlePickColor(color: string) {
-    pickGemFromMine(color);
+    pickGemFromMine(color, 1);
     setShowColorPicker(false);
   }
 

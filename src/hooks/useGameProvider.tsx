@@ -27,7 +27,7 @@ export interface GameContextType {
   myBlue: number;
   myBlack: number;
   setShowColorPicker: (show: boolean) => void;
-  pickGemFromMine: (color: string) => void;
+  pickGemFromMine: (color: string, count: number) => void;
   setRolling: (rolling: boolean) => void;
   start: () => void;
   takeAction: (face: string, action: string) => void;
@@ -38,11 +38,11 @@ export const GameContext = createContext<GameContextType | null>(null);
 const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const me = myPlayer();
 
-  const [mineGreen, setMineGreen] = useMultiplayerState("mineGreen", 3);
-  const [minePurple, setMinePurple] = useMultiplayerState("minePurple", 4);
-  const [mineRed, setMineRed] = useMultiplayerState("mineRed", 6);
-  const [mineBlue, setMineBlue] = useMultiplayerState("mineBlue", 12);
-  const [mineBlack, setMineBlack] = useMultiplayerState("mineBlack", 60);
+  const [mineGreen, setMineGreen] = useMultiplayerState("mineGreen", 0);
+  const [minePurple, setMinePurple] = useMultiplayerState("minePurple", 0);
+  const [mineRed, setMineRed] = useMultiplayerState("mineRed", 0);
+  const [mineBlue, setMineBlue] = useMultiplayerState("mineBlue", 0);
+  const [mineBlack, setMineBlack] = useMultiplayerState("mineBlack", 0);
 
   const [fieldGreen, setFieldGreen] = useMultiplayerState("fieldGreen", 0);
   const [fieldPurple, setFieldPurple] = useMultiplayerState("fieldPurple", 0);
@@ -68,6 +68,11 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   function start() {
     setUpPlayers();
+    setMineGreen(3);
+    setMinePurple(4);
+    setMineRed(6);
+    setMineBlue(12);
+    setMineBlack(60);
   }
 
   function setUpPlayers() {
@@ -87,64 +92,64 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     });
   }
 
-  function getRandomValueFromMine() {
-    const gems = {
-      green: mineGreen,
-      purple: minePurple,
-      red: mineRed,
-      blue: mineBlue,
-      black: mineBlack,
-    };
-    const total = Object.values(gems).reduce((sum, count) => sum + count, 0);
-    if (total === 0) {
-      return undefined;
-    }
-    let weightedSum = 0;
-    const randomTarget = Math.floor(Math.random() * total);
-    for (const color in gems) {
-      const sum = gems[color as "green" | "purple" | "red" | "blue" | "black"];
-      weightedSum += sum;
-      if (weightedSum > randomTarget) {
-        return color;
-      }
-    }
-    return null;
-  }
-
   function getGemsFromMine(amount: number) {
+    const green = new Array(mineGreen).fill(0).map(() => "green");
+    const purple = new Array(minePurple).fill(0).map(() => "purple");
+    const red = new Array(6).fill(mineRed).map(() => "red");
+    const blue = new Array(12).fill(mineBlue).map(() => "blue");
+    const black = new Array(60).fill(mineBlack).map(() => "black");
+    const all = [...green, ...purple, ...red, ...blue, ...black];
+    const removeThese = [];
     for (let i = 0; i < amount; i++) {
-      const color = getRandomValueFromMine();
-      if (!color) {
-        continue;
-      }
-      pickGemFromMine(color);
+      const index = Math.floor(Math.random() * all.length);
+      removeThese.push(all[index]);
+    }
+    const countGreen = removeThese.filter((v) => v === "green").length;
+    const countPurple = removeThese.filter((v) => v === "purple").length;
+    const countRed = removeThese.filter((v) => v === "red").length;
+    const countBlue = removeThese.filter((v) => v === "blue").length;
+    const countBlack = removeThese.filter((v) => v === "black").length;
+    if (countGreen > 0) {
+      pickGemFromMine("green", countGreen);
+    }
+    if (countPurple > 0) {
+      pickGemFromMine("purple", countPurple);
+    }
+    if (countRed > 0) {
+      pickGemFromMine("red", countRed);
+    }
+    if (countBlue > 0) {
+      pickGemFromMine("blue", countBlue);
+    }
+    if (countBlack > 0) {
+      pickGemFromMine("black", countBlack);
     }
   }
 
-  function pickGemFromMine(color: string) {
+  function pickGemFromMine(color: string, count: number) {
     switch (color) {
       case "green":
-        setMineGreen(mineGreen - 1, true);
-        setFieldGreen(fieldGreen + 1, true);
-        break;
+        setMineGreen(mineGreen - count, true);
+        setFieldGreen(fieldGreen + count, true);
+        return;
       case "purple":
-        setMinePurple(minePurple - 1, true);
-        setFieldPurple(fieldPurple + 1, true);
-        break;
+        setMinePurple(minePurple - count, true);
+        setFieldPurple(fieldPurple + count, true);
+        return;
       case "red":
-        setMineRed(mineRed - 1, true);
-        setFieldRed(fieldRed + 1, true);
-        break;
+        setMineRed(mineRed - count, true);
+        setFieldRed(fieldRed + count, true);
+        return;
       case "blue":
-        setMineBlue(mineBlue - 1, true);
-        setFieldBlue(fieldBlue + 1, true);
-        break;
+        setMineBlue(mineBlue - count, true);
+        setFieldBlue(fieldBlue + count, true);
+        return;
       case "black":
-        setMineBlack(mineBlack - 1, true);
-        setFieldBlack(fieldBlack + 1, true);
-        break;
+        setMineBlack(mineBlack - count, true);
+        setFieldBlack(fieldBlack + count, true);
+        return;
       default:
-        break;
+        return;
     }
   }
 

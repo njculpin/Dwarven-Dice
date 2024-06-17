@@ -224,10 +224,7 @@ export function Dice({
           />
           <Html center>
             <div className="content">
-              <RadialSlider
-                trigger={(action) => triggerAction(action)}
-                setX={(x) => console.log(x)}
-              />
+              <RadialSlider trigger={(action) => triggerAction(action)} />
             </div>
           </Html>
         </RigidBody>
