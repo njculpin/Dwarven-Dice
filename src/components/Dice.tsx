@@ -73,11 +73,16 @@ export function Dice({
   const [exploded, setExploded] = useState(false);
 
   useFrame(() => {
-    if (roll && origin.current) {
+    if (roll && origin.current && piecesGroup.current && originGroup.current) {
+      //
       const randX = randomIntFromInterval(-3, 3);
       const randZ = randomIntFromInterval(-3, 3);
       origin.current.applyImpulse(new Vector3(randX, 5, randZ), true);
       origin.current.applyTorqueImpulse({ x: 3, y: 3, z: 3 }, true);
+      //
+      piecesGroup.current.position.setX(originGroup.current.position.x);
+      piecesGroup.current.position.setY(originGroup.current.position.y);
+      piecesGroup.current.position.setZ(originGroup.current.position.z);
     }
     if (reset && origin.current && originGroup.current && piecesGroup.current) {
       setExploded(false);
