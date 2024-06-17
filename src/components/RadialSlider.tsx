@@ -6,33 +6,33 @@ export function RadialSlider({
 }: {
   trigger: (action: string) => void;
 }) {
-  const [{ x }, api] = useSpring(() => ({ x: 0, y: 0 }));
+  const [{ x }, api] = useSpring(() => ({ x: 0 }));
 
   const bind = useDrag(
     ({ down, offset: [ox] }) => {
       if (down) {
         if (ox > 30) {
-          return trigger("save");
+          trigger("save");
         }
         if (ox < -30) {
-          return trigger("spend");
+          trigger("spend");
         }
       } else {
         if (ox < 30 || ox > -30) {
           ox = 0;
         }
       }
-      api.start({ x: ox, y: 0, immediate: down });
+      api.start({ x: ox, immediate: down });
     },
     {
-      bounds: { left: -50, right: 50, top: 0, bottom: 0 },
+      bounds: { left: -100, right: 100, top: 0, bottom: 0 },
     }
   );
 
   return (
     <div className="flex flex-row justify-center items-center p-2 rounded-full">
-      <animated.div {...bind()} style={{ x, touchAction: "pan-x" }}>
-        <div className="w-32 h-32 rounded-full" />
+      <animated.div {...bind()} style={{ x, touchAction: "none" }}>
+        <div className="border border-red-600 w-16 h-16 rounded-full" />
       </animated.div>
     </div>
   );
