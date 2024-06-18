@@ -50,19 +50,25 @@ type GLTFResult = GLTF & {
 };
 
 export function Dice({
+  dieId,
   position,
   rotation,
   roll,
   reset,
+  selectedDie,
   setReset,
   setSelectedAction,
+  setSelectedDie,
 }: {
+  dieId: number;
   position: Vector3;
   rotation: Euler;
   roll: boolean;
   reset: boolean;
+  selectedDie: number;
   setReset: (reset: boolean) => void;
   setSelectedAction: (face: string, action: string) => void;
+  setSelectedDie: (dieId: number) => void;
 }) {
   const { nodes, materials } = useGLTF("/dice.glb") as GLTFResult;
 
@@ -196,6 +202,7 @@ export function Dice({
       return;
     }
     setSelectedAction(face, action);
+    setSelectedDie(0);
   }
 
   return (
@@ -217,10 +224,14 @@ export function Dice({
             visible={!exploded}
             onPointerOver={() => (document.body.style.cursor = "pointer")}
             onPointerOut={() => (document.body.style.cursor = "")}
+            onPointerMissed={() => setSelectedDie(0)}
+            onClick={() => setSelectedDie(dieId)}
           />
-          <Html center>
+          <Html center distanceFactor={10}>
             <div className="content">
-              <RadialSlider trigger={(action) => triggerAction(action)} />
+              {dieId === selectedDie && (
+                <RadialSlider trigger={(action) => triggerAction(action)} />
+              )}
             </div>
           </Html>
         </RigidBody>

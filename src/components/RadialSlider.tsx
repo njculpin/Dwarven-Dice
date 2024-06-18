@@ -30,10 +30,12 @@ export function RadialSlider({
   );
 
   return (
-    <div className="flex flex-row justify-center items-center p-2 rounded-full">
+    <div className="flex flex-row justify-center items-center p-2 rounded-full gap-4">
+      <div className="w-16 h-16 bg-blue-500 rounded-full" />
       <animated.div {...bind()} style={{ x, touchAction: "none" }}>
-        <div className="w-16 h-16 rounded-full" />
+        <div className="bg-red-600 w-32 h-32 rounded-full" />
       </animated.div>
+      <div className="w-16 h-16 bg-blue-500 rounded-full" />
     </div>
   );
 }

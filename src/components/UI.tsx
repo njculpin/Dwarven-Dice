@@ -1,6 +1,5 @@
 import { useGame } from "../hooks/useGame";
 import { GameContextType } from "../hooks/useGameProvider";
-
 import {
   Dialog,
   DialogPanel,
@@ -40,6 +39,7 @@ export function UI() {
     setReset,
     setRolls,
     setRolling,
+    setSelectedDie,
   } = useGame() as GameContextType;
 
   function handlePickColor(color: string) {
@@ -50,6 +50,12 @@ export function UI() {
   function handleEndTurn() {
     setReset(true);
     setRolls(1);
+    setSelectedDie(0);
+  }
+
+  function handleRoll() {
+    setRolling(true);
+    setSelectedDie(0);
   }
 
   return (
@@ -91,8 +97,8 @@ export function UI() {
             </div>
             <div className="mt-2">
               <button
-                onClick={() => setRolling(true)}
-                className="pointer-events-auto border px-4 py-2"
+                onClick={() => handleRoll()}
+                className="pointer-events-auto border px-4 py-2 shadow-lg bg-white"
               >
                 Roll
               </button>
@@ -111,7 +117,7 @@ export function UI() {
             <div className="mt-2">
               <button
                 onClick={() => handleEndTurn()}
-                className="pointer-events-auto border px-4 py-2"
+                className="pointer-events-auto border px-4 py-2 shadow-lg bg-white"
               >
                 End Turn
               </button>

@@ -6,8 +6,16 @@ import { GameContextType } from "../hooks/useGameProvider";
 import { useEventListener } from "../hooks/useEventListener";
 
 export function MobileController() {
-  const { reset, setReset, rolls, rolling, setRolling, takeAction } =
-    useGame() as GameContextType;
+  const {
+    reset,
+    setReset,
+    rolls,
+    rolling,
+    setRolling,
+    takeAction,
+    selectedDie,
+    setSelectedDie,
+  } = useGame() as GameContextType;
 
   // DESKTOP
   useEventListener("click", handleClick);
@@ -17,6 +25,7 @@ export function MobileController() {
         break;
       case 2:
         if (rolls > 0) {
+          setSelectedDie(0);
           setRolling(true);
         }
         break;
@@ -50,68 +59,92 @@ export function MobileController() {
     <>
       <group>
         <Dice
+          dieId={1}
           roll={rolling}
           position={new Vector3(-2.5, 1, -2.5)}
           rotation={new Euler(0, 0, 0)}
           reset={reset}
           setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
+          selectedDie={selectedDie}
+          setSelectedDie={(dieId) => setSelectedDie(dieId)}
         />
         <Dice
+          dieId={2}
           roll={rolling}
           position={new Vector3(-2.5, 1, 0)}
           rotation={new Euler(0, 0, 0)}
           reset={reset}
           setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
+          selectedDie={selectedDie}
+          setSelectedDie={(dieId) => setSelectedDie(dieId)}
         />
         <Dice
+          dieId={3}
           roll={rolling}
           position={new Vector3(-2.5, 1, 2.5)}
           rotation={new Euler(0, 0, 0)}
           reset={reset}
           setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
+          selectedDie={selectedDie}
+          setSelectedDie={(dieId) => setSelectedDie(dieId)}
         />
         <Dice
+          dieId={4}
           roll={rolling}
           position={new Vector3(0, 1, 2.5)}
           rotation={new Euler(0, 0, 0)}
           reset={reset}
           setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
+          selectedDie={selectedDie}
+          setSelectedDie={(dieId) => setSelectedDie(dieId)}
         />
         <Dice
+          dieId={5}
           roll={rolling}
           position={new Vector3(0, 1, -2.5)}
           rotation={new Euler(0, 0, 0)}
           reset={reset}
           setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
+          selectedDie={selectedDie}
+          setSelectedDie={(dieId) => setSelectedDie(dieId)}
         />
         <Dice
+          dieId={6}
           roll={rolling}
           position={new Vector3(2.5, 1, 0)}
           rotation={new Euler(0, 0, 0)}
           reset={reset}
           setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
+          selectedDie={selectedDie}
+          setSelectedDie={(dieId) => setSelectedDie(dieId)}
         />
         <Dice
+          dieId={7}
           roll={rolling}
           position={new Vector3(2.5, 1, 2.5)}
           rotation={new Euler(0, 0, 0)}
           reset={reset}
           setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
+          selectedDie={selectedDie}
+          setSelectedDie={(dieId) => setSelectedDie(dieId)}
         />
         <Dice
+          dieId={8}
           roll={rolling}
           position={new Vector3(2.5, 1, -2.5)}
           rotation={new Euler(0, 0, 0)}
           reset={reset}
           setReset={(e) => setReset(e)}
           setSelectedAction={(face, action) => takeAction(face, action)}
+          selectedDie={selectedDie}
+          setSelectedDie={(dieId) => setSelectedDie(dieId)}
         />
       </group>
     </>
