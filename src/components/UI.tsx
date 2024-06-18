@@ -38,7 +38,7 @@ export function UI() {
     commitLanterns,
     commitHeads,
     setReset,
-    addRoll,
+    setRolls,
     setRolling,
   } = useGame() as GameContextType;
 
@@ -49,7 +49,7 @@ export function UI() {
 
   function handleEndTurn() {
     setReset(true);
-    addRoll(1);
+    setRolls(1);
   }
 
   return (

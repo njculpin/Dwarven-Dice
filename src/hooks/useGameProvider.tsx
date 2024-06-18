@@ -39,7 +39,7 @@ export interface GameContextType {
   start: () => void;
   takeAction: (face: string, action: string) => void;
   setReset: (reset: boolean) => void;
-  addRoll: (amount: number) => void;
+  setRolls: (amount: number) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -198,6 +198,10 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   function addRoll(amount: number) {
     const prev = me.getState("rolls");
     me.setState("rolls", prev + amount, true);
+  }
+
+  function setRolls(amount: number) {
+    me.setState("rolls", amount, true);
   }
 
   const rolls = me.getState("rolls") || 0;
@@ -362,7 +366,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     start,
     takeAction,
     setReset,
-    addRoll,
+    setRolls,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
