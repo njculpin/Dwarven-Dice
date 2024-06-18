@@ -169,9 +169,9 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   function collectColorFromField(color: string) {
     const green = me.getState("myGreen") + fieldGreen;
     const purple = me.getState("purple") + fieldPurple;
-    const red = me.getState("red") + fieldRed;
-    const blue = me.getState("blue") + fieldBlue;
-    const black = me.getState("black") + fieldBlack;
+    const red = me.getState("myRed") + fieldRed;
+    const blue = me.getState("myBlue") + fieldBlue;
+    const black = me.getState("myBlack") + fieldBlack;
     switch (color) {
       case "green":
         me.setState("myGreen", green);
@@ -225,7 +225,10 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
             if (commitBeers + 1 === 3) {
               me.setState("commitBeers", 0);
               collectColorFromField("black");
-            } else if (commitBeers === 1 && commitHorns === 1) {
+            } else if (
+              (commitBeers + 1 === 1 && commitHorns === 1) ||
+              (commitBeers === 1 && commitHorns + 1 === 1)
+            ) {
               me.setState("commitBeers", 0);
               me.setState("commitHorns", 0);
               collectColorFromField("black");

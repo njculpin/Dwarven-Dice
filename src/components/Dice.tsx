@@ -229,7 +229,7 @@ export function Dice({
           />
           <Html center distanceFactor={10}>
             <div className="content">
-              {dieId === selectedDie && (
+              {dieId === selectedDie && !exploded && (
                 <RadialSlider trigger={(action) => triggerAction(action)} />
               )}
             </div>
