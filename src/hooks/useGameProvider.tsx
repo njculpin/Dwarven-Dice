@@ -26,6 +26,12 @@ export interface GameContextType {
   myRed: number;
   myBlue: number;
   myBlack: number;
+  commitBeers: number;
+  commitHorns: number;
+  commitAxes: number;
+  commitBombs: number;
+  commitLanterns: number;
+  commitHeads: number;
   reset: boolean;
   setShowColorPicker: (show: boolean) => void;
   pickGemFromMine: (color: string, count: number) => void;
@@ -33,6 +39,7 @@ export interface GameContextType {
   start: () => void;
   takeAction: (face: string, action: string) => void;
   setReset: (reset: boolean) => void;
+  addRoll: (amount: number) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -86,12 +93,12 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
       player.setState("myRed", 0);
       player.setState("myBlue", 0);
       player.setState("myBlack", 0);
-      player.setState("commitHeads", 0);
-      player.setState("commitLanterns", 0);
-      player.setState("commitBombs", 0);
-      player.setState("commitAxes", 0);
-      player.setState("commitHorns", 0);
-      player.setState("commitBeers", 0);
+      player.setState("commitHeads", 0, true);
+      player.setState("commitLanterns", 0, true);
+      player.setState("commitBombs", 0, true);
+      player.setState("commitAxes", 0, true);
+      player.setState("commitHorns", 0, true);
+      player.setState("commitBeers", 0, true);
     });
   }
 
@@ -157,33 +164,38 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   function collectColorFromField(color: string) {
+    const green = me.getState("myGreen") + fieldGreen;
+    const purple = me.getState("purple") + fieldPurple;
+    const red = me.getState("red") + fieldRed;
+    const blue = me.getState("blue") + fieldBlue;
+    const black = me.getState("black") + fieldBlack;
     switch (color) {
       case "green":
-        me.setState("myGreen", me.getState("myGreen") + fieldGreen);
+        me.setState("myGreen", green);
         setFieldGreen(0);
-        break;
+        return;
       case "purple":
-        me.setState("myPurple", me.getState("myPurple") + fieldPurple);
+        me.setState("myPurple", purple);
         setFieldPurple(0);
-        break;
+        return;
       case "red":
-        me.setState("myRed", me.getState("myRed") + fieldRed);
+        me.setState("myRed", red);
         setFieldRed(0);
-        break;
+        return;
       case "blue":
-        me.setState("myBlue", me.getState("myBlue") + fieldBlue);
+        me.setState("myBlue", blue);
         setFieldBlue(0);
-        break;
+        return;
       case "black":
-        me.setState("myBlack", me.getState("myBlack") + fieldBlack);
+        me.setState("myBlack", black);
         setFieldBlack(0);
-        break;
+        return;
       default:
-        break;
+        return;
     }
   }
 
-  function addRolls(amount: number) {
+  function addRoll(amount: number) {
     const prev = me.getState("rolls");
     me.setState("rolls", prev + amount, true);
   }
@@ -201,7 +213,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
       case "beers":
         switch (action) {
           case "spend":
-            return addRolls(1);
+            return addRoll(1);
           case "commit":
             if (commitBeers === 3) {
               me.setState("commitBeers", 0);
@@ -220,7 +232,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
       case "horns":
         switch (action) {
           case "spend":
-            return addRolls(2);
+            return addRoll(2);
           case "commit":
             if (commitHorns === 3) {
               me.setState("commitHorns", 0);
@@ -241,6 +253,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
           case "spend":
             return getGemsFromMine(1);
           case "commit":
+            console.log(commitAxes);
             if (commitAxes === 3) {
               me.setState("commitAxes", 0);
               collectColorFromField("blue");
@@ -260,6 +273,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
               me.setState("commitBombs", 0);
               collectColorFromField("red");
             } else {
+              console.log("commitBombs", commitBombs);
               me.setState("commitBombs", commitBombs + 1);
             }
             return;
@@ -287,7 +301,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
             // challenge
             return;
           case "commit":
-            if (commitHeads === 3) {
+            if (commitHeads >= 3) {
               me.setState("commitHeads", 0);
               collectColorFromField("green");
             } else {
@@ -307,6 +321,13 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const myRed = me.getState("myRed");
   const myBlue = me.getState("myBlue");
   const myBlack = me.getState("myBlack");
+
+  const commitBeers = me.getState("commitBeers");
+  const commitHorns = me.getState("commitHorns");
+  const commitAxes = me.getState("commitAxes");
+  const commitBombs = me.getState("commitBombs");
+  const commitLanterns = me.getState("commitLanterns");
+  const commitHeads = me.getState("commitHeads");
 
   const value: GameContextType = {
     players,
@@ -328,6 +349,12 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     myRed,
     myBlue,
     myBlack,
+    commitBeers,
+    commitHorns,
+    commitAxes,
+    commitBombs,
+    commitLanterns,
+    commitHeads,
     reset,
     setShowColorPicker,
     pickGemFromMine,
@@ -335,6 +362,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     start,
     takeAction,
     setReset,
+    addRoll,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

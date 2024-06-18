@@ -12,7 +12,7 @@ export function RadialSlider({
     ({ down, offset: [ox] }) => {
       if (down) {
         if (ox > 30) {
-          trigger("save");
+          trigger("commit");
         }
         if (ox < -30) {
           trigger("spend");
@@ -32,7 +32,7 @@ export function RadialSlider({
   return (
     <div className="flex flex-row justify-center items-center p-2 rounded-full">
       <animated.div {...bind()} style={{ x, touchAction: "none" }}>
-        <div className="border border-red-600 w-16 h-16 rounded-full" />
+        <div className="w-16 h-16 rounded-full" />
       </animated.div>
     </div>
   );

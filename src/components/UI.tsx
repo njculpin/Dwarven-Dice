@@ -31,12 +31,25 @@ export function UI() {
     myRed,
     myBlue,
     myBlack,
+    commitBeers,
+    commitHorns,
+    commitAxes,
+    commitBombs,
+    commitLanterns,
+    commitHeads,
     setReset,
+    addRoll,
+    setRolling,
   } = useGame() as GameContextType;
 
   function handlePickColor(color: string) {
     pickGemFromMine(color, 1);
     setShowColorPicker(false);
+  }
+
+  function handleEndTurn() {
+    setReset(true);
+    addRoll(1);
   }
 
   return (
@@ -65,22 +78,45 @@ export function UI() {
             })}
           </div>
         </div>
-        <div className="p-8">
-          <p className="w-full text-left text-xs italic">My Gems</p>
-          <p className="w-full text-left text-xs italic">{rolls} remaining</p>
-          <div className="w-full flex space-x-2">
-            <p className="font-bold">{myBlack}</p>
-            <p className="font-bold text-blue-500">{myBlue}</p>
-            <p className="font-bold text-red-500">{myRed}</p>
-            <p className="font-bold text-purple-500">{myPurple}</p>
-            <p className="font-bold text-green-500">{myGreen}</p>
+        <div className="flex justify-between items-center">
+          <div className="p-8">
+            <p className="w-full text-left text-xs italic">My Gems</p>
+            <p className="w-full text-left text-xs italic">{rolls} remaining</p>
+            <div className="w-full flex space-x-2">
+              <p className="font-bold">{myBlack}</p>
+              <p className="font-bold text-blue-500">{myBlue}</p>
+              <p className="font-bold text-red-500">{myRed}</p>
+              <p className="font-bold text-purple-500">{myPurple}</p>
+              <p className="font-bold text-green-500">{myGreen}</p>
+            </div>
+            <div className="mt-2">
+              <button
+                onClick={() => setRolling(true)}
+                className="pointer-events-auto border px-4 py-2"
+              >
+                Roll
+              </button>
+            </div>
           </div>
-          <button
-            onClick={() => setReset(true)}
-            className="pointer-events-auto border rounded-full px-4 py-2"
-          >
-            End Turn
-          </button>
+          <div className="p-8">
+            <p className="w-full text-left text-xs italic">My Commit Dice</p>
+            <div className="w-full flex space-x-2">
+              <p className="font-bold">{commitBeers}</p>
+              <p className="font-bold">{commitHorns}</p>
+              <p className="font-bold text-blue-500">{commitAxes}</p>
+              <p className="font-bold text-red-500">{commitBombs}</p>
+              <p className="font-bold text-purple-500">{commitLanterns}</p>
+              <p className="font-bold text-green-500">{commitHeads}</p>
+            </div>
+            <div className="mt-2">
+              <button
+                onClick={() => handleEndTurn()}
+                className="pointer-events-auto border px-4 py-2"
+              >
+                End Turn
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <Transition show={showColorPicker}>
