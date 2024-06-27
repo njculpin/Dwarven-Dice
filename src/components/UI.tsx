@@ -7,13 +7,12 @@ import {
   Transition,
   TransitionChild,
 } from "@headlessui/react";
+import { RadialSlider } from "./RadialSlider";
 
 export function UI() {
   const {
     showColorPicker,
     setShowColorPicker,
-    pickGemFromMine,
-    rolls,
     players,
     mineGreen,
     minePurple,
@@ -25,38 +24,10 @@ export function UI() {
     fieldRed,
     fieldBlue,
     fieldBlack,
-    myGreen,
-    myPurple,
-    myRed,
-    myBlue,
-    myBlack,
-    commitBeers,
-    commitHorns,
-    commitAxes,
-    commitBombs,
-    commitLanterns,
-    commitHeads,
-    setReset,
-    setRolls,
-    setRolling,
-    setSelectedDie,
+    selectedDieFace,
+    handleAction,
+    handlePickColor,
   } = useGame() as GameContextType;
-
-  function handlePickColor(color: string) {
-    pickGemFromMine(color, 1);
-    setShowColorPicker(false);
-  }
-
-  function handleEndTurn() {
-    setReset(true);
-    setRolls(1);
-    setSelectedDie(0);
-  }
-
-  function handleRoll() {
-    setRolling(true);
-    setSelectedDie(0);
-  }
 
   return (
     <div className="fixed pointer-events-none top-0 right-0 left-0 bottom-0">
@@ -84,46 +55,14 @@ export function UI() {
             })}
           </div>
         </div>
-        <div className="flex justify-between items-center">
-          <div className="p-8">
-            <p className="w-full text-left text-xs italic">My Gems</p>
-            <p className="w-full text-left text-xs italic">{rolls} remaining</p>
-            <div className="w-full flex space-x-2">
-              <p className="font-bold">{myBlack}</p>
-              <p className="font-bold text-blue-500">{myBlue}</p>
-              <p className="font-bold text-red-500">{myRed}</p>
-              <p className="font-bold text-purple-500">{myPurple}</p>
-              <p className="font-bold text-green-500">{myGreen}</p>
-            </div>
-            <div className="mt-2">
-              <button
-                onClick={() => handleRoll()}
-                className="pointer-events-auto border px-4 py-2 shadow-lg bg-white"
-              >
-                Roll
-              </button>
+        {selectedDieFace && (
+          <div className="flex justify-center items-center p-8">
+            <div className="pointer-events-auto flex flex-col justify-center items-center">
+              <p className="w-full text-center">{selectedDieFace}</p>
+              <RadialSlider trigger={(action) => handleAction(action)} />
             </div>
           </div>
-          <div className="p-8">
-            <p className="w-full text-left text-xs italic">My Commit Dice</p>
-            <div className="w-full flex space-x-2">
-              <p className="font-bold">{commitBeers}</p>
-              <p className="font-bold">{commitHorns}</p>
-              <p className="font-bold text-blue-500">{commitAxes}</p>
-              <p className="font-bold text-red-500">{commitBombs}</p>
-              <p className="font-bold text-purple-500">{commitLanterns}</p>
-              <p className="font-bold text-green-500">{commitHeads}</p>
-            </div>
-            <div className="mt-2">
-              <button
-                onClick={() => handleEndTurn()}
-                className="pointer-events-auto border px-4 py-2 shadow-lg bg-white"
-              >
-                End Turn
-              </button>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
       <Transition show={showColorPicker}>
         <Dialog className="relative z-10" onClose={() => setShowColorPicker}>

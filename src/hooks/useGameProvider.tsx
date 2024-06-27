@@ -26,6 +26,7 @@ export interface GameContextType {
   myRed: number;
   myBlue: number;
   myBlack: number;
+  spentDice: boolean[];
   commitBeers: number;
   commitHorns: number;
   commitAxes: number;
@@ -33,15 +34,19 @@ export interface GameContextType {
   commitLanterns: number;
   commitHeads: number;
   reset: boolean;
-  selectedDie: number;
+  selectedDieId: number;
+  selectedDieFace: string;
   setShowColorPicker: (show: boolean) => void;
   pickGemFromMine: (color: string, count: number) => void;
   setRolling: (rolling: boolean) => void;
   start: () => void;
-  takeAction: (face: string, action: string) => void;
+  handleAction: (action: string) => void;
   setReset: (reset: boolean) => void;
-  setRolls: (amount: number) => void;
-  setSelectedDie: (dieId: number) => void;
+  setSelectedDieId: (dieId: number) => void;
+  handleRoll: () => void;
+  handleEndTurn: () => void;
+  handlePickColor: (color: string) => void;
+  handlePickDie: (face: string, dieId: number) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -61,10 +66,24 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [fieldBlue, setFieldBlue] = useMultiplayerState("fieldBlue", 0);
   const [fieldBlack, setFieldBlack] = useMultiplayerState("fieldBlack", 0);
 
-  const [selectedDie, setSelectedDie] = useState(0);
+  const [selectedDieId, setSelectedDieId] = useState(0);
+  const [selectedDieFace, setSelectedDieFace] = useState("");
   const [rolling, setRolling] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [reset, setReset] = useState(false);
+  const rolls = me.getState("rolls") || 0;
+  const myGreen = me.getState("myGreen");
+  const myPurple = me.getState("myPurple");
+  const myRed = me.getState("myRed");
+  const myBlue = me.getState("myBlue");
+  const myBlack = me.getState("myBlack");
+  const commitBeers = me.getState("commitBeers");
+  const commitHorns = me.getState("commitHorns");
+  const commitAxes = me.getState("commitAxes");
+  const commitBombs = me.getState("commitBombs");
+  const commitLanterns = me.getState("commitLanterns");
+  const commitHeads = me.getState("commitHeads");
+  const spentDice = me.getState("spentDice");
 
   const players = usePlayersList(true);
   players.sort((a, b) => a.id.localeCompare(b.id));
@@ -90,18 +109,19 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   function setUpPlayers() {
     players.forEach((player) => {
-      player.setState("rolls", 5, true);
+      player.setState("rolls", 5);
       player.setState("myGreen", 0);
       player.setState("myPurple", 0);
       player.setState("myRed", 0);
       player.setState("myBlue", 0);
       player.setState("myBlack", 0);
-      player.setState("commitHeads", 0, true);
-      player.setState("commitLanterns", 0, true);
-      player.setState("commitBombs", 0, true);
-      player.setState("commitAxes", 0, true);
-      player.setState("commitHorns", 0, true);
-      player.setState("commitBeers", 0, true);
+      player.setState("commitHeads", 0);
+      player.setState("commitLanterns", 0);
+      player.setState("commitBombs", 0);
+      player.setState("commitAxes", 0);
+      player.setState("commitHorns", 0);
+      player.setState("commitBeers", 0);
+      player.setState("spentDice", []);
     });
   }
 
@@ -207,9 +227,10 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     me.setState("rolls", amount, true);
   }
 
-  const rolls = me.getState("rolls") || 0;
-
-  function takeAction(face: string, action: string) {
+  function handleAction(action: string) {
+    const face = selectedDieFace;
+    destroyDie();
+    handleUnPickDie();
     const commitHeads = me.getState("commitHeads");
     const commitLanterns = me.getState("commitLanterns");
     const commitBombs = me.getState("commitBombs");
@@ -321,23 +342,66 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
           default:
             return;
         }
-      default:
-        return;
     }
   }
 
-  const myGreen = me.getState("myGreen");
-  const myPurple = me.getState("myPurple");
-  const myRed = me.getState("myRed");
-  const myBlue = me.getState("myBlue");
-  const myBlack = me.getState("myBlack");
+  function handlePickColor(color: string) {
+    pickGemFromMine(color, 1);
+    setShowColorPicker(false);
+  }
 
-  const commitBeers = me.getState("commitBeers");
-  const commitHorns = me.getState("commitHorns");
-  const commitAxes = me.getState("commitAxes");
-  const commitBombs = me.getState("commitBombs");
-  const commitLanterns = me.getState("commitLanterns");
-  const commitHeads = me.getState("commitHeads");
+  function handleEndTurn() {
+    setReset(true);
+    setRolls(1);
+    setSelectedDieId(0);
+    me.setState("spentDice", []);
+  }
+
+  function handleRoll() {
+    setRolling(true);
+    setSelectedDieId(0);
+  }
+
+  function handlePickDie(face: string, dieId: number) {
+    setSelectedDieId(dieId);
+    setSelectedDieFace(face);
+  }
+
+  function handleUnPickDie() {
+    setSelectedDieId(0);
+    setSelectedDieFace("");
+  }
+
+  function destroyDie() {
+    switch (selectedDieId) {
+      case 1:
+        me.setState("spentD1", true);
+        return;
+      case 2:
+        me.setState("spentD2", true);
+        return;
+      case 3:
+        me.setState("spentD3", true);
+        return;
+      case 4:
+        me.setState("spentD4", true);
+        return;
+      case 5:
+        me.setState("spentD5", true);
+        return;
+      case 6:
+        me.setState("spentD6", true);
+        return;
+      case 7:
+        me.setState("spentD7", true);
+        return;
+      case 8:
+        me.setState("spentD8", true);
+        return;
+      default:
+        break;
+    }
+  }
 
   const value: GameContextType = {
     players,
@@ -359,6 +423,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     myRed,
     myBlue,
     myBlack,
+    spentDice,
     commitBeers,
     commitHorns,
     commitAxes,
@@ -366,15 +431,19 @@ const GameProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     commitLanterns,
     commitHeads,
     reset,
-    selectedDie,
+    selectedDieId,
+    selectedDieFace,
     setShowColorPicker,
     pickGemFromMine,
     setRolling,
     start,
-    takeAction,
+    handleAction,
     setReset,
-    setRolls,
-    setSelectedDie,
+    setSelectedDieId,
+    handleRoll,
+    handleEndTurn,
+    handlePickColor,
+    handlePickDie,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

@@ -26,6 +26,7 @@ export function RadialSlider({
     },
     {
       bounds: { left: -100, right: 100, top: 0, bottom: 0 },
+      delay: true,
     }
   );
 
@@ -33,7 +34,7 @@ export function RadialSlider({
     <div className="flex flex-row justify-center items-center p-2 rounded-full gap-4">
       <div className="w-16 h-16 bg-blue-500 rounded-full" />
       <animated.div {...bind()} style={{ x, touchAction: "none" }}>
-        <div className="bg-red-600 w-32 h-32 rounded-full" />
+        <div className="bg-black w-24 h-24 rounded-full" />
       </animated.div>
       <div className="w-16 h-16 bg-blue-500 rounded-full" />
     </div>

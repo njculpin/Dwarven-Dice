@@ -11,10 +11,9 @@ import {
 } from "@react-three/rapier";
 import { Euler, Group, Mesh, MeshStandardMaterial, Vector3 } from "three";
 import { useFrame } from "@react-three/fiber";
-import { useRef, useState } from "react";
-import { useGLTF, Html } from "@react-three/drei";
+import { useRef } from "react";
+import { useGLTF, Edges } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
-import { RadialSlider } from "./RadialSlider";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -53,22 +52,22 @@ export function Dice({
   dieId,
   position,
   rotation,
-  roll,
+  rolling,
   reset,
-  selectedDie,
+  selectedDieId,
+  exploded,
   setReset,
-  setSelectedAction,
-  setSelectedDie,
+  setSelectedDieId,
 }: {
   dieId: number;
   position: Vector3;
   rotation: Euler;
-  roll: boolean;
+  rolling: boolean;
   reset: boolean;
-  selectedDie: number;
+  selectedDieId: number;
+  exploded: boolean;
   setReset: (reset: boolean) => void;
-  setSelectedAction: (face: string, action: string) => void;
-  setSelectedDie: (dieId: number) => void;
+  setSelectedDieId: (face: string, dieId: number) => void;
 }) {
   const { nodes, materials } = useGLTF("/dice.glb") as GLTFResult;
 
@@ -76,22 +75,19 @@ export function Dice({
   const originGroup = useRef<Group>(null);
   const origin = useRef<RapierRigidBody>(null);
 
-  const [exploded, setExploded] = useState(false);
-
   useFrame(() => {
-    if (roll && origin.current && piecesGroup.current && originGroup.current) {
-      //
+    if (
+      rolling &&
+      origin.current &&
+      piecesGroup.current &&
+      originGroup.current
+    ) {
       const randX = randomIntFromInterval(-3, 3);
       const randZ = randomIntFromInterval(-3, 3);
       origin.current.applyImpulse(new Vector3(randX, 5, randZ), true);
       origin.current.applyTorqueImpulse({ x: 3, y: 3, z: 3 }, true);
-      //
-      piecesGroup.current.position.setX(originGroup.current.position.x);
-      piecesGroup.current.position.setY(originGroup.current.position.y);
-      piecesGroup.current.position.setZ(originGroup.current.position.z);
     }
     if (reset && origin.current && originGroup.current && piecesGroup.current) {
-      setExploded(false);
       origin.current.resetForces(false);
       origin.current.resetTorques(false);
       origin.current.setTranslation(position, false);
@@ -189,20 +185,30 @@ export function Dice({
     });
   }
 
-  function triggerAction(action: string) {
-    if (exploded) {
-      return;
-    }
-    setExploded(true);
+  function handleSelectedDie(dieId: number) {
     const face = getDiceDetails();
     if (!face) {
       return;
     }
-    if (!origin.current) {
-      return;
+    setSelectedDieId(face, dieId);
+  }
+
+  function getEdgeColor() {
+    const face = getDiceDetails();
+    switch (face) {
+      case "beers":
+        return "white";
+      case "horns":
+        return "white";
+      case "axes":
+        return "blue";
+      case "bombs":
+        return "red";
+      case "lanterns":
+        return "purple";
+      case "heads":
+        return "green";
     }
-    setSelectedAction(face, action);
-    setSelectedDie(0);
   }
 
   return (
@@ -224,16 +230,17 @@ export function Dice({
             visible={!exploded}
             onPointerOver={() => (document.body.style.cursor = "pointer")}
             onPointerOut={() => (document.body.style.cursor = "")}
-            onPointerMissed={() => setSelectedDie(0)}
-            onClick={() => setSelectedDie(dieId)}
-          />
-          <Html center distanceFactor={10}>
-            <div className="content">
-              {dieId === selectedDie && !exploded && (
-                <RadialSlider trigger={(action) => triggerAction(action)} />
-              )}
-            </div>
-          </Html>
+            onPointerMissed={() => setSelectedDieId("", 0)}
+            onClick={() => handleSelectedDie(dieId)}
+          >
+            <Edges
+              visible={dieId === selectedDieId && !exploded && !rolling}
+              linewidth={4}
+              scale={1.02}
+              threshold={15}
+              color={getEdgeColor()}
+            />
+          </mesh>
         </RigidBody>
       </group>
       <group position={position} rotation={rotation} ref={piecesGroup}>
@@ -243,9 +250,35 @@ export function Dice({
   );
 }
 
-type OriginMap<T> = {
-  [key: string]: T;
-};
+// type OriginMap<T> = {
+//   [key: string]: T;
+// };
+// const originMap: OriginMap<Vector3> = {
+//   D0: new Vector3(0.592, 0.592, -0.896),
+//   D1: new Vector3(0.592, 0.896, -0.592),
+//   D2: new Vector3(0.896, 0.592, -0.592),
+//   D3: new Vector3(0.592, -0.896, -0.592),
+//   D4: new Vector3(0.592, -0.593, -0.896),
+//   D5: new Vector3(0.896, -0.593, -0.592),
+//   D6: new Vector3(0.896, 0.592, 0.593),
+//   D7: new Vector3(0.592, 0.896, 0.592),
+//   D8: new Vector3(0.592, 0.592, 0.896),
+//   D9: new Vector3(0.896, -0.592, 0.592),
+//   D10: new Vector3(0.592, -0.593, 0.896),
+//   D11: new Vector3(0.592, -0.896, 0.592),
+//   D12: new Vector3(-0.592, 0.592, -0.896),
+//   D13: new Vector3(-0.896, 0.592, -0.593),
+//   D14: new Vector3(-0.593, 0.896, -0.592),
+//   D15: new Vector3(-0.896, -0.592, -0.592),
+//   D16: new Vector3(-0.593, -0.592, -0.896),
+//   D17: new Vector3(-0.592, -0.896, -0.592),
+//   D18: new Vector3(-0.896, 0.592, 0.592),
+//   D19: new Vector3(-0.593, 0.592, 0.896),
+//   D20: new Vector3(-0.593, 0.896, 0.592),
+//   D21: new Vector3(-0.592, -0.896, 0.592),
+//   D22: new Vector3(-0.593, -0.593, 0.896),
+//   D23: new Vector3(-0.896, -0.592, 0.592),
+// };
 
 function Pieces({ exploded }: { exploded: boolean }) {
   const { nodes, materials } = useGLTF("/dice.glb") as GLTFResult;
@@ -277,50 +310,11 @@ function Pieces({ exploded }: { exploded: boolean }) {
   const D22 = useRef<RapierRigidBody>(null);
   const D23 = useRef<RapierRigidBody>(null);
 
-  const originMap: OriginMap<Vector3> = {
-    D0: new Vector3(0.592, 0.592, -0.896),
-    D1: new Vector3(0.592, 0.896, -0.592),
-    D2: new Vector3(0.896, 0.592, -0.592),
-    D3: new Vector3(0.592, -0.896, -0.592),
-    D4: new Vector3(0.592, -0.593, -0.896),
-    D5: new Vector3(0.896, -0.593, -0.592),
-    D6: new Vector3(0.896, 0.592, 0.593),
-    D7: new Vector3(0.592, 0.896, 0.592),
-    D8: new Vector3(0.592, 0.592, 0.896),
-    D9: new Vector3(0.896, -0.592, 0.592),
-    D10: new Vector3(0.592, -0.593, 0.896),
-    D11: new Vector3(0.592, -0.896, 0.592),
-    D12: new Vector3(-0.592, 0.592, -0.896),
-    D13: new Vector3(-0.896, 0.592, -0.593),
-    D14: new Vector3(-0.593, 0.896, -0.592),
-    D15: new Vector3(-0.896, -0.592, -0.592),
-    D16: new Vector3(-0.593, -0.592, -0.896),
-    D17: new Vector3(-0.592, -0.896, -0.592),
-    D18: new Vector3(-0.896, 0.592, 0.592),
-    D19: new Vector3(-0.593, 0.592, 0.896),
-    D20: new Vector3(-0.593, 0.896, 0.592),
-    D21: new Vector3(-0.592, -0.896, 0.592),
-    D22: new Vector3(-0.593, -0.593, 0.896),
-    D23: new Vector3(-0.896, -0.592, 0.592),
-  };
-
-  useFrame(() => {
-    if (piecesGroup.current && !exploded) {
-      piecesGroup.current.children.forEach((body) => {
-        const name = body.name;
-        body.position.setX(originMap[name].x);
-        body.position.setY(originMap[name].y);
-        body.position.setZ(originMap[name].z);
-      });
-    }
-  });
-
   return (
     <group ref={piecesGroup} visible={exploded}>
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D0}
-        position={originMap["Dice_cell"]}
         name="D0"
         collisionGroups={interactionGroups(1, [1])}
         mass={100}
@@ -335,7 +329,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D1}
-        position={originMap["Dice_cell001"]}
         name="D1"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -349,7 +342,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D2}
-        position={originMap["Dice_cell002"]}
         name="D2"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -363,7 +355,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D3}
-        position={originMap["Dice_cell003"]}
         name="D3"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -377,7 +368,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D4}
-        position={originMap["Dice_cell004"]}
         name="D4"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -391,7 +381,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D5}
-        position={originMap["Dice_cell005"]}
         name="D5"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -405,7 +394,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D6}
-        position={originMap["Dice_cell006"]}
         name="D6"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -419,7 +407,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D7}
-        position={originMap["Dice_cell007"]}
         name="D7"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -433,7 +420,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D8}
-        position={originMap["Dice_cell008"]}
         name="D8"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -447,7 +433,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D9}
-        position={originMap["Dice_cell009"]}
         name="D9"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -461,7 +446,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D10}
-        position={originMap["Dice_cell010"]}
         name="D10"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -475,7 +459,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D11}
-        position={originMap["Dice_cell011"]}
         name="D11"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -489,7 +472,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D12}
-        position={originMap["Dice_cell012"]}
         name="D12"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -503,7 +485,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D13}
-        position={originMap["Dice_cell013"]}
         name="D13"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -517,7 +498,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D14}
-        position={originMap["Dice_cell014"]}
         name="D14"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -531,7 +511,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D15}
-        position={originMap["Dice_cell015"]}
         name="D15"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -545,7 +524,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D16}
-        position={originMap["Dice_cell016"]}
         name="D16"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -559,7 +537,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D17}
-        position={originMap["Dice_cell017"]}
         name="D17"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -573,7 +550,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D18}
-        position={originMap["Dice_cell018"]}
         name="D18"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -587,7 +563,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D19}
-        position={originMap["Dice_cell019"]}
         name="D19"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -601,7 +576,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D20}
-        position={originMap["Dice_cell020"]}
         name="D20"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -615,7 +589,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D21}
-        position={originMap["Dice_cell021"]}
         name="D21"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -629,7 +602,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D22}
-        position={originMap["Dice_cell022"]}
         name="D22"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
@@ -643,7 +615,6 @@ function Pieces({ exploded }: { exploded: boolean }) {
       <RigidBody
         type={exploded ? "dynamic" : "fixed"}
         ref={D23}
-        position={originMap["Dice_cell023"]}
         name="D23"
         collisionGroups={interactionGroups(1, [1])}
         mass={20}
