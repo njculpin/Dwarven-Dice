@@ -1,27 +1,28 @@
-import { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Physics } from "@react-three/rapier";
-import { UI } from "./components/UI";
-import { isStreamScreen } from "playroomkit";
-import { Experience } from "./components/Experience";
+// import { Canvas } from "@react-three/fiber";
+import { ThemeProvider } from "./components/theme-provider";
+import { ModeToggle } from "./components/mode-toggle";
+import "./App.css";
+import { CreateGameForm } from "./components/create-game-form";
 
-export default function App() {
-  const stream = isStreamScreen();
+function App() {
   return (
-    <div style={{ height: "100%", width: "100%" }}>
-      <Canvas
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <div className="w-full flex justify-between">
+        <ModeToggle />
+      </div>
+      <div>
+        <CreateGameForm />
+      </div>
+      {/* <Canvas
         camera={{
           fov: 40,
-          position: stream ? [25, 25, 25] : [0, 35, 0],
+          position: [25, 25, 25],
         }}
       >
-        <Suspense>
-          <Physics gravity={[0, -30, 0]}>
-            <Experience />
-          </Physics>
-        </Suspense>
-      </Canvas>
-      <UI />
-    </div>
+        <Suspense></Suspense>
+      </Canvas> */}
+    </ThemeProvider>
   );
 }
+
+export default App;
