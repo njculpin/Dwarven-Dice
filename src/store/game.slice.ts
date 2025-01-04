@@ -1,43 +1,44 @@
-import { create } from "zustand";
-import { supabase } from "./client";
-import { User, RealtimeChannel } from "@supabase/supabase-js";
+import { StateCreator } from "zustand";
 import { GAME } from "types/types";
+import { User, RealtimeChannel } from "@supabase/supabase-js";
+import { supabase } from "../lib/client";
 
-interface GameState {
+export interface GameSlice {
   game: GAME | null;
-  currentRoom: string | null;
+  gameCode: string | null;
   currentChannel: RealtimeChannel | null;
   user: User | null;
   createRoom: () => Promise<string | null>;
+  joinRoom: (display_name: string, game_code: string) => void;
   setGame: (game: GAME) => void;
   setUser: (user: User | null) => void;
-  subscribeToRoom: (roomCode: string) => void;
+  subscribeToRoom: (gameCode: string) => void;
   unsubscribeFromRoom: () => void;
 }
 
-export const useGameStore = create<GameState>((set, get) => ({
+export const createGameSlice: StateCreator<GameSlice> = (set, get) => ({
   game: null,
-  currentRoom: null,
+  gameCode: null,
   currentChannel: null,
   user: null,
   setGame: (game) => set(() => ({ game: game })),
-  setCurrentRoom: (roomCode: string) => {
-    set({ currentRoom: roomCode });
-    get().subscribeToRoom(roomCode);
+  setCurrentRoom: (gameCode: string) => {
+    set({ gameCode: gameCode });
+    get().subscribeToRoom(gameCode);
   },
   setUser: (user) => set({ user }),
-  subscribeToRoom: (roomCode) => {
+  subscribeToRoom: (gameCode) => {
     const { unsubscribeFromRoom } = get();
-    unsubscribeFromRoom(); // Unsubscribe from previous room if any
-    const channel = supabase
-      .channel(`room:${roomCode}`)
+    unsubscribeFromRoom();
+    const currentChannel = supabase
+      .channel(`room:${gameCode}`)
       .on(
         "postgres_changes",
         {
           event: "UPDATE",
           schema: "public",
           table: "games",
-          filter: `room_code=eq.${roomCode}`,
+          filter: `room_code=eq.${gameCode}`,
         },
         (payload) => {
           const game = payload.new as GAME;
@@ -45,14 +46,14 @@ export const useGameStore = create<GameState>((set, get) => ({
         }
       )
       .subscribe();
-    set({ currentRoom: roomCode, currentChannel: channel });
+    set({ gameCode: gameCode, currentChannel: currentChannel });
   },
   unsubscribeFromRoom: () => {
     const { currentChannel } = get();
     if (currentChannel) {
       supabase.removeChannel(currentChannel);
     }
-    set({ currentRoom: null, currentChannel: null });
+    set({ gameCode: null, currentChannel: null });
   },
   createRoom: async () => {
     const { data, error } = await supabase
@@ -63,8 +64,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (error) {
       return null;
     }
-    set({ currentRoom: data.game_code });
+    set({ gameCode: data.game_code });
     return data.game_code;
+  },
+  joinRoom: async (display_name, game_code) => {
+    console.log(display_name, game_code);
   },
   signInAnonymously: async () => {
     const { data, error } = await supabase.auth.signInAnonymously();
@@ -75,4 +79,4 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({ user: data.user });
     return data.user;
   },
-}));
+});
